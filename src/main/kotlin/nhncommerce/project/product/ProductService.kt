@@ -1,4 +1,4 @@
 package nhncommerce.project.product
 
-class productConroller {
+class ProductService {
 }
