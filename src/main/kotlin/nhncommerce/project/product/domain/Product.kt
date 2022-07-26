@@ -1,8 +1,7 @@
-package nhncommerce.project.product.domin
+package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity

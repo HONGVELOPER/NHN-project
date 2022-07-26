@@ -1,10 +1,6 @@
-package nhncommerce.project.product.domin
+package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
-import javax.persistence.Column
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
 
 data class ProductDTO(
 

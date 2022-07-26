@@ -1,4 +1,4 @@
-package nhncommerce.project.coupon.domin
+package nhncommerce.project.coupon.domain
 
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
@@ -7,7 +7,7 @@ import javax.persistence.*
 
 
 @Entity
-open class Coupon(
+class Coupon(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_id")
