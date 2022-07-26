@@ -1,7 +1,7 @@
 package nhncommerce.project.reviewcomment.domain
 
-import nhncommerce.project.BaseEntity.BaseEntity
-import nhncommerce.project.BaseEntity.Status
+
+import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.review.domain.Review
 import javax.persistence.*
 
@@ -21,7 +21,7 @@ class ReviewComment (
     @JoinColumn(name="review_id")
     var review: Review,
 
-    @Column(nullable = false)
-    var status: Status = Status.ACTIVE
+//    @Column(nullable = false)
+//    var status: Status = Status.ACTIVE
 
 ): BaseEntity()

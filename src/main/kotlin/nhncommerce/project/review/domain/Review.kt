@@ -1,7 +1,6 @@
 package nhncommerce.project.review.domain
 
-import nhncommerce.project.BaseEntity.BaseEntity
-import nhncommerce.project.BaseEntity.Status
+import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.order.domain.Order
 import nhncommerce.project.user.domain.User
 import java.time.LocalDateTime
@@ -33,8 +32,8 @@ class Review (
     @JoinColumn(name="order_id")
     var order: Order,
 
-    @Column(nullable = false)
-    var status: Status = Status.ACTIVE
+//    @Column(nullable = false)
+//    var status: Status = Status.ACTIVE
 
 
 ): BaseEntity()
