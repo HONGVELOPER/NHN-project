@@ -15,8 +15,8 @@ class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
-    val id: Long? = null,
+    @Column(nullable = false)
+    val userId: Long? = null,   
 
     @Column(nullable = false)
     var status: Status,
@@ -33,7 +33,6 @@ class User (
     @Column(nullable = false, length = 11)
     var phone: Int,
 
-//    생성일, 수정일  base entity 가져와서 하기 위해 명세 안함. //
 ): BaseEntity() {
     init {
         this.status = Status.ACTIVE

@@ -3,7 +3,6 @@ package nhncommerce.project.user.domain
 import nhncommerce.project.baseentity.Status
 
 data class UserDTO (
-    var id: Long? = null,
     var status: Status,
     var gender: Gender,
     var email: String,
@@ -11,7 +10,7 @@ data class UserDTO (
     var phone: Int,
 ) {
     fun toEntity(): User {
-        return User(gender = gender, status = status, email = email, password = password, phone = phone)
+        return User(status = status, gender = gender, email = email, password = password, phone = phone)
     }
-
+    
 }
