@@ -1,4 +1,4 @@
-package nhncommerce.project.BaseEntity
+package nhncommerce.project.baseentity
 
 enum class Status {
     ACTIVE,

@@ -1,6 +1,6 @@
 package nhncommerce.project.coupon.domin
 
-import nhncommerce.project.BaseEntity.Status
+import nhncommerce.project.baseentity.Status
 import java.time.LocalDateTime
 
 class CouponDTO (
