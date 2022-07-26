@@ -1,5 +1,7 @@
-package nhncommerce.project.login.domain
+package nhncommerce.project.user.domain
 
+import nhncommerce.project.baseentity.BaseEntity
+import nhncommerce.project.baseentity.Status
 import javax.persistence.Column
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -14,9 +16,8 @@ class User (
     @Column(name = "user_id", nullable = false)
     val id: Long? = null,
 
-//  enum status pull request 에 올라와 있어서 주석 처리 후 재 수정함. //
-//    @Column(nullable = false)
-//    var status: Status,
+    @Column(nullable = false)
+    var status: Status,
 
     @Column(nullable = false)
     var gender: Gender,
@@ -31,16 +32,11 @@ class User (
     var phone: Int,
 
 //    생성일, 수정일  base entity 가져와서 하기 위해 명세 안함. //
-) {
-//    init {
-//        this.status = Status.ACTIVE
-//    }
+): BaseEntity() {
+    init {
+        this.status = Status.ACTIVE
+    }
 }
-
-//enum class Status {
-//    ACTIVE,
-//    IN_ACTIVE,
-//}
 
 enum class Gender {
     MALE, FEMALE
