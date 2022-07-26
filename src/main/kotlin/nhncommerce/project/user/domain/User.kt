@@ -3,12 +3,14 @@ package nhncommerce.project.user.domain
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
 import javax.persistence.Column
+import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
 @Table(name = "user")
+@Entity
 class User (
 
     @Id
