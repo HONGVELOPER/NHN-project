@@ -3,6 +3,7 @@ package nhncommerce.project.review.domain
 import nhncommerce.project.BaseEntity.BaseEntity
 import nhncommerce.project.BaseEntity.Status
 import nhncommerce.project.order.domain.Order
+import nhncommerce.project.user.domain.User
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -24,9 +25,9 @@ class Review (
     @Column(nullable = true)
     var reviewImageId: String,
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="user_id")
-//    var user: User,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    var user: User,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id")

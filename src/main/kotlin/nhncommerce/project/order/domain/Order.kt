@@ -3,6 +3,7 @@ package nhncommerce.project.order.domain
 import nhncommerce.project.BaseEntity.BaseEntity
 import nhncommerce.project.BaseEntity.Status
 import nhncommerce.project.coupon.domin.Coupon
+import nhncommerce.project.deliver.domain.Deliver
 import nhncommerce.project.product.domin.Product
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -33,9 +34,9 @@ class Order (
     @ManyToOne(fetch = FetchType.LAZY)
     var product: Product,
 
-//    @OneToOne
-//    @JoinColumn(name="address_id")
-//    var address: Address,
+    @OneToOne
+    @JoinColumn(name="deliver_id")
+    var deliver: Deliver,
 
     @Column(nullable = false)
     var status: Status = Status.ACTIVE
