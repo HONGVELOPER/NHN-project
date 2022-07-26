@@ -5,10 +5,12 @@ import nhncommerce.project.baseentity.Status
 import java.time.LocalDateTime
 import javax.persistence.*
 
+
 @Entity
 open class Coupon(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "coupon_id")
     val couponId : Long? = null,
 
     @Column(nullable = false)
