@@ -1,6 +1,6 @@
 package nhncommerce.project.product.domin
 
-import nhncommerce.project.BaseEntity.Status
+import nhncommerce.project.baseentity.Status
 import javax.persistence.Column
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
