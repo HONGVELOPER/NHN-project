@@ -14,7 +14,7 @@ class Category (
     var name : String? = null,
 
     @OneToMany(mappedBy = "category")
-    var subCategoies : MutableList<SubCategory>? = ArrayList<SubCategory>(),
+    var subCategories : MutableList<SubCategory>? = ArrayList<SubCategory>(),
 
     @Column(nullable = false)
     var status : Status? = Status.ACTIVE
