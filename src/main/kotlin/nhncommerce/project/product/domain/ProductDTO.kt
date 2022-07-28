@@ -1,25 +1,58 @@
 package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Pattern
+import javax.validation.constraints.Size
 
 data class ProductDTO(
 
-    var productId:Long,
-
     var status: Status = Status.ACTIVE,
 
-    var productName:String,
+    @field:NotBlank(message = "상품명을 입력해주세요.")
+    @field:Size(max = 15, message = "상품명을 15자 이내로 입력하세요.")
+    var productName:String="",
 
-    var price:Int,
+    @field:Min(0, message = "상품 가격이 0원 보다 작을수 없습니다.")
+    var price:Int=0,
 
-    var briefDescription:String?,
+    @field:NotBlank(message = "상품명을 입력해주세요.")
+    @field:Size(max = 30, message = "간략 설명을 30자 이내로 입력하세요")
+    var briefDescription:String?="",
 
-    var detailDescription:String?,
+    @field:NotBlank(message = "상품명을 입력해주세요.")
+    @field:Size(max = 300, message = "상세 설명을 300자 이내로 입력하세요.")
+    var detailDescription:String?="",
 
-    var thumbnail:String?,
+    var thumbnail:String?="",
 
-    var viewCount:Int,
+    var viewCount:Int=0,
 
-    var totalStar:Float,
+    var totalStar:Float=0F,
 
-)
+){
+
+    fun String.intOrString(): Any {
+        val v = toIntOrNull()
+        return when(v) {
+            null -> this
+            else -> v
+        }
+    }
+
+    fun productValidate():Boolean{
+
+        if(price < 0){
+            throw error("가격이 음수가 될 수 없습니다.")
+        }
+
+        try{
+            price.toInt()
+        }catch (e: NumberFormatException) {
+            throw error("가격에 숫자가 아닌 문자열이 들어올 수 없습니다.")
+        }
+
+        return true
+    }
+}

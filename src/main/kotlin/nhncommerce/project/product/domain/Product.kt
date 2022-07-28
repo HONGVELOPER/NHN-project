@@ -10,6 +10,7 @@ class Product(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var productId:Long? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status:Status = Status.ACTIVE,
 

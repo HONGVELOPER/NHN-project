@@ -2,12 +2,7 @@ package nhncommerce.project.user.domain
 
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Table(name = "user")
 @Entity
@@ -15,12 +10,13 @@ class User (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
-    val id: Long? = null,
+    @Column(nullable = false)
+    val userId: Long? = null,
 
     @Column(nullable = false)
     var status: Status,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var gender: Gender,
 
