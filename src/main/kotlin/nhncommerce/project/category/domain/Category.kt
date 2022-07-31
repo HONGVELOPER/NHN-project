@@ -12,10 +12,22 @@ class Category (
 
     @Column(nullable = false)
     var name : String? = null,
+/** 애매 */
+//    @Column(nullable = false)
+//    var parentId : Long? = null,
 
-    @OneToMany(mappedBy = "category")
-    var subCategories : MutableList<SubCategory>? = ArrayList<SubCategory>(),
+    @OneToOne
+    @JoinColumn(name ="parent_id")
+    var parentCategory : Category? = null,
 
     @Column(nullable = false)
     var status : Status? = Status.ACTIVE
-): BaseEntity()
+): BaseEntity() {
+    fun toCategoryDTO() : CategoryDTO {
+        return CategoryDTO(
+            name = this.name,
+            parentCategory = parentCategory,
+            status = this.status
+        )
+    }
+}
