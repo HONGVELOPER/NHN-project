@@ -1,4 +1,5 @@
 package nhncommerce.project.product
 
-interface productRepository {
+interface ProductRepository {
+
 }
