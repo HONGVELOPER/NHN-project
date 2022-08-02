@@ -12,6 +12,24 @@ spring:
     properties:
       hibernate.enable_lazy_load_no_trans: true
       hibernate.format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1084691558469-sjbhsimqu8tlj3bjjtg3h2kjsaeo2mfc.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  servlet:
+    session:
+      timeout: 60
+
 
 logging:
   level:
