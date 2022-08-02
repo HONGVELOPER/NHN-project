@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Please Log In</title>
+</head>
+<body>
+<p>회원 가입~</p>
+<div class="container">
+
+    <form th:action="@{/users}" method="post" th:object="${userDTO}" >
+        <div>
+            <label for="name">이름</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
+        </div>
+        <!--    <div>-->
+        <!--      <label for="male">성별</label>-->
+        <!--      <input type="radio" id="male" th:field="" class="form-control" placeholder="성을 입력하세요.">-->
+        <!--      <input type="radio" id="female" th:field="여" class="form-control" placehㅇlder="성을 입력하세요.">-->
+        <!--    </div>-->
+        <div>
+            <label for="email">이메일</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요.">
+        </div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요.">
+        </div>
+        <div>
+            <label for="phone">번호</label>
+            <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
+        </div>
+        <div>
+            <label for="gender1">
+                <input type="radio" id="gender1" name="gender" value="MALE" th:checked="${gender eq 'MALE'}">
+                <span>남</span>
+            </label>
+            <label for="gender2">
+                <input type="radio" id="gender2" name="gender" value="FEMALE" th:checked="${gender eq 'FEMALE'}">
+                <span>여</span>
+            </label>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
+            </div>
+            <!--      <div class="col">-->
+            <!--        <button class="w-100 btn btn-secondary btn-lg"-->
+            <!--                onclick="location.href='items.html'"-->
+            <!--                th:onclick="|location.href='@{product}'|"-->
+            <!--                type="button">취소</button>-->
+            <!--      </div>-->
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>
