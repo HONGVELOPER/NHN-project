@@ -30,9 +30,9 @@ class Product(
     var thumbnail:String?,
 
     @Column(nullable = false)
-    var viewCount:Int,
+    var viewCount:Int=0,
 
     @Column(nullable = false)
-    var totalStar:Float,
+    var totalStar:Float=0F,
 
 ):BaseEntity()

@@ -8,6 +8,8 @@ import javax.validation.constraints.Size
 
 data class ProductDTO(
 
+    var productId : Long?=null,
+
     var status: Status = Status.ACTIVE,
 
     @field:NotBlank(message = "상품명을 입력해주세요.")

@@ -1,34 +1,83 @@
 package nhncommerce.project.product
 
+import com.querydsl.core.BooleanBuilder
+import nhncommerce.project.baseentity.Status
+import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
+import nhncommerce.project.product.domain.QProduct
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
+import java.util.function.Function
 
 @Service
 class ProductService(
-    val productRepository: ProductRepository
+    val productRepository: ProductRepository,
 ) {
+
+    fun dtoTOEntity(productDTO: ProductDTO) : Product{
+        val product = Product(status = Status.ACTIVE, productName = productDTO.productName, price = productDTO.price,
+                briefDescription = productDTO.briefDescription, detailDescription = productDTO.detailDescription,
+                thumbnail = productDTO.thumbnail, viewCount = productDTO.viewCount, totalStar = productDTO.totalStar)
+        return product
+    }
+
+    fun entityToDto(product: Product) : ProductDTO{
+        val productDTO = ProductDTO(product.productId,product.status, product.productName, product.price, product.briefDescription,
+                                    product.briefDescription, product.thumbnail, product.viewCount, product.totalStar)
+        return productDTO
+    }
+
+    fun createProduct(productDTO: ProductDTO){
+        val product = dtoTOEntity(productDTO)
+        productRepository.save(product)
+    }
 
     /**
      * 상품 전제 조회
      */
-    fun getProducts(): MutableList<Product> {
-        return productRepository.findAll()
+    fun getProductList(pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO,Product>{
+        pageRequestDTO.size=12
+        val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
+        var booleanBuilder = getSearch(pageRequestDTO)
+        val result = productRepository.findAll(booleanBuilder,pageable)
+
+        val fn: Function<Product, ProductDTO> =
+                Function<Product, ProductDTO> { entity: Product? -> entityToDto(entity!!) }
+
+        return PageResultDTO<ProductDTO,Product>(result,fn)
     }
 
+    fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
-    fun validate(productDTO: ProductDTO, response: HttpServletResponse,session : HttpSession) : Boolean{
-        runCatching {
-            productDTO.productValidate()
-        }.onFailure {
-            session.setAttribute("productName",productDTO.productName)
-            session.setAttribute("price",productDTO.price)
-            session.setAttribute("briefDescription",productDTO.briefDescription)
-            session.setAttribute("detailDescription",productDTO.detailDescription)
+        var type = pageRequestDTO.type
+
+        var booleanBuilder = BooleanBuilder()
+
+        var qProduct = QProduct.product
+
+        var keyword = pageRequestDTO.keyword
+
+        var expression = qProduct.productId.gt(0L)
+
+        booleanBuilder.and(expression)
+
+        if(type == null || type.trim().isEmpty()){
+            return booleanBuilder
         }
-        return true
+
+        var conditionBuilder = BooleanBuilder()
+
+        if(type.contains("productName")){
+            conditionBuilder.or(qProduct.productName.contains(keyword))
+        }
+        if(type.contains("price")){
+            conditionBuilder.or(qProduct.price.eq(keyword.toInt()))
+        }
+
+        booleanBuilder.and(conditionBuilder)
+        return booleanBuilder
     }
 
 }
