@@ -37,7 +37,7 @@ class Oauth2LoginUserService(
                     oauthId = providerId,
                     provider = provider,
                     gender = Gender.MALE,
-                    phone = 123,
+                    phone = "",
                     status = Status.ACTIVE
                 )
             )

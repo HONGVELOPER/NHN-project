@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
-
 @Table(name = "user")
 @Entity
 class User (
@@ -23,6 +22,8 @@ class User (
     @Enumerated(EnumType.STRING)
     var status: Status,
 
+
+    @Column()
     @Enumerated(EnumType.STRING)
     var gender: Gender,
 
@@ -35,8 +36,8 @@ class User (
     @Column() // oauth 로그인은 비밀번호가 없음 null 허용
     var password: String? = null,
 
-    @Column(length = 11)
-    var phone: Int,
+    @Column(nullable = false, length = 13)
+    var phone: String,
 
     @Column()
     @Enumerated(EnumType.STRING)
@@ -46,21 +47,18 @@ class User (
     var provider: String? = null, // 어디 social login 인지
 
     @Column()
-    var oauthId: String? = null, //
+    var oauthId: String? = null,
 
-    ): BaseEntity() {
+): BaseEntity() {
 
-//    init {
-//        this.status = Status.ACTIVE
-//    }
-
-    // status 부분도 업데이트 할 수 있게 -> DTO 도 수정해야해
-    fun update(userDTO: UserDTO) {
-//        status = userDTO.st
+    fun updateProfile(userDTO: UserDTO) {
         name = userDTO.name
         email = userDTO.email
-        password = userDTO.password
         phone = userDTO.phone
+    }
+
+    fun updatePassword(newPassword: String) {
+        password = newPassword
     }
 }
 

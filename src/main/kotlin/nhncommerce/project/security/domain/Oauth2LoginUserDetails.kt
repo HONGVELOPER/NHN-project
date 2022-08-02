@@ -9,6 +9,8 @@ class Oauth2LoginUserDetails (
     private val attributes: Map<String, Any>
 ) : OAuth2User {
 
+    fun getId(): Long = user.userId!!
+
     override fun getName(): String {
         return attributes["email"].toString()
     }

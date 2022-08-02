@@ -1,11 +1,10 @@
 package nhncommerce.project.user
 
-
 import nhncommerce.project.security.domain.FormLoginUserDetails
+import nhncommerce.project.security.domain.Oauth2LoginUserDetails
+import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.UserDTO
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -18,24 +17,35 @@ class UserController(
 ) {
 
     @GetMapping("/loginForm")
-    fun loginForm(): String? {
+    fun loginForm(): String {
         return "user/login"
     }
 
     @GetMapping("/joinForm")
-    fun joinForm(userDto: UserDTO): String? {
+    fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
-    @GetMapping("/updateForm")
-    fun updateForm(userDTO: UserDTO, model: Model,  @AuthenticationPrincipal formLoginUserDetails: FormLoginUserDetails): String? {
-        println(formLoginUserDetails)
-        val userId: Long? = formLoginUserDetails.getId():
+    @GetMapping("/updateProfileForm")
+    fun updateProfileForm(
+        model: Model,
+    ): String {
+        val userId: Long = getUserIdFromSession()
         val userDTO: UserDTO = userService.findUserById(userId)
-//        so
-        model.addAttribute(userDTO)
-        println("update  : $userDTO")
-        return "user/update"
+        model.addAttribute("userDTO", userDTO)
+        return "user/updateProfile"
+    }
+
+    @GetMapping("/updatePasswordForm")
+    fun updatePasswordForm(passwordDTO: PasswordDTO, ): String {
+        val userId: Long = getUserIdFromSession()
+        val userDTO: UserDTO = userService.findUserById(userId)
+        println("user dto : ${userDTO.toString()}")
+        return if (userDTO.provider == "") {
+            "user/updatePassword"
+        } else {
+            "index"
+        }
     }
 
     @PostMapping("/users")
@@ -47,30 +57,56 @@ class UserController(
     }
 
     @GetMapping("/users/me")
-    fun findUserById(@AuthenticationPrincipal formLoginUserDetails: FormLoginUserDetails) {
-        println("userId : ${formLoginUserDetails.getId()}")
-        val userId: Long = formLoginUserDetails.getId()
+    fun findUserById() {
+        val userId: Long = getUserIdFromSession()
         userService.findUserById(userId)
     }
 
-    @PutMapping("user")
-    fun updateUserById(@ModelAttribute userDTO: UserDTO, bindingResult: BindingResult, @AuthenticationPrincipal formLoginUserDetails: FormLoginUserDetails) {
-        val userId: Long = formLoginUserDetails.getId()
-        userService.updateUserById(userId, userDTO)
+    @PutMapping("/users/profile")
+    fun updateUserProfileById(
+        @ModelAttribute userDTO: UserDTO,
+        bindingResult: BindingResult,
+    ) {
+        val userId: Long = getUserIdFromSession()
+        userService.updateUserProfileById(userId, userDTO)
     }
 
-    @DeleteMapping("user")
-    fun deleteUserById(@AuthenticationPrincipal formLoginUserDetails: FormLoginUserDetails) {
-        userService.deleteUserById(formLoginUserDetails.getId())
+    @PutMapping("/users/password")
+    fun updateUserPasswordById(
+        @ModelAttribute passwordDTO: PasswordDTO,
+        bindingResult: BindingResult,
+    ) {
+        val userId: Long = getUserIdFromSession()
+        println("password dto : ${passwordDTO.toString()}")
+        userService.updateUserPasswordById(userId, passwordDTO)
+    }
+
+    @DeleteMapping("/users")
+    fun deleteUserById() {
+        val userId: Long = getUserIdFromSession()
+        userService.deleteUserById(userId)
     }
 
     // 권한 확인 위한 테스트 api
     @GetMapping("/api/check")
     fun test(): String {
         println("api test 진입")
-        val auth = SecurityContextHolder.getContext().authentication
-        println("result : $auth")
+        val userId: Long = getUserIdFromSession()
+        println("user id : $userId")
         return "test"
     }
 
+    fun getUserIdFromSession(): Long {
+        val userId: Long
+        val auth = SecurityContextHolder.getContext().authentication.principal
+        val loginStatus = auth.javaClass.toString().split(".")[4]
+        if (loginStatus == "FormLoginUserDetails") {
+            val formLoginUserDetails: FormLoginUserDetails = auth as FormLoginUserDetails
+            userId = formLoginUserDetails.getId()
+        } else {
+            val oAuth2LoginUserDetails: Oauth2LoginUserDetails = auth as Oauth2LoginUserDetails
+            userId = oAuth2LoginUserDetails.getId()
+        }
+        return userId
+    }
 }

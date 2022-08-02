@@ -1,5 +1,7 @@
 package nhncommerce.project.user
 
+
+import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.user.domain.UserDTO
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -7,6 +9,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
+
+    val userRepository: UserRepository,
+    val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
     val userRepository: UserRepository
 ) {
 
@@ -21,14 +26,31 @@ class UserService(
         return UserDTO.fromEntity(user)
     }
 
-    fun updateUserById(userId: Long, userDTO: UserDTO) : User {
+
+    fun updateUserProfileById(userId: Long, userDTO: UserDTO) : User {
+        println(userDTO.toString())
         val user: User = userRepository.findById(userId).get()
-        user.update(userDTO)
+        user.updateProfile(userDTO)
+        val updatedEntity = userRepository.save(user)
+        return updatedEntity
+    }
+
+    fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO): User {
+        val user: User = userRepository.findById(userId).get()
+        if (!passwordEncoder.matches(passwordDTO.password, user.password)) {
+            println("비밀번호 매칭이 안되서 끊겨야함. 유틸 가져와서 밀어낼게요")
+        } else if (passwordDTO.newPassword != passwordDTO.newPasswordVerify) {
+            println("바꾸려는 비밀번호 일치하지 않아요, 끊겨야함")
+        }
+        val newEncodedPassword = passwordEncoder.encode(passwordDTO.newPassword)
+        user.updatePassword(newEncodedPassword)
         val updatedEntity = userRepository.save(user)
         return updatedEntity
     }
 
     fun deleteUserById(userId: Long) {
+
+        val deleteUser: User = userRepository.findById(userId).get()
         userRepository.deleteById(userId)
     }
 

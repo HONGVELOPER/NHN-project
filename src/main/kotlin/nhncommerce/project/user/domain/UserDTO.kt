@@ -6,6 +6,15 @@ import nhncommerce.project.baseentity.Status
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 data class UserDTO (
+    var email: String = "",
+    var gender: String = "",
+    var name: String = "",
+    var password: String = "",
+    var phone: String = "",
+    var provider: String = "",
+) {
+    private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+
     var id: Long? = 0,
     var gender: String = "",
     var name: String = "",
@@ -14,6 +23,7 @@ data class UserDTO (
     var phone: Int = 0,
 ) {
     private val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+    
     fun toEntity(): User {
         val genderStatus: Gender
         if (gender == "MALE") {
@@ -22,13 +32,13 @@ data class UserDTO (
             genderStatus = Gender.FEMALE
         }
         return User(
-            status = Status.ACTIVE,
+            email = email,
             gender = genderStatus,
             name = name,
-            email = email,
-            password = bCryptPasswordEncoder.encode(password),
+            password = passwordEncoder.encode(password),
             phone = phone,
-            role = ROLE.ROLE_USER
+            role = ROLE.ROLE_USER,
+            status = Status.ACTIVE,
         )
     }
 
@@ -36,12 +46,12 @@ data class UserDTO (
         fun fromEntity(user: User): UserDTO {
             return user.run {
                 UserDTO(
-                    id = userId,
-                    gender = gender.toString(),
-                    name = name,
                     email = email,
-                    password = password?: "",
-                    phone = phone
+                    gender = gender.name,
+                    name = name,
+                    password = password?: "", // oauth 에서는 password가 없고 form login 에서는 provider 가 없음.
+                    phone = phone,
+                    provider = provider?: "",
                 )
             }
         }
