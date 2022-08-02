@@ -2,10 +2,13 @@ package nhncommerce.project.product
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.option.OptionRepository
+import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
+import nhncommerce.project.product.domain.ProductOptionDTO
 import nhncommerce.project.product.domain.QProduct
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -29,9 +32,36 @@ class ProductService(
         return productDTO
     }
 
-    fun createProduct(productDTO: ProductDTO){
+    fun separate(productOptionDTO: ProductOptionDTO) : MutableList<Any>{
+        val productDTO = ProductDTO(
+            null,
+            Status.ACTIVE,
+            productOptionDTO.productName,
+            productOptionDTO.price,
+            productOptionDTO.briefDescription,
+            productOptionDTO.detailDescription,
+            productOptionDTO.thumbnail,
+            productOptionDTO.viewCount,
+        )
+        val optionListDTO = OptionListDTO(
+            null,
+           productOptionDTO.option1,
+           productOptionDTO.option2,
+           productOptionDTO.option3,
+           productOptionDTO.option1List,
+           productOptionDTO.option2List,
+           productOptionDTO.option3List
+       )
+
+        val objectList = mutableListOf<Any>()
+        objectList.add(productDTO)
+        objectList.add(optionListDTO)
+        return objectList
+    }
+
+    fun createProduct(productDTO: ProductDTO) : Product{
         val product = dtoTOEntity(productDTO)
-        productRepository.save(product)
+        return productRepository.save(product)
     }
 
     /**

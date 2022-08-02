@@ -28,7 +28,7 @@ class OptionDetail (
     var name : String? = null,
 
     //product
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="product_id")
     var product : Product? = null,
 

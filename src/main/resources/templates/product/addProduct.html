@@ -8,7 +8,7 @@
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
                     <div class="col-md-6">
-                        <form th:action="@{/products}"  method="post" th:object="${productDTO}">
+                        <form th:action="@{/products}"  method="post" th:object="${productOptionDTO}">
 
                             <div th:if="${session.productName != null}">
                                 제품 이름
@@ -17,7 +17,7 @@
                             </div>
                             <div th:if="${session.productName == null}">
                                 제품 이름<br>
-                                <input type="text" class="form-control"  name="productName"><br>
+                                <input type="text" class="form-control" th:field="*{productName}"><br>
                             </div>
 
                             <div th:if="${session.price != null}">
@@ -27,7 +27,7 @@
                             </div>
                             <div th:if="${session.price == null}">
                                 제품 가격<br>
-                                <input type="text" class="form-control"  name="productName"><br>
+                                <input type="text" class="form-control"  th:field="*{price}"><br>
                             </div>
 
                             <div th:if="${session.briefDescription != null}">
@@ -37,7 +37,7 @@
                             </div>
                             <div th:if="${session.briefDescription == null}">
                                 제품 간략 설명<br>
-                                <input type="text" class="form-control"  name="productName"><br>
+                                <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
                             </div>
 
                             <div th:if="${session.detailDescription != null}">
@@ -47,12 +47,45 @@
                             </div>
                             <div th:if="${session.detailDescription == null}">
                                 제품 상세 설명<br>
-                                <input  type="text" class="form-control"  name="productName"><br>
+                                <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
                             </div>
-
-
+                            <!-- 옵션-->
+<!--                            <div>-->
+<!--                                <input type="text" placeholder="name" th:field="*{optionListDTO.productName}">-->
+<!--                                <input type="number" placeholder="price" th:field="*{optionListDTO.productPrice}">-->
+<!--                            </div>-->
+                            <div id="box1" class="1">
+                                <input type="hidden" value="1">
+                                <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
+                                <input type="button" value="추가" onclick="add_textbox(1)">
+                            </div>
+                            <div id="box2" class="2">
+                                <input type="hidden" value="2">
+                                <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
+                                <input type="button" value="추가" onclick="add_textbox(2)">
+                            </div>
+                            <div id="box3" class="3">
+                                <input type="hidden" value="3">
+                                <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
+                                <input type="button" value="추가" onclick="add_textbox(3)">
+                            </div>
                             <button class="btn btn-outline-dark mt-auto" type="submit">상품 등록</button>
                         </form>
+
+                        <script th:inline="javascript">
+                            const add_textbox = (num) => {
+                                const box = document.getElementById("box"+num);
+                                const newP = document.createElement('p');
+                                newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
+                                    "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
+                                newP.firstElementChild.name = "option" + num + "List";
+                                box.appendChild(newP);
+                            }
+                            const remove = (obj) => {
+                                num = obj.parentNode.parentNode.firstElementChild.value
+                                document.getElementById('box'+num).removeChild(obj.parentNode);
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
