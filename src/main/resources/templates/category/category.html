@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/categoryLayout :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+        <h1 class="mt-4">Category List</h1>
+        <table class="table table-striped">
+            <th>번호</th>
+            <th>카테고리</th>
+            <th>상위 카테고리</th>
+            <th>상태</th>
+            <tr th:each="category : ${categoryList}">
+                <td th:text="${category.categoryId}"></td>
+                <td th:text="${category.name}"></td>
+                <td th:text="${category.parentCategory?.name}"></td>
+                <td th:text="${category.status}"></td>
+            </tr>
+        </table>
+    </th:block>
+</th:block>
+</html>
