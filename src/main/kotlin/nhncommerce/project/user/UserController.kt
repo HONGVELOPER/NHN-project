@@ -44,7 +44,7 @@ class UserController(
         return if (userDTO.provider == "") {
             "user/updatePassword"
         } else {
-            "index"
+            "user/index"
         }
     }
 
@@ -53,7 +53,7 @@ class UserController(
         println("유저 회원가입 진입")
         println(userDTO.toString())
         userService.createUserByForm(userDTO)
-        return "index"
+        return "user/index"
     }
 
     @GetMapping("/users/me")

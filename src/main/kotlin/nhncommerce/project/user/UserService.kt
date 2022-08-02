@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
 
-    val userRepository: UserRepository,
-    val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+    val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder(),
     val userRepository: UserRepository
 ) {
 

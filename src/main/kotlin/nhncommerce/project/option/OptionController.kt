@@ -1,11 +1,7 @@
 package nhncommerce.project.option
 
-import lombok.Getter
-import nhncommerce.project.option.domain.Option
-import nhncommerce.project.option.domain.OptionDTO
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.option.domain.OptionStockDTO
-import nhncommerce.project.product.ProductService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*

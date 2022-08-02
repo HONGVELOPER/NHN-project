@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
 	id("org.springframework.boot") version "2.7.2"
@@ -12,6 +13,9 @@ plugins {
 	id ("org.jetbrains.kotlin.plugin.allopen") version "1.6.21" //allOpen, open 키워드 적용
 	id ("org.jetbrains.kotlin.plugin.noarg") version "1.6.21" // Entity에 no-arg 생성자 생성
 	//----------
+
+	//Query dsl
+	kotlin("kapt") version "1.7.10"
 }
 
 group = "nhn-commerce"
@@ -44,6 +48,22 @@ dependencies {
 	runtimeOnly("mysql:mysql-connector-java")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2")
+
+	// Spring Boot Test
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "junit", module = "junit")
+		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+	}
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	// MockK
+	testImplementation("io.mockk:mockk:1.12.1")
+	testImplementation("org.junit.jupiter:junit-jupiter")
+
+	//Query dsl
+	val querydslVersion = "5.0.0" //querydsl
+	implementation("com.querydsl:querydsl-jpa:$querydslVersion")
+	kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
 }
 
 // 추가적으로 열어줄 allOpen
@@ -67,4 +87,9 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+//Query dsl
+sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+	kotlin.srcDir("$buildDir/generated/source/kapt/main")
 }
