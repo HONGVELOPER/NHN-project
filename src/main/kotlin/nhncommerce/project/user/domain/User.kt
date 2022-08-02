@@ -1,7 +1,12 @@
 package nhncommerce.project.user.domain
 
 import nhncommerce.project.baseentity.BaseEntity
+import nhncommerce.project.baseentity.Gender
+import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Table(name = "user")
@@ -14,28 +19,46 @@ class User (
     val userId: Long? = null,
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     var status: Status,
 
+    @Column()
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+
     var gender: Gender,
 
     @Column(nullable = false)
+    var name: String,
+
+    @Column(nullable = false, unique = true)
     var email: String,
 
-    @Column(nullable = false)
-    var password: String,
+    @Column() // oauth 로그인은 비밀번호가 없음 null 허용
+    var password: String? = null,
 
-    @Column(nullable = false, length = 11)
-    var phone: Int,
+    @Column(nullable = false, length = 13)
+    var phone: String,
 
-//    생성일, 수정일  base entity 가져와서 하기 위해 명세 안함. //
+    @Column()
+    @Enumerated(EnumType.STRING)
+    var role: ROLE = ROLE.ROLE_USER,
+
+    @Column()
+    var provider: String? = null, // 어디 social login 인지
+
+    @Column()
+    var oauthId: String? = null,
+
 ): BaseEntity() {
-    init {
-        this.status = Status.ACTIVE
+
+    fun updateProfile(userDTO: UserDTO) {
+        name = userDTO.name
+        email = userDTO.email
+        phone = userDTO.phone
+    }
+
+    fun updatePassword(newPassword: String) {
+        password = newPassword
     }
 }
 
-enum class Gender {
-    MALE, FEMALE
-}
