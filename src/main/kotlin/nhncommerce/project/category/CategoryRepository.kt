@@ -1,4 +1,8 @@
 package nhncommerce.project.category
 
-class CategoryRepository {
+import nhncommerce.project.category.domain.Category
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface CategoryRepository: JpaRepository<Category, Long> {
+
 }

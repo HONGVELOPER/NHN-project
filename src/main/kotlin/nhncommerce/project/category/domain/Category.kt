@@ -13,9 +13,19 @@ class Category (
     @Column(nullable = false)
     var name : String? = null,
 
-    @OneToMany(mappedBy = "category")
-    var subCategories : MutableList<SubCategory>? = ArrayList<SubCategory>(),
+    @OneToOne
+    @JoinColumn(name ="parent_id")
+    var parentCategory : Category? = null,
 
     @Column(nullable = false)
     var status : Status? = Status.ACTIVE
-): BaseEntity()
+): BaseEntity() {
+    fun toCategoryDTO() : CategoryDTO {
+        return CategoryDTO(
+            categoryId = categoryId,
+            name = name,
+            parentCategory = parentCategory,
+            status = status
+        )
+    }
+}
