@@ -1,10 +1,8 @@
 package nhncommerce.project.order.domain
 
 import nhncommerce.project.baseentity.BaseEntity
-import nhncommerce.project.coupon.domin.Coupon
-import nhncommerce.project.deliver.domain.Deliver
-import nhncommerce.project.product.domin.Product
-import java.time.LocalDateTime
+import nhncommerce.project.coupon.domain.Coupon
+import nhncommerce.project.product.domain.Product
 import javax.persistence.*
 
 @Table(name="orders")

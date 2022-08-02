@@ -15,6 +15,15 @@ data class UserDTO (
 ) {
     private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
+    var id: Long? = 0,
+    var gender: String = "",
+    var name: String = "",
+    var email: String = "",
+    var password: String = "",
+    var phone: Int = 0,
+) {
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+    
     fun toEntity(): User {
         val genderStatus: Gender
         if (gender == "MALE") {

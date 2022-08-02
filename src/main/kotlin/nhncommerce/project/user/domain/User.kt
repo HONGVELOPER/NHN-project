@@ -22,6 +22,7 @@ class User (
     @Enumerated(EnumType.STRING)
     var status: Status,
 
+
     @Column()
     @Enumerated(EnumType.STRING)
     var gender: Gender,
@@ -60,3 +61,4 @@ class User (
         password = newPassword
     }
 }
+

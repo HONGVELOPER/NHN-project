@@ -1,5 +1,6 @@
 package nhncommerce.project.user
 
+
 import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.user.domain.UserDTO
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
+
     val userRepository: UserRepository,
     val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
+    val userRepository: UserRepository
 ) {
 
     fun createUserByForm(userDTO: UserDTO) : User {
@@ -22,6 +25,7 @@ class UserService(
         val user: User = userRepository.findById(userId).get()
         return UserDTO.fromEntity(user)
     }
+
 
     fun updateUserProfileById(userId: Long, userDTO: UserDTO) : User {
         println(userDTO.toString())
@@ -45,6 +49,7 @@ class UserService(
     }
 
     fun deleteUserById(userId: Long) {
+
         val deleteUser: User = userRepository.findById(userId).get()
         userRepository.deleteById(userId)
     }

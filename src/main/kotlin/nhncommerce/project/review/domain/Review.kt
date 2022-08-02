@@ -3,7 +3,6 @@ package nhncommerce.project.review.domain
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.order.domain.Order
 import nhncommerce.project.user.domain.User
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Table(name="review")
