@@ -12,9 +12,6 @@ class Category (
 
     @Column(nullable = false)
     var name : String? = null,
-/** 애매 */
-//    @Column(nullable = false)
-//    var parentId : Long? = null,
 
     @OneToOne
     @JoinColumn(name ="parent_id")
@@ -25,9 +22,10 @@ class Category (
 ): BaseEntity() {
     fun toCategoryDTO() : CategoryDTO {
         return CategoryDTO(
-            name = this.name,
+            categoryId = categoryId,
+            name = name,
             parentCategory = parentCategory,
-            status = this.status
+            status = status
         )
     }
 }

@@ -6,7 +6,6 @@ data class CategoryDTO (
     var categoryId : Long? = null,
     var name : String? = null,
     var status : Status? = Status.ACTIVE,
-//    var parentId : Long? = null
     var parentCategory : Category? = null
     ) {
     fun toEntity() : Category {
