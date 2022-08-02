@@ -16,7 +16,7 @@ class Coupon(
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    val userID : User,
+    val userId : User,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

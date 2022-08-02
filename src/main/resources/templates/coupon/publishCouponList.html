@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+        <h1 class="mt-4">발행 쿠폰 목록</h1>
+
+        <form th:action="@{/coupons}" method="get" id="searchForm">
+            <div class="input-group">
+                <input type="hidden" name="page" value="1">
+                <select class="custom-select" name="type">
+                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
+                    <option value="couponName" th:selected="${pageRequestDTO.type=='couponName'}">쿠폰 이름</option>
+                    <option value="discountRate" th:selected="${pageRequestDTO.type=='discountRate'}">할인율</option>
+                    <option value="email" th:selected="${pageRequestDTO.type=='email'}">유저 이메일</option>
+                    <option value="status" th:selected="${pageRequestDTO.type=='status'}">쿠폰 상태</option>
+                </select>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="submit">search</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">쿠폰 이름</th>
+                <th scope="col">할인율</th>
+                <th scope="col">유저 이메일</th>
+                <th scope="col">쿠폰 상태</th>
+                <th scope="col">유효 기간</th>
+                <th scope="col">발행 날짜</th>
+                <th scope="col">수정 날짜</th>
+                <th scope="col">수정/삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="coupon : ${coupons.dtoList}">
+                <td>[[${coupon.couponName}]]</td>
+                <td>[[${coupon.discountRate}]]</td>
+                <td>[[${coupon.userId}]]</td>
+                <td>[[${coupon.status}]]</td>
+                <td>[[${#temporals.format(coupon.expired,'yyyy/MM/dd')}]]</td>
+                <td>[[${#temporals.format(coupon.createdAt,'yyyy/MM/dd')}]]</td>
+                <td>[[${#temporals.format(coupon.updatedAt,'yyyy/MM/dd')}]]</td>
+                <td>
+<!--                    href 로 링크 하면 delete 안먹음-->
+                    <form th:method="get" th:action="'/couponUpdatePage/'+${coupon.couponId}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
+                    </form>
+                    <form th:method="delete" th:action="'/admin/coupons/'+${coupon.couponId}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination  justify-content-center align-items-center">
+            <li class="page-item" th:if="${coupons.prev}">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${coupons.page == page? 'active':''}"th:each="page : ${coupons.pageList}">
+                <a class="page-link" th:href="@{/coupons(page=${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${coupons.next}">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </th:block>
+
+</th:block>

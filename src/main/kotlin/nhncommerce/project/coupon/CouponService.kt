@@ -1,11 +1,23 @@
 package nhncommerce.project.coupon
 
+
+import com.querydsl.core.BooleanBuilder
+import nhncommerce.project.baseentity.Status
+import nhncommerce.project.coupon.domain.Coupon
 import nhncommerce.project.coupon.domain.CouponDTO
+import nhncommerce.project.coupon.domain.CouponListDTO
+import nhncommerce.project.coupon.domain.QCoupon
+import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.page.PageResultDTO
+import nhncommerce.project.product.domain.QProduct
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.util.*
+import java.util.function.Function
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
@@ -16,9 +28,21 @@ class CouponService(
     val couponRepository: CouponRepository
 ) {
 
+    fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
+        val coupon = Coupon(couponName = couponDTO.couponName, discountRate = couponDTO.discountRate,
+            expired =expired, userId = user)
+        return coupon
+    }
+
+    fun entityToDto(coupon : Coupon): CouponListDTO{
+        val couponListDTO = CouponListDTO(coupon.couponId,coupon.userId.email, coupon.status, coupon.couponName, coupon.discountRate,
+                                        coupon.expired, coupon.createdAt, coupon.updatedAt)
+        return couponListDTO
+    }
+
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
         var user = session.getAttribute("user")
-        val coupon = couponDTO.toEntity(couponDTO, user as User,expired)
+        val coupon = dtoToEntity(couponDTO, user as User,expired)
         couponRepository.save(coupon)
     }
 
@@ -33,4 +57,74 @@ class CouponService(
     private fun notFoundUser(response: HttpServletResponse) {
         alertService.alertMessage("존재하지 않는 회원 입니다. 다시 입력해주세요.","/publishCouponPage",response)
     }
+
+    fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
+        val pageable = requestDTO.getPageable(Sort.by("couponId").descending())
+        var booleanBuilder = getSearch(requestDTO)
+        val result = couponRepository.findAll(booleanBuilder, pageable)
+
+        val fn: Function<Coupon, CouponListDTO> =
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
+
+        return PageResultDTO<CouponListDTO,Coupon>(result,fn)
+    }
+
+    fun removeCoupon(couponId : Long){
+        couponRepository.deleteById(couponId)
+    }
+
+    fun getCoupon(couponId: Long): Optional<Coupon> {
+        return couponRepository.findById(couponId)
+    }
+
+    fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
+        var coupon = couponRepository.findById(couponDTO.couponId!!.toLong())
+        coupon.get().couponName = couponDTO.couponName
+        coupon.get().discountRate = couponDTO.discountRate
+        coupon.get().status = couponDTO.status
+        coupon.get().expired = expired
+        couponRepository.save(coupon.get())
+    }
+
+    fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
+
+        var type = pageRequestDTO.type
+
+        var booleanBuilder = BooleanBuilder()
+
+        var qCoupon = QCoupon.coupon
+
+        var keyword = pageRequestDTO.keyword
+
+        var expression = qCoupon.couponId.gt(0L)
+
+        booleanBuilder.and(expression)
+
+        if(type == null || type.trim().isEmpty()){
+            return booleanBuilder
+        }
+
+        var conditionBuilder = BooleanBuilder()
+
+        if(type.contains("couponName")){
+            conditionBuilder.or(qCoupon.couponName.contains(keyword))
+        }
+        if(type.contains("discountRate")){
+            conditionBuilder.or(qCoupon.discountRate.eq(keyword.toInt()))
+        }
+        if(type.contains("email")){
+            conditionBuilder.or(qCoupon.userId.email.contains(keyword))
+        }
+        if(type == "status" && keyword == Status.ACTIVE.toString()){
+            conditionBuilder.or(qCoupon.status.eq(Status.ACTIVE))
+        }
+        if(type == "status" && keyword == Status.IN_ACTIVE.toString()){
+            conditionBuilder.or(qCoupon.status.eq(Status.IN_ACTIVE))
+        }
+
+
+        booleanBuilder.and(conditionBuilder)
+        return booleanBuilder
+    }
+
 }
