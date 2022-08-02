@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+                        <form th:action="@{/products}"  method="post" th:object="${productDTO}">
+
+                            <div th:if="${session.productName != null}">
+                                제품 이름
+                                <input type="text" class="form-control"  th:field="*{productName}" /><br>
+                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.productName == null}">
+                                제품 이름<br>
+                                <input type="text" class="form-control"  name="productName"><br>
+                            </div>
+
+                            <div th:if="${session.price != null}">
+                                제품 가격
+                                <input type="text" class="form-control"  th:field="*{price}" /><br>
+                                <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.price == null}">
+                                제품 가격<br>
+                                <input type="text" class="form-control"  name="productName"><br>
+                            </div>
+
+                            <div th:if="${session.briefDescription != null}">
+                                제품 간략 설명
+                                <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
+                                <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.briefDescription == null}">
+                                제품 간략 설명<br>
+                                <input type="text" class="form-control"  name="productName"><br>
+                            </div>
+
+                            <div th:if="${session.detailDescription != null}">
+                                제품 상세 설명
+                                <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
+                                <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.detailDescription == null}">
+                                제품 상세 설명<br>
+                                <input  type="text" class="form-control"  name="productName"><br>
+                            </div>
+
+
+                            <button class="btn btn-outline-dark mt-auto" type="submit">상품 등록</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+</th:block>
+</html>
+

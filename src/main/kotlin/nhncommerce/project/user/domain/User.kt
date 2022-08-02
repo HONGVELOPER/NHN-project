@@ -22,9 +22,9 @@ class User (
     @Enumerated(EnumType.STRING)
     var status: Status,
 
-
     @Column()
     @Enumerated(EnumType.STRING)
+
     var gender: Gender,
 
     @Column(nullable = false)

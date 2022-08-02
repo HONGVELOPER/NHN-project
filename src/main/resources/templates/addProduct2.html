@@ -49,20 +49,40 @@
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
                     <div class="col-md-6">
-                        <div class="small mb-1">SKU: BST-498</div>
-                        <h1 class="display-5 fw-bolder">Shop item template</h1>
-                        <div class="fs-5 mb-5">
-                            <span class="text-decoration-line-through">$45.00</span>
-                            <span>$40.00</span>
-                        </div>
-                        <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
-                        <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                <i class="bi-cart-fill me-1"></i>
-                                Add to cart
-                            </button>
-                        </div>
+                        <form th:action="@{/api/product/post}"  method="post">
+                            <div>
+                                <div th:if="${session.productName != null}">
+                                    제품 이름<input type="text" class="form-control"  name="productName" th:value="${session.productName}"><br>
+                                    <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}">sss</p>
+                                </div>
+                                <div th:if="${session.productName == null}">
+                                    제품 이름<input type="text" class="form-control"  name="productName"><br>
+                                </div>
+
+                                <div th:if="${session.price != null}">
+                                    제품 가격<input type="text" class="form-control" name="price" th:value="${session.price}"><br>
+                                </div>
+                                <div th:if="${session.price == null}">
+                                    제품 가격<input type="text" class="form-control" name="price"><br>
+                                </div>
+
+                                <div th:if="${session.briefDescription != null}">
+                                    제품 간략 설명<input type="text" class="form-control" name="briefDescription" th:value="${session.briefDescription}"><br>
+                                </div>
+                                <div th:if="${session.briefDescription == null}">
+                                    제품 간략 설명<input type="text" class="form-control" name="briefDescription"><br>
+                                </div>
+
+                                <div th:if="${session.detailDescription != null}">
+                                    제품 상세 설명<textarea class="form-control" name="detailDescription" th:text="${session.detailDescription}"></textarea><br>
+                                </div>
+                                <div th:if="${session.detailDescription == null}">
+                                    제품 상세 설명<textarea class="form-control" name="detailDescription"></textarea><br>
+                                </div>
+
+                                <button class="btn-toolbar" type="submit">상품 등록</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

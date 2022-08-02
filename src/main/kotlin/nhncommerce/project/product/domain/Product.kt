@@ -10,6 +10,7 @@ class Product(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var productId:Long? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status:Status = Status.ACTIVE,
 
@@ -29,9 +30,9 @@ class Product(
     var thumbnail:String?,
 
     @Column(nullable = false)
-    var viewCount:Int,
+    var viewCount:Int=0,
 
     @Column(nullable = false)
-    var totalStar:Float,
+    var totalStar:Float=0F,
 
 ):BaseEntity()
