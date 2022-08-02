@@ -1,7 +1,10 @@
 package nhncommerce.project.product
 
+import nhncommerce.project.option.OptionService
+import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.product.domain.ProductDTO
+import nhncommerce.project.product.domain.ProductOptionDTO
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -13,11 +16,17 @@ import javax.validation.Valid
 
 @Controller
 class ProductController(
-    val productService : ProductService
+    val productService : ProductService,
+    val optionService: OptionService
 ) {
 
     @GetMapping("/addProductPage")
-    fun addProductPage(productDTO: ProductDTO):String{
+    fun addProductPage(model : Model):String{
+//        var optionListDTO = OptionListDTO()
+//        var productDTO = ProductDTO()
+        val productOptionDTO = ProductOptionDTO()
+
+        model.addAttribute("productOptionDTO", productOptionDTO)
         return "product/addProduct"
     }
 
@@ -35,16 +44,24 @@ class ProductController(
      */
     //todo 세션 말고 쿠키로 할것 나중에 수정하기
     @PostMapping("/products")
-    fun createProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult ,response: HttpServletResponse, session : HttpSession):String{
-        productService.createProduct(productDTO)
-        if(bindingResult.hasErrors()){
-            session.setAttribute("productName",productDTO.productName)
-            session.setAttribute("price",productDTO.price)
-            session.setAttribute("briefDescription",productDTO.briefDescription)
-            session.setAttribute("detailDescription",productDTO.detailDescription)
-            return "product/addProduct"
-        }
-        println(productDTO.toString())
+    fun createProduct(productOptionDTO: ProductOptionDTO ,response: HttpServletResponse, session : HttpSession):String{
+        val separate = productService.separate(productOptionDTO)
+
+        val createProduct = productService.createProduct(separate.get(0) as ProductDTO)
+        val optionListDTO = separate.get(1) as OptionListDTO
+        optionListDTO.product = createProduct
+        optionService.createOptionDetail(optionListDTO)
+//        productService.createProduct()
+//        optionService.createOptionDetail()
+
+//        if(bindingResult.hasErrors()){
+//            session.setAttribute("productName",productDTO.productName)
+//            session.setAttribute("price",productDTO.price)
+//            session.setAttribute("briefDescription",productDTO.briefDescription)
+//            session.setAttribute("detailDescription",productDTO.detailDescription)
+//            return "product/addProduct"
+//        }
+//        println(productDTO.toString())
         return "redirect:/products"
     }
 
