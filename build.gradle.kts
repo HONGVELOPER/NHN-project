@@ -7,6 +7,11 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+
+	//---------
+	id ("org.jetbrains.kotlin.plugin.allopen") version "1.6.21" //allOpen, open 키워드 적용
+	id ("org.jetbrains.kotlin.plugin.noarg") version "1.6.21" // Entity에 no-arg 생성자 생성
+	//----------
 }
 
 group = "nhn-commerce"
@@ -40,6 +45,18 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2")
 }
+
+// 추가적으로 열어줄 allOpen
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+	annotation("javax.persistence.Embeddable")
+}
+
+noArg {
+	annotation("javax.persistence.Entity") // 2
+}
+//----------------
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {

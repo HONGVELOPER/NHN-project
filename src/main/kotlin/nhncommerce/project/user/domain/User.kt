@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
+
 @Table(name = "user")
 @Entity
 class User (
@@ -62,3 +63,4 @@ class User (
         phone = userDTO.phone
     }
 }
+

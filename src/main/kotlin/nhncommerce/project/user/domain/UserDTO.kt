@@ -37,7 +37,7 @@ data class UserDTO (
             return user.run {
                 UserDTO(
                     id = userId,
-                    gender = gender.toString().split("_")[1],
+                    gender = gender.toString(),
                     name = name,
                     email = email,
                     password = password?: "",
@@ -46,5 +46,4 @@ data class UserDTO (
             }
         }
     }
-
 }

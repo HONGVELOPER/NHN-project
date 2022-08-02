@@ -1,5 +1,6 @@
 package nhncommerce.project.user
 
+
 import nhncommerce.project.security.domain.FormLoginUserDetails
 import nhncommerce.project.user.domain.UserDTO
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -71,4 +72,5 @@ class UserController(
         println("result : $auth")
         return "test"
     }
+
 }
