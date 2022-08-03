@@ -17,8 +17,6 @@
             <link href="css/styles.css" rel="stylesheet" />
         </head>
 
-
-
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
 
@@ -80,7 +78,8 @@
 
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#" >상품 수정</a>
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" th:onclick="|location.href='@{/updateProductPage/{productId}(productId=${product.productId})}'|" >상품 수정</a>
                                     <a class="btn btn-outline-dark mt-auto" href="#">옵션 수정</a>
                                     <a class="btn btn-outline-dark mt-auto" href="#">재고 관리</a>
                                 </div>

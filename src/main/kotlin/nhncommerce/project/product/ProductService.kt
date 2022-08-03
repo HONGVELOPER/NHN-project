@@ -2,7 +2,6 @@ package nhncommerce.project.product
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
-import nhncommerce.project.option.OptionRepository
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -89,7 +88,7 @@ class ProductService(
 
         var keyword = pageRequestDTO.keyword
 
-        var expression = qProduct.productId.gt(0L)
+        var expression = qProduct.productId.gt(0L).and(qProduct.status.eq(Status.ACTIVE))
 
         booleanBuilder.and(expression)
 
@@ -110,4 +109,24 @@ class ProductService(
         return booleanBuilder
     }
 
+    fun getProduct(productId : String) : ProductDTO{
+        val product = productRepository.findById(productId.toLong()).get()
+        return entityToDto(product)
+    }
+
+    fun updateProduct(productDTO: ProductDTO){
+        var product = productRepository.findById(productDTO.productId!!.toLong())
+        product.get().productName = productDTO.productName
+        product.get().price = productDTO.price
+        product.get().status = productDTO.status
+        product.get().briefDescription = productDTO.briefDescription
+        product.get().detailDescription = productDTO.detailDescription
+        productRepository.save(product.get())
+    }
+
+    fun deleteProduct(productId : String){
+        var product = productRepository.findById(productId.toLong())
+        product.get().status=Status.IN_ACTIVE
+        productRepository.save(product.get())
+    }
 }
