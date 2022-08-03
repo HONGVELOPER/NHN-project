@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/optionLayout :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!--- -->
+        <head>
+
+        </head>
+        <body>
+        <h1 class="mt-4">Create Option</h1>
+        <form th:action="@{/options}" th:method="post" th:object="${optionList}">
+            <div>
+                <input type="text" placeholder="name" th:field="*{productName}">
+                <input type="number" placeholder="price" th:field="*{productPrice}">
+            </div>
+            <div id="box1" class="1">
+                <input type="hidden" value="1">
+                <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
+                <input type="button" value="추가" onclick="add_textbox(1)">
+            </div>
+            <div id="box2" class="2">
+                <input type="hidden" value="2">
+                <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
+                <input type="button" value="추가" onclick="add_textbox(2)">
+            </div>
+            <div id="box3" class="3">
+                <input type="hidden" value="3">
+                <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
+                <input type="button" value="추가" onclick="add_textbox(3)">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <script th:inline="javascript">
+            const add_textbox = (num) => {
+                const box = document.getElementById("box"+num);
+                const newP = document.createElement('p');
+                newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
+                    "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
+                newP.firstElementChild.name = "option" + num + "List";
+                box.appendChild(newP);
+            }
+            const remove = (obj) => {
+                num = obj.parentNode.parentNode.firstElementChild.value
+                document.getElementById('box'+num).removeChild(obj.parentNode);
+            }
+        </script>
+        </body>
+    </th:block>
+</th:block>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+                        <form th:action="'/admin/products/'+${productId}"  th:method="put" th:object="${productDTO}" >
+                            <div th:if="${session.productName != null}">
+                                제품 이름
+                                <input type="text" class="form-control"  th:field="*{productName}" /><br>
+                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.productName == null}">
+                                제품 이름<br>
+                                <input type="text" class="form-control" th:field="*{productName}"><br>
+                            </div>
+
+                            <div th:if="${session.price != null}">
+                                제품 가격
+                                <input type="number" class="form-control"  th:field="*{price}" /><br>
+                                <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.price == null}">
+                                제품 가격<br>
+                                <input type="number" class="form-control"  th:field="*{price}"><br>
+                            </div>
+
+                            제품 상태
+                            <div th:if="${#strings.equals(productDTO.status,'ACTIVE')}"}>
+                                <select class="form-control" name="status">
+                                    <option value="ACTIVE" selected>ACTIVE</option>
+                                    <option value="IN_ACTIVE">IN_ACTIVE</option>
+                                </select>
+                            </div>
+                            <div th:if="${#strings.equals(productDTO.status,'IN_ACTIVE')}"}>
+                                <select class="form-control" name="status">
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="IN_ACTIVE" selected>IN_ACTIVE</option>
+                                </select>
+                            </div> <br>
+
+                            <div th:if="${session.briefDescription != null}">
+                                제품 간략 설명
+                                <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
+                                <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.briefDescription == null}">
+                                제품 간략 설명<br>
+                                <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
+                            </div>
+
+                            <div th:if="${session.detailDescription != null}">
+                                제품 상세 설명
+                                <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
+                                <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
+                            </div>
+                            <div th:if="${session.detailDescription == null}">
+                                제품 상세 설명<br>
+                                <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
+                            </div>
+                            <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>
+                        </form>
+                        <form th:action="'/admin/products/'+${productId}" th:method="delete">
+                            <input type="hidden" value="asd">
+                            <button class="btn btn-outline-danger mt-auto" type="submit">상품 삭제</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+</th:block>
+</html>
+

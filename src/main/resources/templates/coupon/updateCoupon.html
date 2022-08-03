@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+        <th:block th:fragment="content">
+
+            <main>
+                <section class="py-5">
+                    <div class="container px-4 px-lg-5 my-5">
+                        <div class="row gx-4 gx-lg-5 align-items-center">
+                            <div class="col-md-6">
+
+                                <form th:method="put" th:action="'/admin/coupons/'+${couponId}" th:object="${couponDTO}">
+
+                                    <p th:text="${error}"></p>
+                                    쿠폰 이름
+                                    <input type="text" class="form-control"  th:field="*{couponName}" /><br>
+                                    <p th:if="${#fields.hasErrors('couponName')}" th:errors="*{couponName}" class="jb-red"></p>
+
+                                    쿠폰 상태
+                                    <select class="form-control"  th:field="*{status}">
+                                        <option value="ACTIVE">ACTIVE</option>
+                                        <option value="IN_ACTIVE">IN_ACTIVE</option>
+                                    </select> <br>
+
+                                    할인율
+                                    <input type="number" class="form-control"  th:field="*{discountRate}" /><br>
+                                    <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
+
+                                    만료 기간
+                                    <br>
+                                    <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
+                                        <input th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date"><br>
+                                    </div>
+
+                                    <script>
+                                        document.getElementById('now_date').valueAsDate=new Date();
+                                    </script>
+
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 수정</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </th:block>
+    </th:block>
+</html>
