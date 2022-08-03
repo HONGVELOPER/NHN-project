@@ -6,86 +6,103 @@
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+<!--                    <form action="fileupload" method="post"enctype="multipart/form-data">-->
+<!--                        <input type="file" name="file" multiple /><br />-->
+<!--                    </form>-->
+
+                <form th:action="@{/products}"  method="post" enctype="multipart/form-data" th:object="${productOptionDTO}">
                     <div class="col-md-6">
-                        <form th:action="@{/products}"  method="post" th:object="${productOptionDTO}">
-
-                            <div th:if="${session.productName != null}">
-                                제품 이름
-                                <input type="text" class="form-control"  th:field="*{productName}" /><br>
-                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.productName == null}">
-                                제품 이름<br>
-                                <input type="text" class="form-control" th:field="*{productName}"><br>
-                            </div>
-
-                            <div th:if="${session.price != null}">
-                                제품 가격
-                                <input type="number" class="form-control"  th:field="*{price}" /><br>
-                                <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.price == null}">
-                                제품 가격<br>
-                                <input type="number" class="form-control"  th:field="*{price}"><br>
-                            </div>
-
-                            <div th:if="${session.briefDescription != null}">
-                                제품 간략 설명
-                                <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
-                                <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.briefDescription == null}">
-                                제품 간략 설명<br>
-                                <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
-                            </div>
-
-                            <div th:if="${session.detailDescription != null}">
-                                제품 상세 설명
-                                <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
-                                <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.detailDescription == null}">
-                                제품 상세 설명<br>
-                                <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
-                            </div>
-                            <div id="box1" class="1">
-                                <input type="hidden" value="1">
-                                <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
-                                <input type="button" value="추가" onclick="add_textbox(1)">
-                            </div>
-                            <div id="box2" class="2">
-                                <input type="hidden" value="2">
-                                <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
-                                <input type="button" value="추가" onclick="add_textbox(2)">
-                            </div>
-                            <div id="box3" class="3">
-                                <input type="hidden" value="3">
-                                <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
-                                <input type="button" value="추가" onclick="add_textbox(3)">
-                            </div>
-                            <button class="btn btn-outline-dark mt-auto" type="submit">상품 등록</button>
-                        </form>
-
-                        <script th:inline="javascript">
-                            const add_textbox = (num) => {
-                                const box = document.getElementById("box"+num);
-                                const newP = document.createElement('p');
-                                newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
-                                    "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
-                                newP.firstElementChild.name = "option" + num + "List";
-                                box.appendChild(newP);
-                            }
-                            const remove = (obj) => {
-                                num = obj.parentNode.parentNode.firstElementChild.value
-                                document.getElementById('box'+num).removeChild(obj.parentNode);
-                            }
-                        </script>
+                        <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()" required><br>
+                        <img src="" height="200" alt="Image preview">
                     </div>
+                        <div th:if="${session.productName != null}">
+                            제품 이름
+                            <input type="text" class="form-control"  th:field="*{productName}" /><br>
+                            <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
+                        </div>
+                        <div th:if="${session.productName == null}">
+                            제품 이름<br>
+                            <input type="text" class="form-control" th:field="*{productName}"><br>
+                        </div>
+
+                        <div th:if="${session.price != null}">
+                            제품 가격
+                            <input type="number" class="form-control"  th:field="*{price}" /><br>
+                            <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
+                        </div>
+                        <div th:if="${session.price == null}">
+                            제품 가격<br>
+                            <input type="number" class="form-control"  th:field="*{price}"><br>
+                        </div>
+
+                        <div th:if="${session.briefDescription != null}">
+                            제품 간략 설명
+                            <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
+                            <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
+                        </div>
+                        <div th:if="${session.briefDescription == null}">
+                            제품 간략 설명<br>
+                            <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
+                        </div>
+
+                        <div th:if="${session.detailDescription != null}">
+                            제품 상세 설명
+                            <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
+                            <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
+                        </div>
+                        <div th:if="${session.detailDescription == null}">
+                            제품 상세 설명<br>
+                            <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
+                        </div>
+                        <div id="box1" class="1">
+                            <input type="hidden" value="1">
+                            <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
+                            <input type="button" value="추가" onclick="add_textbox(1)">
+                        </div>
+                        <div id="box2" class="2">
+                            <input type="hidden" value="2">
+                            <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
+                            <input type="button" value="추가" onclick="add_textbox(2)">
+                        </div>
+                        <div id="box3" class="3">
+                            <input type="hidden" value="3">
+                            <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
+                            <input type="button" value="추가" onclick="add_textbox(3)">
+                        </div>
+                        <button class="btn btn-outline-dark mt-auto" type="submit" onchange="fileCheck()">상품 등록</button>
+                    </form>
+                    <script th:inline="javascript">
+                        const add_textbox = (num) => {
+                            const box = document.getElementById("box"+num);
+                            const newP = document.createElement('p');
+                            newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
+                                "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
+                            newP.firstElementChild.name = "option" + num + "List";
+                            box.appendChild(newP);
+                        }
+                        const remove = (obj) => {
+                            num = obj.parentNode.parentNode.firstElementChild.value
+                            document.getElementById('box'+num).removeChild(obj.parentNode);
+                        }
+
+                        function previewFile() {
+                            const preview = document.querySelector('img');
+                            const file = document.querySelector('input[type=file]').files[0];
+                            const reader = new FileReader();
+
+                            reader.addEventListener("load", () => {
+                                // convert image file to base64 string
+                                preview.src = reader.result;
+                            }, false);
+
+                            if (file) {
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                    </script>
                 </div>
             </div>
         </section>
-
     </th:block>
 </th:block>
 </html>

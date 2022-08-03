@@ -3,7 +3,6 @@ package nhncommerce.project.product.domain
 import nhncommerce.project.baseentity.Status
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
 data class ProductDTO(
@@ -27,7 +26,7 @@ data class ProductDTO(
     @field:Size(max = 300, message = "상세 설명을 300자 이내로 입력하세요.")
     var detailDescription:String?="",
 
-    var thumbnail:String?="",
+    var thumbnail:String="",
 
     var viewCount:Int=0,
 

@@ -2,6 +2,7 @@ package nhncommerce.project.product
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.image.imageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -11,11 +12,13 @@ import nhncommerce.project.product.domain.ProductOptionDTO
 import nhncommerce.project.product.domain.QProduct
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.io.InputStream
 import java.util.function.Function
 
 @Service
 class ProductService(
     val productRepository: ProductRepository,
+    val imageService: imageService
 ) {
 
     fun dtoTOEntity(productDTO: ProductDTO) : Product{
@@ -58,7 +61,13 @@ class ProductService(
         return objectList
     }
 
-    fun createProduct(productDTO: ProductDTO) : Product{
+    /**
+     * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
+     */
+    fun createProduct(productDTO: ProductDTO, inputSteam: InputStream) : Product{
+        val url = imageService.uploadImage(inputSteam)
+        productDTO.thumbnail=url
+
         val product = dtoTOEntity(productDTO)
         return productRepository.save(product)
     }
@@ -114,14 +123,28 @@ class ProductService(
         return entityToDto(product)
     }
 
-    fun updateProduct(productDTO: ProductDTO){
-        var product = productRepository.findById(productDTO.productId!!.toLong())
-        product.get().productName = productDTO.productName
-        product.get().price = productDTO.price
-        product.get().status = productDTO.status
-        product.get().briefDescription = productDTO.briefDescription
-        product.get().detailDescription = productDTO.detailDescription
-        productRepository.save(product.get())
+    /**
+     * 상품 이미지 삭제하기 위해 uuid파싱
+     */
+    fun getThumbnailUUID(product : Product) : String{
+        val thumbnail = productRepository.findById(product.productId!!).get().thumbnail
+        var thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
+        return thumbnailUUID[6]
+    }
+
+    /**
+     * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
+     */
+    fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream){
+        var product = productRepository.findById(productDTO.productId!!.toLong()).get()
+
+        var thumbnail = getThumbnailUUID(product)
+        val url = imageService.uploadImage(inputSteam)
+        productDTO.thumbnail=url
+        imageService.deleteImage(thumbnail)
+
+        product.updateProduct(productDTO)
+        productRepository.save(product)
     }
 
     fun deleteProduct(productId : String){

@@ -1,4 +1,4 @@
-package nhncommerce.project.img
+package nhncommerce.project.image
 
 import org.apache.tomcat.util.http.fileupload.IOUtils
 import org.springframework.http.HttpMethod
@@ -52,7 +52,7 @@ class ObjectService(storageUrl: String?, tokenId: String?) {
         @JvmStatic
         fun main(args: Array<String>) {
             var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-            var tokenId = "gAAAAABi6etwvyDPjz_eH9xrHhLAMwN6z2OOFG4y7or-ZltNVnrIlMRjcF7_KlNzTjdq0yBcwvIOVpJDQdUdpiF78QUg9XSJ9XPOI9flBe7iX8MkoQeao1uiKpOf8CwKyGiH4cTIX9uQv_FYJ3nhtxGGBKtnkVmG7idfbb_pCexRG5Ogccu2Tkg"
+            var tokenId = "gAAAAABi6frBSTfcv8n4EM63io8NArjCiIif2ME3EWiwM6sEfpSeHEP-I1OcYjxk3s5VSneKk1M1puEuwfzj8RLr1r5h1CSFQOJa-iBPeblsZwdN9COFTZkEjO1asWuzVLVi3wcA_iPJD5X3YG7jkTyB_WG3jxuYwbkampCqpW8zs2mlmCr4Xpk"
             var containerName = "test"
             var objectPath = "/Users/soonbum/Documents/"
             var objectName = "shot.png"

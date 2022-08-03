@@ -27,7 +27,7 @@ class Product(
     var detailDescription:String?,
 
     @Column(nullable = true)
-    var thumbnail:String?,
+    var thumbnail:String,
 
     @Column(nullable = false)
     var viewCount:Int=0,
@@ -35,4 +35,13 @@ class Product(
     @Column(nullable = false)
     var totalStar:Float=0F,
 
-):BaseEntity()
+):BaseEntity(){
+    fun updateProduct(productDTO: ProductDTO){
+        productName = productDTO.productName
+        price = productDTO.price
+        status = productDTO.status
+        briefDescription = productDTO.briefDescription
+        detailDescription=  productDTO.detailDescription
+        thumbnail = productDTO.thumbnail
+    }
+}
