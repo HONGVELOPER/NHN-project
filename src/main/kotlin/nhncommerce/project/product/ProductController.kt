@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -22,6 +23,7 @@ class ProductController(
     val productService : ProductService,
     val optionService: OptionService
 ) {
+
 
     /**
      * 상품 등록 페이지
@@ -57,6 +59,7 @@ class ProductController(
      */
     //todo 세션 말고 쿠키로 할것 나중에 수정하기
     @PostMapping("/products")
+
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession):String{
 
