@@ -10,7 +10,4 @@ data class OptionListDTO (
     var option1List: MutableList<String> = ArrayList<String>(),
     var option2List: MutableList<String> = ArrayList<String>(),
     var option3List: MutableList<String> = ArrayList<String>()
-//    var extraCharge1List: MutableList<Int> = ArrayList<Int>(), //삭제 예정
-//    var extraCharge2List: MutableList<Int> = ArrayList<Int>(),
-//    var extraCharge3List: MutableList<Int> = ArrayList<Int>(),
 )
