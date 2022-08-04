@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <th:block th:replace="~{/layout/optionLayout :: setContent(~{this::content})}">
     <th:block th:fragment="content">
         <!--- -->
@@ -8,11 +7,11 @@
 
         </head>
         <body>
-        <h1 class="mt-4">Create Option</h1>
-        <form th:action="@{/options}" th:method="post" th:object="${optionList}">
+        <h1 class="mt-4">Update Option</h1>
+        <form th:action="@{/options/products/{productId}(productId = ${optionList.product?.productId})}" th:method="post" th:object="${optionList}">
             <div>
-                <input type="text" placeholder="name" th:field="*{productName}">
-                <input type="number" placeholder="price" th:field="*{productPrice}">
+                <input type="text" placeholder="name" th:field="*{product.productName}" readonly>
+                <input type="number" placeholder="price" th:field="*{product.price}" readonly>
             </div>
             <div id="box1" class="1">
                 <input type="hidden" value="1">

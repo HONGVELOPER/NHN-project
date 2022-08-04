@@ -56,4 +56,18 @@ data class ProductDTO(
 
         return true
     }
+
+    fun toEntity() : Product {
+        return Product(
+            productId = productId,
+            status = status,
+            productName = productName,
+            price = price,
+            briefDescription = briefDescription,
+            detailDescription = detailDescription,
+            thumbnail = thumbnail,
+            viewCount = viewCount,
+            totalStar = totalStar
+        )
+    }
 }

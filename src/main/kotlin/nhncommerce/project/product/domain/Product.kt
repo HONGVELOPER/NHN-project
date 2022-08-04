@@ -2,6 +2,7 @@ package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.domain.Category
 import javax.persistence.*
 
 @Entity
@@ -34,6 +35,11 @@ class Product(
 
     @Column(nullable = false)
     var totalStar:Float=0F,
+    
+    //카테고리 추가
+    @OneToOne
+    @JoinColumn(name = "category_id")
+    var category: Category?=null
 
 ):BaseEntity(){
     fun updateProduct(productDTO: ProductDTO){
@@ -44,4 +50,19 @@ class Product(
         detailDescription=  productDTO.detailDescription
         thumbnail = productDTO.thumbnail
     }
-}
+    
+    fun toProductDTO() : ProductDTO {
+        return ProductDTO(
+            productId = productId,
+            status = status,
+            productName = productName,
+            price = price,
+            briefDescription = briefDescription,
+            detailDescription = detailDescription,
+            thumbnail = thumbnail,
+            viewCount = viewCount,
+            totalStar = totalStar
+        )
+
+    }
+ }  

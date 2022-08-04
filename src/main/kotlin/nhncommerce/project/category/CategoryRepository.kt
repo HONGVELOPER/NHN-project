@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CategoryRepository: JpaRepository<Category, Long> {
 
+    fun findCategoriesByParentCategory(category: Category?) : List<Category>
+
 }
