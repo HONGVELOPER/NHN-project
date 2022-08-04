@@ -28,20 +28,29 @@ class Product(
     var detailDescription:String?,
 
     @Column(nullable = true)
-    var thumbnail:String?,
+    var thumbnail:String,
 
     @Column(nullable = false)
     var viewCount:Int=0,
 
     @Column(nullable = false)
     var totalStar:Float=0F,
-
+    
     //카테고리 추가
     @OneToOne
     @JoinColumn(name = "category_id")
     var category: Category?=null
 
-):BaseEntity() {
+):BaseEntity(){
+    fun updateProduct(productDTO: ProductDTO){
+        productName = productDTO.productName
+        price = productDTO.price
+        status = productDTO.status
+        briefDescription = productDTO.briefDescription
+        detailDescription=  productDTO.detailDescription
+        thumbnail = productDTO.thumbnail
+    }
+    
     fun toProductDTO() : ProductDTO {
         return ProductDTO(
             productId = productId,
@@ -56,5 +65,4 @@ class Product(
         )
 
     }
-
-}
+ }  
