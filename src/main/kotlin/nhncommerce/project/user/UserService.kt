@@ -5,9 +5,9 @@ import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.user.domain.UserDTO
 import nhncommerce.project.util.alert.AlertService
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import javax.servlet.http.HttpServletResponse
 
 @Service
@@ -33,8 +33,8 @@ class UserService(
         println(userDTO.toString())
         val user: User = userRepository.findById(userId).get()
         user.updateProfile(userDTO)
-        val updatedEntity = userRepository.save(user)
-        return updatedEntity
+        val updatedUser = userRepository.save(user)
+        return updatedUser
     }
 
     fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO, response: HttpServletResponse) {
