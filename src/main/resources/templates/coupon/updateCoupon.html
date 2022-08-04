@@ -23,7 +23,8 @@
                                     </select> <br>
 
                                     할인율
-                                    <input type="text" class="form-control"  th:field="*{discountRate}" /><br>
+
+                                    <input type="number" class="form-control"  th:field="*{discountRate}" /><br>
                                     <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
 
                                     만료 기간

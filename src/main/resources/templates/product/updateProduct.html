@@ -8,8 +8,7 @@
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
                     <div class="col-md-6">
-                        <form th:action="@{/products}"  method="post" th:object="${productOptionDTO}">
-
+                        <form th:action="'/admin/products/'+${productId}"  th:method="put" th:object="${productDTO}" >
                             <div th:if="${session.productName != null}">
                                 제품 이름
                                 <input type="text" class="form-control"  th:field="*{productName}" /><br>
@@ -30,6 +29,20 @@
                                 <input type="number" class="form-control"  th:field="*{price}"><br>
                             </div>
 
+                            제품 상태
+                            <div th:if="${#strings.equals(productDTO.status,'ACTIVE')}"}>
+                                <select class="form-control" name="status">
+                                    <option value="ACTIVE" selected>ACTIVE</option>
+                                    <option value="IN_ACTIVE">IN_ACTIVE</option>
+                                </select>
+                            </div>
+                            <div th:if="${#strings.equals(productDTO.status,'IN_ACTIVE')}"}>
+                                <select class="form-control" name="status">
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="IN_ACTIVE" selected>IN_ACTIVE</option>
+                                </select>
+                            </div> <br>
+
                             <div th:if="${session.briefDescription != null}">
                                 제품 간략 설명
                                 <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
@@ -49,38 +62,12 @@
                                 제품 상세 설명<br>
                                 <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
                             </div>
-                            <div id="box1" class="1">
-                                <input type="hidden" value="1">
-                                <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
-                                <input type="button" value="추가" onclick="add_textbox(1)">
-                            </div>
-                            <div id="box2" class="2">
-                                <input type="hidden" value="2">
-                                <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
-                                <input type="button" value="추가" onclick="add_textbox(2)">
-                            </div>
-                            <div id="box3" class="3">
-                                <input type="hidden" value="3">
-                                <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
-                                <input type="button" value="추가" onclick="add_textbox(3)">
-                            </div>
-                            <button class="btn btn-outline-dark mt-auto" type="submit">상품 등록</button>
+                            <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>
                         </form>
-
-                        <script th:inline="javascript">
-                            const add_textbox = (num) => {
-                                const box = document.getElementById("box"+num);
-                                const newP = document.createElement('p');
-                                newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
-                                    "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
-                                newP.firstElementChild.name = "option" + num + "List";
-                                box.appendChild(newP);
-                            }
-                            const remove = (obj) => {
-                                num = obj.parentNode.parentNode.firstElementChild.value
-                                document.getElementById('box'+num).removeChild(obj.parentNode);
-                            }
-                        </script>
+                        <form th:action="'/admin/products/'+${productId}" th:method="delete">
+                            <input type="hidden" value="asd">
+                            <button class="btn btn-outline-danger mt-auto" type="submit">상품 삭제</button>
+                        </form>
                     </div>
                 </div>
             </div>
