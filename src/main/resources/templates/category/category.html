@@ -20,30 +20,73 @@
         <section class="py-5">
             <div class="container">
                 <div class="row">
+
                     <div class="col-2">
                         <div class="list-group">
-                            <a th:href="@{/categories/{categoryId}(categoryId = ${parentCategoryDTO.categoryId})}" class="list-group-item list-group-item-action active" th:text="${parentCategoryDTO.name}"></a>
+                            <a th:href="@{/categories/{categoryId}(categoryId = ${parentCategoryDTO.categoryId})}" class="list-group-item list-group-item-action list-group-item-dark" th:text="${parentCategoryDTO.name}"></a>
                             <div th:each="childCategory : ${childCategoryList}">
                                 <a th:href="@{/categories/{categoryId}(categoryId = ${childCategory.categoryId})}" class="list-group-item list-group-item-action" th:text="${childCategory.name}"></a>
                             </div>
                         </div>
                     </div>
                     <div class="col-10">
-                        <table class="table table-striped">
-                            <th>번호</th>
-                            <th>상품명</th>
-                            <th>가격</th>
-                            <tr th:each="productDTO : ${productDTOList}">
-                                <td th:text="${productDTO.productId}"></td>
-                                <td th:text="${productDTO.productName}"></td>
-                                <td th:text="${productDTO.price}"></td>
-                            </tr>
-                        </table>
-                    </div>
+<!--                        <table class="table table-striped">-->
+<!--                            <th>번호</th>-->
+<!--                            <th>상품명</th>-->
+<!--                            <th>가격</th>-->
+<!--                            <tr th:each="productDTO : ${productDTOList}">-->
+<!--                                <td th:text="${productDTO.productId}"></td>-->
+<!--                                <td th:text="${productDTO.productName}"></td>-->
+<!--                                <td th:text="${productDTO.price}"></td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
+<!--                        <div th:each="product : ${productDtoList}" class="col mb-5">-->
+                        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                            <div th:each="product : ${products.dtoList}">
+                                <div class="card h-100">
+                                    <!-- Product image-->
+                                    <div th:if="${product.thumbnail == ''}">
+                                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                    </div>
+                                    <div th:if="${product.thumbnail !=''}">
+                                        <img class="card-img-top" th:src="${product.thumbnail}" alt="..." />
+                                    </div>
+                                    <!-- Product details-->
+                                    <div class="card-body p-4">
+                                        <div class="text-center">
+                                            <!-- Product name-->
+                                            <h5 class="fw-bolder">[[${product.productName}]]</h5>
+                                            <!-- Product price-->
+                                            [[${product.price}]]₩
+                                        </div>
+                                    </div>
 
+                                    <!-- Product actions-->
+                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                        <div class="text-center">
+                                            <a class="btn btn-outline-dark mt-auto" href="#">상세 화면</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+        <ul class="pagination  justify-content-center align-items-center">
+            <li class="page-item" th:if="${products.prev}">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${products.page == page? 'active':''}"th:each="page : ${products.pageList}">
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${page}, categoryId=${categoryId})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${products.next}">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
 
     </th:block>
 </th:block>
