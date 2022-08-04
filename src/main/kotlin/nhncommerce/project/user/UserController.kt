@@ -16,6 +16,11 @@ class UserController(
     val userService: UserService
 ) {
 
+    @GetMapping("/user")
+    fun userForm():String{
+        return "user/index"
+    }
+
     @GetMapping("/loginForm")
     fun loginForm(): String {
         return "user/login"

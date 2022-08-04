@@ -22,27 +22,23 @@
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <!-- 카테고리 추가 -->
-    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="categoryDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="categoryDropdown">
-                <li><a class="dropdown-item" th:href="@{/categories/1}">Music</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/2}">Photo</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/3}">Concert</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/4}">Living</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/5}">Beauty</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/6}">Stationery</a></li>
-                <li><a class="dropdown-item" th:href="@{/categories/7}">Fashion</a></li>
-            </ul>
-        </li>
-    </ul>
+<!--    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">-->
+<!--        <li class="nav-item dropdown">-->
+<!--            <a class="nav-link dropdown-toggle" id="categoryDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>-->
+<!--            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="categoryDropdown">-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/1}">Music</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/2}">Photo</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/3}">Concert</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/4}">Living</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/5}">Beauty</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/6}">Stationery</a></li>-->
+<!--                <li><a class="dropdown-item" th:href="@{/categories/7}">Fashion</a></li>-->
+<!--            </ul>-->
+<!--        </li>-->
+<!--    </ul>-->
     <!-- -->
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-        <div class="input-group">
-            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-        </div>
     </form>
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -66,7 +62,7 @@
                     <div class="sb-sidenav-menu-heading">Interface</div>
 
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-ticket-simple"></i></div>
                         쿠폰
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
@@ -78,7 +74,7 @@
                     </div>
                     <!-- -->
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-cube"></i></div>
                         상품
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>

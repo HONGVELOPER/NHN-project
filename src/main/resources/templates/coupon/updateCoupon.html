@@ -23,19 +23,13 @@
                                     </select> <br>
 
                                     할인율
-
                                     <input type="number" class="form-control"  th:field="*{discountRate}" /><br>
                                     <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
 
                                     만료 기간
                                     <br>
-                                    <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
-                                        <input th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date"><br>
-                                    </div>
+                                    <input th:type="date" class="form-control" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:value="${expired}"><br>
 
-                                    <script>
-                                        document.getElementById('now_date').valueAsDate=new Date();
-                                    </script>
 
                                     <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 수정</button>
                                 </form>
