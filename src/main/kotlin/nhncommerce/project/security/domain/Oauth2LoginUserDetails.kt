@@ -30,7 +30,20 @@ class Oauth2LoginUserDetails (
     }
 
     override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
         other as Oauth2LoginUserDetails
-        return attributes["email"].toString().equals(other.attributes["email"].toString())
+
+        if (user != other.user) return false
+        if (attributes != other.attributes) return false
+
+        return true
     }
+
+//    override fun equals(other: Any?): Boolean {
+//        println("other check : $other")
+//        other as Oauth2LoginUserDetails
+//        return attributes["email"].toString().equals(other.attributes["email"].toString())
+////    }
 }
