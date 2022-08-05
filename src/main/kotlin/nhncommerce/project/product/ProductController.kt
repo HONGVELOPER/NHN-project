@@ -1,10 +1,13 @@
 package nhncommerce.project.product
 
+
 import nhncommerce.project.category.CategoryService
+import nhncommerce.project.baseentity.Status
 import nhncommerce.project.image.imageService
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
 import org.springframework.stereotype.Controller
@@ -12,6 +15,7 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.stream.IntStream
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -22,6 +26,7 @@ class ProductController(
     val optionService: OptionService,
     val categoryService: CategoryService,
     val imageService: imageService
+
 ) {
 
     /**

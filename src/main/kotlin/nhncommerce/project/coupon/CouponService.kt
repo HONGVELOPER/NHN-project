@@ -9,7 +9,6 @@ import nhncommerce.project.coupon.domain.CouponListDTO
 import nhncommerce.project.coupon.domain.QCoupon
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
-import nhncommerce.project.product.domain.QProduct
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
 import java.util.function.Function
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
@@ -62,7 +62,6 @@ class CouponService(
         val pageable = requestDTO.getPageable(Sort.by("couponId").descending())
         var booleanBuilder = getSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
-
         val fn: Function<Coupon, CouponListDTO> =
             Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
 
@@ -78,12 +77,9 @@ class CouponService(
     }
 
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
-        var coupon = couponRepository.findById(couponDTO.couponId!!.toLong())
-        coupon.get().couponName = couponDTO.couponName
-        coupon.get().discountRate = couponDTO.discountRate
-        coupon.get().status = couponDTO.status
-        coupon.get().expired = expired
-        couponRepository.save(coupon.get())
+        var coupon = couponRepository.findById(couponDTO.couponId!!).get()
+        coupon.updateCoupon(couponDTO,expired)
+        couponRepository.save(coupon)
     }
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
