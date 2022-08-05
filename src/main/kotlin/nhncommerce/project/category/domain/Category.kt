@@ -17,6 +17,7 @@ class Category (
     @JoinColumn(name ="parent_id")
     var parentCategory : Category? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status : Status? = Status.ACTIVE
 ): BaseEntity() {
