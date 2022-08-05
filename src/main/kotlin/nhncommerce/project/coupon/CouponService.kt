@@ -77,7 +77,7 @@ class CouponService(
     }
 
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
-        var coupon = couponRepository.findById(couponDTO.couponId!!.toLong()).get()
+        var coupon = couponRepository.findById(couponDTO.couponId!!).get()
         coupon.updateCoupon(couponDTO,expired)
         couponRepository.save(coupon)
     }
