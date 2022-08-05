@@ -2,6 +2,7 @@ package nhncommerce.project.product
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.CategoryRepository
 import nhncommerce.project.image.imageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
@@ -18,23 +19,25 @@ import java.util.function.Function
 @Service
 class ProductService(
     val productRepository: ProductRepository,
+    val categoryRepository: CategoryRepository,
     val imageService: imageService
 ) {
 
     fun dtoTOEntity(productDTO: ProductDTO) : Product{
         val product = Product(status = Status.ACTIVE, productName = productDTO.productName, price = productDTO.price,
                 briefDescription = productDTO.briefDescription, detailDescription = productDTO.detailDescription,
-                thumbnail = productDTO.thumbnail, viewCount = productDTO.viewCount, totalStar = productDTO.totalStar)
+                thumbnail = productDTO.thumbnail, viewCount = productDTO.viewCount, totalStar = productDTO.totalStar, category = productDTO.category)
         return product
     }
 
     fun entityToDto(product: Product) : ProductDTO{
         val productDTO = ProductDTO(product.productId,product.status, product.productName, product.price, product.briefDescription,
-                                    product.briefDescription, product.thumbnail, product.viewCount, product.totalStar)
+                                    product.briefDescription, product.thumbnail, product.viewCount, product.totalStar, product.category)
         return productDTO
     }
 
     fun separate(productOptionDTO: ProductOptionDTO) : MutableList<Any>{
+        val category = categoryRepository.findById(productOptionDTO.categoryId!!.toLong()).get()
         val productDTO = ProductDTO(
             null,
             Status.ACTIVE,
@@ -44,6 +47,8 @@ class ProductService(
             productOptionDTO.detailDescription,
             productOptionDTO.thumbnail,
             productOptionDTO.viewCount,
+            productOptionDTO.totalStar,
+            category,
         )
         val optionListDTO = OptionListDTO(
             null,
@@ -65,8 +70,10 @@ class ProductService(
      * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
      */
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream) : Product{
+
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
+
 
         val product = dtoTOEntity(productDTO)
         return productRepository.save(product)

@@ -28,18 +28,16 @@ class CategoryController(private val categoryService: CategoryService) {
     fun getProductsByCategory(@PathVariable("categoryId") categoryId : Long, model: Model):String {
         val parentCategoryDTO = categoryService.findParentCategory(categoryId)
         val childCategoryList = categoryService.findChildCategory(parentCategoryDTO)
+        val products = categoryService.findProductList(categoryId, PageRequestDTO())
 
-        val pageRequestDTO = PageRequestDTO()
-        val productList = categoryService.findProducts(categoryId) //1페이징 없는 조회
-        val products = categoryService.findProductList(categoryId, pageRequestDTO) //2페이징 조회
-
-//        model.addAttribute("productList", productList) //1페이징 없는 조회
         model.addAttribute("categoryId", categoryId)
         model.addAttribute("products", products) // 2페이징 조회
         model.addAttribute("parentCategoryDTO", parentCategoryDTO)
         model.addAttribute("childCategoryList", childCategoryList)
         return "category/category"
     }
+
+
 
 
 

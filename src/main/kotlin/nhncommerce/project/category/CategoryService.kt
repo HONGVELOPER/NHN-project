@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.domain.Category
 import nhncommerce.project.category.domain.CategoryDTO
+import nhncommerce.project.category.domain.CategoryListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.ProductRepository
@@ -22,9 +23,15 @@ class CategoryService (
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository
 ) {
-    //카테고리 등록
-    fun createCategory(category: Category){
-        categoryRepository.save(category)
+    //카테고리 생성
+    fun createCategory(postCategoryDTO: CategoryDTO) : CategoryDTO {
+        val category = categoryRepository.save(postCategoryDTO.toEntity())
+        return category.toCategoryDTO()
+    }
+
+    //카테고리id 로 카테고리
+    fun getCategoryById(categoryId : Long) : Category{
+        return categoryRepository.findById(categoryId).get()
     }
 
     //카테고리 조회
@@ -33,11 +40,6 @@ class CategoryService (
         return categories.map{ it.toCategoryDTO() }
     }
 
-    //카테고리 생성
-    fun createCategory(postCategoryDTO: CategoryDTO) : CategoryDTO {
-        val category = categoryRepository.save(postCategoryDTO.toEntity())
-        return category.toCategoryDTO()
-    }
     //부모 카테고리 찾기
     fun findParentCategory(categoryId : Long) : CategoryDTO? {
         val findCategory = categoryRepository.findById(categoryId).get()
@@ -49,6 +51,17 @@ class CategoryService (
 
     fun findChildCategory(parentCategoryDTO: CategoryDTO?) : List<Category> {
         return categoryRepository.findCategoriesByParentCategory(parentCategoryDTO?.toEntity())
+    }
+
+    //product 생성및 수정을 위한 category List
+    fun getCategoryList():List<CategoryListDTO> {
+        val list = mutableListOf<CategoryListDTO>()
+        val categories = categoryRepository.findAllByParentCategoryIsNotNull()
+        categories.map {
+            val categoryListDTO = CategoryListDTO(it.categoryId, it.parentCategory?.name + " > " + it.name)
+            list.add(categoryListDTO)
+        }
+        return list.toList()
     }
 
     fun findProducts(categoryId : Long) : List<Product> {
@@ -76,6 +89,7 @@ class CategoryService (
         return productDTO
     }
 
+    //카테고리 조회 및 페이징
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
         pageRequestDTO.size = 12
@@ -94,6 +108,7 @@ class CategoryService (
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
 
+    //대 카테고리 조회시
     fun getParentCategorySearch(pageRequestDTO: PageRequestDTO, categoryIdList : List<Long>) : BooleanBuilder {
         var type = pageRequestDTO.type
         var booleanBuilder = BooleanBuilder()
@@ -105,12 +120,14 @@ class CategoryService (
         }
 
         if(type == null || type.trim().isEmpty()){
+            //todo : 더 추가해야함
             return booleanBuilder
         }
         //생략
         return booleanBuilder
     }
 
+    //소 카테고리 조회시
     fun getChildCategorySearch(pageRequestDTO: PageRequestDTO, category: Category) : BooleanBuilder {
         var type = pageRequestDTO.type
         var booleanBuilder = BooleanBuilder()

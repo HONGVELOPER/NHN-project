@@ -8,4 +8,6 @@ interface CategoryRepository: JpaRepository<Category, Long>, QuerydslPredicateEx
 
     fun findCategoriesByParentCategory(category: Category?) : List<Category>
 
+    fun findAllByParentCategoryIsNotNull() : List<Category>
+
 }

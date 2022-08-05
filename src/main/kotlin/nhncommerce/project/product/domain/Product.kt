@@ -61,7 +61,8 @@ class Product(
             detailDescription = detailDescription,
             thumbnail = thumbnail,
             viewCount = viewCount,
-            totalStar = totalStar
+            totalStar = totalStar,
+            category = category
         )
 
     }
