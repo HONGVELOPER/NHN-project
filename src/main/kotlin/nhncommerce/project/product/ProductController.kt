@@ -1,9 +1,13 @@
 package nhncommerce.project.product
 
+
+import nhncommerce.project.category.CategoryService
+import nhncommerce.project.baseentity.Status
 import nhncommerce.project.image.imageService
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
 import org.springframework.stereotype.Controller
@@ -11,6 +15,7 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.stream.IntStream
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -19,7 +24,9 @@ import javax.validation.Valid
 class ProductController(
     val productService : ProductService,
     val optionService: OptionService,
+    val categoryService: CategoryService,
     val imageService: imageService
+
 ) {
 
     /**
@@ -28,7 +35,9 @@ class ProductController(
     @GetMapping("/addProductPage")
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
+        val categoryListDTO = categoryService.getCategoryList()
 
+        model.addAttribute("categoryListDTO", categoryListDTO)
         model.addAttribute("productOptionDTO", productOptionDTO)
         return "product/addProduct"
     }
@@ -38,6 +47,7 @@ class ProductController(
      */
     @GetMapping("/products")
     fun productListPage(model : Model, pageRequestDTO: PageRequestDTO):String{
+
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
         return "product/productList"
     }
@@ -58,7 +68,7 @@ class ProductController(
     @PostMapping("/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession,
-                        @RequestPart file : MultipartFile):String{
+                        @RequestPart file : MultipartFile) : String{
         if(bindingResult.hasErrors()){
             session.setAttribute("productName",productOptionDTO.productName)
             session.setAttribute("price",productOptionDTO.price)
@@ -66,6 +76,8 @@ class ProductController(
             session.setAttribute("detailDescription",productOptionDTO.detailDescription)
             return "product/addProduct"
         }
+        println("=============")
+        println(productOptionDTO.categoryId)
         val separate = productService.separate(productOptionDTO)
         val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
         val optionListDTO = separate.get(1) as OptionListDTO

@@ -19,6 +19,7 @@ class Option (
     @Column(nullable = false)
     var name : String? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status : Status? = Status.ACTIVE,
 
