@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 @RequestMapping("categories")
 class CategoryController(private val categoryService: CategoryService) {
-    //사용 안함
 
-    //api 명세서에 없는것
     //category 리스트
     @GetMapping("/get")
     fun getCategories(model : Model) : String {
@@ -36,11 +34,4 @@ class CategoryController(private val categoryService: CategoryService) {
         model.addAttribute("childCategoryList", childCategoryList)
         return "category/category"
     }
-
-
-
-
-
-
-
 }
