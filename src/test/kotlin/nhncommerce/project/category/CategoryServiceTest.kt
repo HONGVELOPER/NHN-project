@@ -24,19 +24,31 @@ class CategoryServiceTest {
     @Test
     @Rollback(value = false)
     fun insertCategory() {
-        val arr = listOf<String>(
+        val categoryList = listOf<String>(
                 "Music",
                 "Photo",
                 "Concert",
                 "Living",
                 "Beauty",
                 "Stationery",
-                "Fashion")
+                "Fashion"
+        )
+
+        val subCategoryList = listOf<List<String>>(
+                listOf("CD", "DVD","etc"),
+                listOf("Printed", "Photo Book", "etc"),
+                listOf("official Fanlight", "Concert Goods", "etc"),
+                listOf("Home", "F&B", "Tech"),
+                listOf("Skin Care", "Make Up", "Perfume"),
+                listOf("Note", "Office", "Pen"),
+                listOf("Clothing", "Acc", "Jewelry")
+        )
+
 
         for(i in 1..7){
             val category = Category(
                 categoryId = i.toLong(),
-                name = arr[i - 1],
+                name = categoryList[i - 1],
                 parentCategory = null,
                 status = Status.ACTIVE
             )
@@ -48,7 +60,7 @@ class CategoryServiceTest {
             for(j in 1..3){
                 val subCategory = Category(
                     categoryId = null,
-                    name = "${arr[i - 1]}-${j}",
+                    name = "${subCategoryList[i-1][j-1]}",
                     parentCategory = category,
                     status = Status.ACTIVE
                 )
