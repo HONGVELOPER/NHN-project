@@ -130,7 +130,7 @@
             <li class="page-item" th:if="${products.prev}">
                 <a class="page-link" th:href="@{/products(page=${products.start-1})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${products.page == page? 'active':''}"th:each="page : ${products.pageList}">
+            <li th:class=" 'page-item ' + ${products.page==page?'active':''}" th:each="page : ${products.pageList}">
                 <a class="page-link" th:href="@{/products(page=${page})}">
                     [[${page}]]
                 </a>
