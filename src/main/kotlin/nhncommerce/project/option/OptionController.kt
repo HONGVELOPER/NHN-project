@@ -35,8 +35,8 @@ class OptionController (private val optionService: OptionService, private val pr
 
     @PostMapping("products/{productId}")
     fun updateProductOption(@PathVariable(name = "productId") productId: Long, redirect : RedirectAttributes, @ModelAttribute optionList : OptionListDTO) : String{
-        val product = productService.getProduct(productId)
-        optionList.productDTO = product.toProductDTO()
+        val productDTO = productService.getProductDTO(productId)
+        optionList.productDTO = productDTO
         optionService.createOptionDetail(optionList)
         redirect.addAttribute("productId", productId )
         return "redirect:/options/products/{productId}/type"

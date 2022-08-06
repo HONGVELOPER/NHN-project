@@ -98,6 +98,10 @@ class ProductService(
         return productRepository.findById(productId).get()
     }
 
+    fun getProductDTO(productId : Long) : ProductDTO {
+        return productRepository.findById(productId).get().toProductDTO()
+    }
+
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
         var type = pageRequestDTO.type
