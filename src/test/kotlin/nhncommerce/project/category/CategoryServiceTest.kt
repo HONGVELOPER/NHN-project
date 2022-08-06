@@ -21,6 +21,11 @@ class CategoryServiceTest {
     @Autowired
     private lateinit var categoryRepository: CategoryRepository
 
+
+    /**
+     * 항상 카테고리 생성 먼저하고 상품 생성하기
+     */
+
     @Test
     @Rollback(value = false)
     fun insertCategory() {

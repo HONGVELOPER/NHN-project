@@ -119,11 +119,6 @@ class CategoryService (
             booleanBuilder.or(qProduct.category.categoryId.eq(categoryId))
         }
 
-        if(type == null || type.trim().isEmpty()){
-            //todo : 더 추가해야함
-            return booleanBuilder
-        }
-        //생략
         return booleanBuilder
     }
 
@@ -137,10 +132,6 @@ class CategoryService (
 
         booleanBuilder.and(expression)
 
-        if(type == null || type.trim().isEmpty()){
-            return booleanBuilder
-        }
-        //생략
         return booleanBuilder
     }
 

@@ -15,7 +15,7 @@ import java.util.*
 @Service
 class imageService {
     var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    var tokenId = "gAAAAABi6y9d60vhrvhwHXLN-FBMTcV2juT-yhBcmoOV68V_6Mi_Kta3soHcLdqoHRKCa6HsQgsUtAcqVdMicA5rgFYY8hdCrWcZzSwrHWCe8tDmE3VHYtIsK40Rwb418tZlE3haZDb3ZBEE7VPqlWofZTgsPKr580VA9kxcJD-JAP_0NXUOito"
+    var tokenId = "gAAAAABi7cYYKgaqRb0Xo2avj7KsIJTqAsFCoGpAaHrA_hSaZ7qG_vV_P7vGsok-FlYM7kfOY8EeJitKrJt7TeJxEfo_6LHc94ptmB9MLqU9XCkqNE3_6Jg2ZcV75D6nHeMGdetsnlQodyHhJsMDlOLGPrhtyfMQrU7hhaZM13hboqA3085qfjg"
     var containerName = "test"
     var objectPath = "/Users/soonbum/Documents/"
     var objectName = ""
