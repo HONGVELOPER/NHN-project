@@ -57,6 +57,8 @@ class ProductController(
      */
     @GetMapping("/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
+
+        model.addAttribute("categoryListDTO", categoryService.getCategoryList())
         model.addAttribute("productDTO",productService.getProduct(productId))
         return "product/updateProduct"
     }
@@ -81,7 +83,7 @@ class ProductController(
         val separate = productService.separate(productOptionDTO)
         val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
         val optionListDTO = separate.get(1) as OptionListDTO
-        optionListDTO.product = createProduct
+        optionListDTO.productDTO = createProduct.toProductDTO()
         optionService.createOptionDetail(optionListDTO)
         return "redirect:/products"
     }
@@ -90,8 +92,12 @@ class ProductController(
      * 상품 수정
      */
     @PutMapping("/admin/products/{productId}")
-    fun updateProduct(@PathVariable("productId")productId : String,productDTO: ProductDTO,
+    fun updateProduct(@PathVariable("productId")productId : String,productDTO: ProductDTO, categoryId : String,
                       @RequestPart file : MultipartFile) : String{
+        println("검증")
+        println(categoryId)
+        productDTO.category = categoryService.getCategoryById(categoryId.toLong())
+        println(productDTO.category.toString() + " " + productDTO.category?.name)
         productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/products"
     }
