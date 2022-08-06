@@ -27,7 +27,7 @@ class OptionController (private val optionService: OptionService, private val pr
         optionService.deleteOptions(productId)
 
         var optionListDTO = OptionListDTO()
-        optionListDTO.product = productService.getProduct(productId)
+        optionListDTO.productDTO = productService.getProduct(productId).toProductDTO()
 
         model.addAttribute("optionList", optionListDTO)
         return "option/recreateOption"
@@ -35,8 +35,8 @@ class OptionController (private val optionService: OptionService, private val pr
 
     @PostMapping("products/{productId}")
     fun updateProductOption(@PathVariable(name = "productId") productId: Long, redirect : RedirectAttributes, @ModelAttribute optionList : OptionListDTO) : String{
-        val product = productService.getProduct(productId)
-        optionList.product = product
+        val productDTO = productService.getProductDTO(productId)
+        optionList.productDTO = productDTO
         optionService.createOptionDetail(optionList)
         redirect.addAttribute("productId", productId )
         return "redirect:/options/products/{productId}/type"
