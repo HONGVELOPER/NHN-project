@@ -1,23 +1,28 @@
 package nhncommerce.project.user
 
 
-import nhncommerce.project.user.domain.PasswordDTO
-import nhncommerce.project.user.domain.User
-import nhncommerce.project.user.domain.UserDTO
+import nhncommerce.project.exception.RedirectException
+import nhncommerce.project.user.domain.*
+import nhncommerce.project.util.alert.alertDTO
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-
+    val userRepository: UserRepository,
     val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder(),
-    val userRepository: UserRepository
 ) {
 
-    fun createUserByForm(userDTO: UserDTO) : User {
-        println("유저 서비스 ")
+    fun createUserByForm(userDTO: UserDTO) {
+        val duplicateUser: User? = userRepository.findByEmail(userDTO.email)
+        if (duplicateUser?.email == userDTO.email) {
+            throw RedirectException(alertDTO("이미 존재하는 아이디 입니다", "/joinForm"))
+        } else if (userDTO.password != userDTO.passwordVerify) {
+            throw RedirectException(alertDTO("비밀번호가 일치하지 않습니다.", "/joinForm"))
+        }
         val user: User = userDTO.toEntity()
-        return userRepository.save(user)
+        user.password = passwordEncoder.encode(user.password)
+        userRepository.save(user)
     }
 
     fun findUserById(userId: Long): UserDTO {
@@ -25,36 +30,33 @@ class UserService(
         return UserDTO.fromEntity(user)
     }
 
-
-    fun updateUserProfileById(userId: Long, userDTO: UserDTO) : User {
-        println(userDTO.toString())
+    fun findUserProfileById(userId: Long): ProfileDTO {
         val user: User = userRepository.findById(userId).get()
-        user.updateProfile(userDTO)
-        val updatedEntity = userRepository.save(user)
-        return updatedEntity
+        return ProfileDTO.fromEntity(user)
     }
 
-    fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO): User {
+    fun updateUserProfileById(userId: Long, profileDTO: ProfileDTO) {
+        val user: User = userRepository.findById(userId).get()
+        user.updateProfile(profileDTO)
+        userRepository.save(user)
+    }
+
+    fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO) {
         val user: User = userRepository.findById(userId).get()
         if (!passwordEncoder.matches(passwordDTO.password, user.password)) {
-            println("비밀번호 매칭이 안되서 끊겨야함. 유틸 가져와서 밀어낼게요")
+            throw RedirectException(alertDTO("비밀번호가 일치하지 않습니다.", "/updatePasswordForm"))
+        } else if (passwordDTO.password == passwordDTO.newPassword) {
+            throw RedirectException(alertDTO("기존 비밀번호와 일치하는 비밀번호로 수정할 수 없습니다.", "/updatePasswordForm"))
         } else if (passwordDTO.newPassword != passwordDTO.newPasswordVerify) {
-            println("바꾸려는 비밀번호 일치하지 않아요, 끊겨야함")
+            throw RedirectException(alertDTO("새로운 비밀번호가 일치하지 않습니다.", "/updatePasswordForm"))
         }
         val newEncodedPassword = passwordEncoder.encode(passwordDTO.newPassword)
         user.updatePassword(newEncodedPassword)
-        val updatedEntity = userRepository.save(user)
-        return updatedEntity
+        userRepository.save(user)
     }
 
     fun deleteUserById(userId: Long) {
-
-        val deleteUser: User = userRepository.findById(userId).get()
-        userRepository.deleteById(userId)
+        val deleteUser = userRepository.findById(userId).get()
+        userRepository.deleteById(deleteUser.userId!!)
     }
-
-
-//    private fun notFoundUser(response: HttpServletResponse) {
-//        alertService.alertMessage("존재하지 않는 회원 입니다. 다시 입력해주세요.","/publishCouponPage",response)
-//    }
 }
