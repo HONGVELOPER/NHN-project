@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    성공
-</body>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+        <head>
+            <meta charset="UTF-8">
+            <title>Title</title>
+        </head>
+        <body>
+        유저 메인
+        </body>
+
+    </th:block>
+</th:block>
 </html>

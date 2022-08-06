@@ -1,6 +1,7 @@
 package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.domain.Category
 import nhncommerce.project.option.domain.OptionListDTO
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -27,11 +28,13 @@ data class ProductOptionDTO (
     @field:Size(max = 300, message = "상세 설명을 300자 이내로 입력하세요.")
     var detailDescription:String?="",
 
-    var thumbnail:String?="",
+    var thumbnail:String="",
 
     var viewCount:Int=0,
 
     var totalStar:Float=0F,
+
+    var categoryId: String?=null,
 
     var option1 : String?=null,
     var option2 : String?=null,

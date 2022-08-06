@@ -6,12 +6,22 @@
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
                     <div class="col-md-6">
-                        <form th:action="'/admin/products/'+${productId}"  th:method="put" th:object="${productDTO}" >
+                        <form th:action="'/admin/products/'+${productId}" enctype="multipart/form-data" th:method="put" th:object="${productDTO}" >
+
+                            <div class="col-md-6">
+                                <input type="file" name="file" onchange="previewFile()" required><br>
+                                <div th:if="${productDTO.thumbnail !=''}">
+                                    <img class="card-img-top" th:src="${productDTO.thumbnail}" alt="..." />
+                                </div>
+                                <div th:if="${productDTO.thumbnail == ''}">
+                                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                </div>
+                            </div>
+
                             <div th:if="${session.productName != null}">
                                 제품 이름
-                                <input type="text" class="form-control"  th:field="*{productName}" /><br>
+                                <input type="text" class="form-control"  th:field="*{productName}"><br>
                                 <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
                             </div>
                             <div th:if="${session.productName == null}">
@@ -62,6 +72,18 @@
                                 제품 상세 설명<br>
                                 <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
                             </div>
+                            <div>
+                                카테고리 선택 <br>
+                                <select name="categoryId" class="form-select">
+                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
+                                    <option value="none">=== 기존 ===</option>
+                                    <div th:each="category : ${categoryListDTO}">
+                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                    </div>
+                                </select>
+                            </div>
+
+
                             <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>
                         </form>
                         <form th:action="'/admin/products/'+${productId}" th:method="delete">
@@ -71,6 +93,24 @@
                     </div>
                 </div>
             </div>
+            <script>
+
+                function previewFile() {
+                    const preview = document.querySelector('img');
+                    const file = document.querySelector('input[type=file]').files[0];
+                    const reader = new FileReader();
+
+                    reader.addEventListener("load", () => {
+                        // convert image file to base64 string
+                        preview.src = reader.result;
+                    }, false);
+
+                    if (file) {
+                        reader.readAsDataURL(file);
+                    }
+                }
+
+            </script>
         </section>
 
     </th:block>

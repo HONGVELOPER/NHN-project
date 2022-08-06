@@ -1,19 +1,21 @@
 package nhncommerce.project.product
 
+
+import nhncommerce.project.category.CategoryService
+import nhncommerce.project.baseentity.Status
+import nhncommerce.project.image.imageService
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.util.stream.IntStream
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -21,9 +23,11 @@ import javax.validation.Valid
 @Controller
 class ProductController(
     val productService : ProductService,
-    val optionService: OptionService
-) {
+    val optionService: OptionService,
+    val categoryService: CategoryService,
+    val imageService: imageService
 
+) {
 
     /**
      * 상품 등록 페이지
@@ -31,7 +35,9 @@ class ProductController(
     @GetMapping("/addProductPage")
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
+        val categoryListDTO = categoryService.getCategoryList()
 
+        model.addAttribute("categoryListDTO", categoryListDTO)
         model.addAttribute("productOptionDTO", productOptionDTO)
         return "product/addProduct"
     }
@@ -41,6 +47,7 @@ class ProductController(
      */
     @GetMapping("/products")
     fun productListPage(model : Model, pageRequestDTO: PageRequestDTO):String{
+
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
         return "product/productList"
     }
@@ -50,6 +57,8 @@ class ProductController(
      */
     @GetMapping("/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
+
+        model.addAttribute("categoryListDTO", categoryService.getCategoryList())
         model.addAttribute("productDTO",productService.getProduct(productId))
         return "product/updateProduct"
     }
@@ -59,10 +68,9 @@ class ProductController(
      */
     //todo 세션 말고 쿠키로 할것 나중에 수정하기
     @PostMapping("/products")
-
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
-                      response: HttpServletResponse, session : HttpSession):String{
-
+                      response: HttpServletResponse, session : HttpSession,
+                        @RequestPart file : MultipartFile) : String{
         if(bindingResult.hasErrors()){
             session.setAttribute("productName",productOptionDTO.productName)
             session.setAttribute("price",productOptionDTO.price)
@@ -70,13 +78,13 @@ class ProductController(
             session.setAttribute("detailDescription",productOptionDTO.detailDescription)
             return "product/addProduct"
         }
-
+        println("=============")
+        println(productOptionDTO.categoryId)
         val separate = productService.separate(productOptionDTO)
-        val createProduct = productService.createProduct(separate.get(0) as ProductDTO)
+        val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
         val optionListDTO = separate.get(1) as OptionListDTO
-        optionListDTO.product = createProduct
+        optionListDTO.productDTO = createProduct.toProductDTO()
         optionService.createOptionDetail(optionListDTO)
-
         return "redirect:/products"
     }
 
@@ -84,8 +92,13 @@ class ProductController(
      * 상품 수정
      */
     @PutMapping("/admin/products/{productId}")
-    fun updateProduct(@PathVariable("productId")productId : String,productDTO: ProductDTO) : String{
-        productService.updateProduct(productDTO)
+    fun updateProduct(@PathVariable("productId")productId : String,productDTO: ProductDTO, categoryId : String,
+                      @RequestPart file : MultipartFile) : String{
+        println("검증")
+        println(categoryId)
+        productDTO.category = categoryService.getCategoryById(categoryId.toLong())
+        println(productDTO.category.toString() + " " + productDTO.category?.name)
+        productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/products"
     }
 

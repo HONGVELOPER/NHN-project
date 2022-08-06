@@ -3,7 +3,6 @@ package nhncommerce.project.option
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.option.domain.*
 import nhncommerce.project.product.ProductRepository
-import nhncommerce.project.product.domain.Product
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -14,58 +13,26 @@ class OptionService (
     private val optionDetailRepository: OptionDetailRepository,
     private val productRepository: ProductRepository) {
 
-    fun getOptions() : List<OptionDTO>{
-        val options = optionRepository.findAll()
-        return options.map{it.toOptionDTO()}
-    }
-
-    fun getOption(id : Long) : OptionDTO  = optionRepository.findById(id).get().toOptionDTO()
-
-
-    //옵션명 생성
-    fun createOption(optionDTO: OptionDTO) : OptionDTO {
-        val option = optionRepository.save(optionDTO.toEntity())
-        return option.toOptionDTO()
-    }
-
-    //옵션명 수정
-    /**
-     *
-     */
-    fun updateOptionTitle(id : Long, optionDTO: OptionDTO) : OptionDTO{
-        val optionTitle : Option = optionRepository.findById(id).get()
-        optionTitle.name = optionDTO.name
-
-        optionRepository.save(optionTitle)
-        return optionTitle.toOptionDTO()
-    }
-
-    //옵션 수정
-//    fun updateOption(id : Long, optionDTO : OptionDTO) : OptionDTO {
-//        val option = optionRepository.findById(id).get()
-//        option.name = optionDTO.name
-//        option.parentOption = optionDTO.parentOption
-//
-//        optionRepository.save(option)
-//        return option.toOptionDTO()
-//    }
-
-    //옵션 삭제
-    fun deleteOption(id : Long) {
-        optionRepository.deleteById(id)
-    }
-
-    //상품 가져오기 (임시)
-    fun getProductList() : List<Product> {
-        val products = productRepository.findAll()
-        return products
-    }
-
     //상품 옵션(재고) 가져오기
     fun getProductOptionDetails(productId : Long) : List<OptionDetailDTO> {
         val product = productRepository.findById(productId).get()
         val optionDetailList = optionDetailRepository.findOptionDetailsByProduct(product)
         return optionDetailList.map { it.toOptionDetailDTO() };
+    }
+
+    //옵션 수정에서 삭제
+    fun deleteOption(optionId : Long) {
+        val option = optionRepository.findById(optionId).get()
+        optionDetailRepository.deleteOptionDetailsByOption(option)
+        optionRepository.deleteById(optionId)
+    }
+
+    //옵션 초기화
+    fun deleteOptions(productId: Long){
+        //외래키의 연관관계로 자식 옵션 부터 삭제
+        optionDetailRepository.deleteOptionDetailsByProductId(productId)
+        optionRepository.deleteChildOptionsByProductId(productId)
+        optionRepository.deleteParentOptionsByProductId(productId)
     }
 
     //상품 재고, 추가금액 수정
@@ -100,14 +67,15 @@ class OptionService (
                 optionNameList.add(null)
             }
         }
-        var updateOptionDTO = UpdateOptionDTO(product, optionTypeList, optionNameList)
+        var updateOptionDTO = UpdateOptionDTO(product.toProductDTO(), optionTypeList, optionNameList)
         return updateOptionDTO
     }
 
+    //Todo : 코드 리팩토링 필요
     //옵션 상세 생성
     fun createOptionDetail(optionListDTO: OptionListDTO) {
         //상품 생성
-        val product = optionListDTO.product
+        val product = optionListDTO.productDTO!!.toEntity()
         //옵션 생성
         val option1List = ArrayList<Option?>()
         val option2List = ArrayList<Option?>()
@@ -148,7 +116,8 @@ class OptionService (
             for(o2 in 0 until (if (option2List.size > 0) option2List.size else 1)){
                 for(o3 in 0 until (if (option3List.size > 0) option3List.size else 1)){
                     val num = option1List.size + option2List.size + option3List.size
-                    val name = "${option1List[o1]?.name?:""} / ${option2List[o2]?.name?:""} / ${option3List[o3]?.name?:""}"
+                    val name = generateName(listOf(option1List[o1]?.name, option2List[o2]?.name, option3List[o3]?.name))
+                    //val name = "${option1List[o1]?.name?:""} / ${option2List[o2]?.name?:""} / ${option3List[o3]?.name?:""}"
                     val optionDetail = OptionDetail(
                         null,
                         Status.ACTIVE,
@@ -168,5 +137,18 @@ class OptionService (
 
     }
 
-
+    fun generateName(optionList : List<String?>) : String{
+        var name = ""
+        for(i in 0..2){
+            if (optionList[i] != null){
+                if (i > 0 && optionList[i-1] != null)
+                    name += " / "
+                name += optionList[i]
+            }
+        }
+        if (name.equals(""))
+            return "옵션 없음"
+        else
+            return name
+    }
 }

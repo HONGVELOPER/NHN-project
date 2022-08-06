@@ -1,9 +1,9 @@
 package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.domain.Category
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
 data class ProductDTO(
@@ -27,11 +27,14 @@ data class ProductDTO(
     @field:Size(max = 300, message = "상세 설명을 300자 이내로 입력하세요.")
     var detailDescription:String?="",
 
-    var thumbnail:String?="",
+    var thumbnail:String="",
 
     var viewCount:Int=0,
 
     var totalStar:Float=0F,
+
+    //카테고리
+    var category: Category?=null
 
 ){
 
@@ -56,5 +59,20 @@ data class ProductDTO(
         }
 
         return true
+    }
+
+    fun toEntity() : Product {
+        return Product(
+            productId = productId,
+            status = status,
+            productName = productName,
+            price = price,
+            briefDescription = briefDescription,
+            detailDescription = detailDescription,
+            thumbnail = thumbnail,
+            viewCount = viewCount,
+            totalStar = totalStar,
+            category = category
+        )
     }
 }

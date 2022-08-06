@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!--- -->
+        <head>
+
+        </head>
+        <body>
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <h1 class="mt-4">Create Option</h1>
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <form th:action="@{/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="post" th:object="${optionList}">
+                        <div class="col-md-6">
+                            <div th:if="*{productDTO.thumbnail !=''}">
+                                <img class="card-img-top" th:src="*{productDTO.thumbnail}" alt="..." />
+                            </div>
+                            <div th:if="*{productDTO.thumbnail == ''}">
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                            </div>
+                        </div>
+                        <div>
+                            제품 이름 <br>
+                            <input class="form-control" type="text" placeholder="name" th:field="*{productDTO.productName}" readonly>
+                        </div>
+                        <div>
+                            제품 가격 <br>
+                            <input class="form-control" type="text" placeholder="name" th:field="*{productDTO.price}" readonly>
+                        </div>
+                        <div >
+                            제품 간략 설명
+                            <input type="text" class="form-control"  th:field="*{productDTO.briefDescription}" readonly/>
+                            <br>
+                        </div>
+                        <div id="box1" class="1">
+                            <input type="hidden" value="1">
+                            <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
+                            <input type="button" value="추가" onclick="add_textbox(1)">
+                        </div>
+                        <div id="box2" class="2">
+                            <input type="hidden" value="2">
+                            <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
+                            <input type="button" value="추가" onclick="add_textbox(2)">
+                        </div>
+                        <div id="box3" class="3">
+                            <input type="hidden" value="3">
+                            <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
+                            <input type="button" value="추가" onclick="add_textbox(3)">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <script th:inline="javascript">
+                        const add_textbox = (num) => {
+                            const box = document.getElementById("box"+num);
+                            const newP = document.createElement('p');
+                            newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
+                                "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
+                            newP.firstElementChild.name = "option" + num + "List";
+                            box.appendChild(newP);
+                        }
+                        const remove = (obj) => {
+                            num = obj.parentNode.parentNode.firstElementChild.value
+                            document.getElementById('box'+num).removeChild(obj.parentNode);
+                        }
+                    </script>
+                </div>
+            </div>
+        </section>
+        </body>
+    </th:block>
+</th:block>
+
+</html>
