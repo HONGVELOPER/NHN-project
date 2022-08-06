@@ -19,33 +19,21 @@ class UserController(
     val loginInfoService: LoginInfoService,
 ) {
 
-    /*
-    * 메인 페이지
-    * */
     @GetMapping("/user")
     fun main():String{
         return "user/index"
     }
 
-    /*
-    * 로그인 페이지 (삭제 해야함, security default login 사용)
-    * */
     @GetMapping("/loginForm")
     fun loginForm(): String {
         return "user/login"
     }
 
-    /*
-    * 회원 가입 페이지
-    * */
     @GetMapping("/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
-    /*
-    * 회원 프로필 수정 페이지
-    * */
     @GetMapping("/updateProfileForm")
     fun updateProfileForm(
         mav: ModelAndView,
@@ -62,9 +50,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원 비밀번호 수정 페이지
-    * */
     @GetMapping("/updatePasswordForm")
     fun updatePasswordForm(
         passwordDTO: PasswordDTO,
@@ -74,7 +59,7 @@ class UserController(
         if (loginInfo.isLogin) {
             val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
             if (userDTO.provider != "") {
-                mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
+                mav.addObject(  "data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
                 mav.viewName = "user/alert"
                 return mav
             }
@@ -113,43 +98,32 @@ class UserController(
     fun updateUserProfileById(
         @Valid @ModelAttribute profileDTO: ProfileDTO,
         bindingResult: BindingResult,
-        mav: ModelAndView,
-    ): ModelAndView {
+    ): String {
         if (bindingResult.hasErrors()) {
-            mav.viewName = "user/updateProfile"
-            return mav
+            return "user/updateProfile";
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.updateUserProfileById(loginInfo.userId, profileDTO)
-        mav.addObject("data", alertDTO("회원 프로필이 정상적으로 수정되었습니다.", "/user"))
-        mav.viewName = "user/alert"
-        return mav
+        return "user/index"
     }
 
     @PutMapping("/users/password")
     fun updateUserPasswordById(
         @Valid @ModelAttribute passwordDTO: PasswordDTO,
         bindingResult: BindingResult,
-        mav: ModelAndView
-    ):  ModelAndView {
+    ):  String {
         if (bindingResult.hasErrors()) {
-            mav.viewName = "user/updatePassword"
-            return mav
+            return "user/updatePassword";
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.updateUserPasswordById(loginInfo.userId, passwordDTO)
-        mav.addObject("data", alertDTO("회원 비밀번호가 정상적으로 수정되었습니다.", "/user"))
-        mav.viewName = "user/alert"
-        return mav
+        return "user/index"
     }
 
     @DeleteMapping("/users")
-    fun deleteUserById(mav: ModelAndView): ModelAndView {
+    fun deleteUserById() {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.deleteUserById(loginInfo.userId)
-        mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/user"))
-        mav.viewName = "user/alert"
-        return mav
     }
 
 //     권한 확인 위한 테스트 api
