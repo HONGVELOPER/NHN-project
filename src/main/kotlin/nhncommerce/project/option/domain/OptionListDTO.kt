@@ -1,9 +1,10 @@
 package nhncommerce.project.option.domain
 
 import nhncommerce.project.product.domain.Product
+import nhncommerce.project.product.domain.ProductDTO
 
 data class OptionListDTO (
-    var product : Product?=null,
+    var productDTO : ProductDTO?=null,
     var option1 : String?=null,
     var option2 : String?=null,
     var option3 : String?=null,
