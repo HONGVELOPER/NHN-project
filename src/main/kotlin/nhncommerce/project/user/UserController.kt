@@ -19,17 +19,11 @@ class UserController(
     val loginInfoService: LoginInfoService,
 ) {
 
-    /*
-    * 메인 페이지
-    * */
     @GetMapping("/user")
-    fun main():String{
+    fun userForm():String{
         return "user/index"
     }
-
-    /*
-    * 로그인 페이지 (삭제 해야함, security default login 사용)
-    * */
+    
     @GetMapping("/loginForm")
     fun loginForm(): String {
         return "user/login"

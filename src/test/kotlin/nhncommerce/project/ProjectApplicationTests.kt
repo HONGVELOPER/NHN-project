@@ -10,9 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class ProjectApplicationTests {
 
-	@Autowired
-	private lateinit var couponRepository: CouponRepository
-
-
+    @Test
+    fun contextLoads() {
+    }
 
 }

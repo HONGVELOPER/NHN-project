@@ -2,11 +2,12 @@ package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.domain.Category
+import nhncommerce.project.option.domain.OptionListDTO
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
-data class ProductDTO(
+data class ProductOptionDTO (
 
     var productId : Long?=null,
 
@@ -33,46 +34,13 @@ data class ProductDTO(
 
     var totalStar:Float=0F,
 
-    //카테고리
-    var category: Category?=null
+    var categoryId: String?=null,
 
-){
+    var option1 : String?=null,
+    var option2 : String?=null,
+    var option3 : String?=null,
+    var option1List: MutableList<String> = ArrayList<String>(),
+    var option2List: MutableList<String> = ArrayList<String>(),
+    var option3List: MutableList<String> = ArrayList<String>()
 
-    fun String.intOrString(): Any {
-        val v = toIntOrNull()
-        return when(v) {
-            null -> this
-            else -> v
-        }
-    }
-
-    fun productValidate():Boolean{
-
-        if(price < 0){
-            throw error("가격이 음수가 될 수 없습니다.")
-        }
-
-        try{
-            price.toInt()
-        }catch (e: NumberFormatException) {
-            throw error("가격에 숫자가 아닌 문자열이 들어올 수 없습니다.")
-        }
-
-        return true
-    }
-
-    fun toEntity() : Product {
-        return Product(
-            productId = productId,
-            status = status,
-            productName = productName,
-            price = price,
-            briefDescription = briefDescription,
-            detailDescription = detailDescription,
-            thumbnail = thumbnail,
-            viewCount = viewCount,
-            totalStar = totalStar,
-            category = category
-        )
-    }
-}
+    )

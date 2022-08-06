@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- 삭제 예정 -->
 <html lang="en xmlns:th=http://www.thymeleaf.org">
 <th:block th:fragment="setContent(content)">
     <head>
@@ -35,21 +34,6 @@
                             <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
                         </ul>
                     </li>
-                    <!--추가 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" th:href="@{/categories/1}">Music</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/2}">Photo</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/3}">Concert</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/4}">Living</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/5}">Beauty</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/6}">Stationery</a></li>
-                            <li><a class="dropdown-item" th:href="@{/categories/7}">Fashion</a></li>
-                        </ul>
-                    </li>
-                    <!-- -->
-
                 </ul>
                 <form class="d-flex">
                     <button class="btn btn-outline-dark" type="submit">

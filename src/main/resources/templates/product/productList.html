@@ -17,11 +17,8 @@
             <link href="css/styles.css" rel="stylesheet" />
         </head>
 
-
-
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
-
                 <form th:action="@{/products}" method="get" id="searchForm">
                     <div class="input-group">
                         <input type="hidden" name="page" value="1">
@@ -42,6 +39,7 @@
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
+
                             <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
 
                             <!-- Product details-->
@@ -66,8 +64,12 @@
                     <div th:each="product : ${products.dtoList}" class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-
+                            <div th:if="${product.thumbnail == ''}">
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                            </div>
+                            <div th:if="${product.thumbnail !=''}">
+                                <img class="card-img-top" th:src="${product.thumbnail}" alt="..." />
+                            </div>
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -80,8 +82,10 @@
 
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#" >상품 수정</a>
-                                    <a class="btn btn-outline-dark mt-auto" href="#">재고 관리</a>
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" th:onclick="|location.href='@{/updateProductPage/{productId}(productId=${product.productId})}'|" >상품 수정</a>
+                                    <a class="btn btn-outline-dark mt-auto" th:href="@{/options/products/{productId}/type(productId = ${product.productId})}">옵션 수정</a>
+                                    <a class="btn btn-outline-dark mt-auto" th:href="@{/options/products/{productId}/stock(productId = ${product.productId})}">재고 관리</a>
                                 </div>
                             </div>
                         </div>
@@ -124,15 +128,15 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${products.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/products(page=${products.start-1})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${products.page == page? 'active':''}"th:each="page : ${products.pageList}">
+            <li th:class=" 'page-item ' + ${products.page==page?'active':''}" th:each="page : ${products.pageList}">
                 <a class="page-link" th:href="@{/products(page=${page})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${products.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/products(page=${products.end+1})}">Next</a>
             </li>
         </ul>
 
