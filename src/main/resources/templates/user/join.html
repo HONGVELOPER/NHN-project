@@ -1,58 +1,61 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-<head>
-    <title>Please Log In</title>
-</head>
-<body>
-<p>회원 가입~</p>
-<div class="container">
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+        <head>
+            <title>Please Log In</title>
+        </head>
+        <body>
+        <div class="container">
+            <p>회원 가입</p>
+            <form th:action="@{/users}" method="post" th:object="${userDTO}" >
+                <div>
+                    <label for="name">이름</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요.">
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="passwordVerify">비밀번호 확인</label>
+                    <input type="password" id="passwordVerify" th:field="*{passwordVerify}" class="form-control" placeholder="비밀번호를 입력하세요.">
+                    <p th:if="${#fields.hasErrors('passwordVerify')}" th:errors="*{passwordVerify}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="phone">번호</label>
+                    <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="phone">성별</label>
+                    <label for="gender1">
+                        <input type="radio" id="gender1" name="gender" value="MALE" th:checked="${gender eq 'MALE'}">
+                        <span>남자</span>
+                    </label>
+                    <label for="gender2">
+                        <input type="radio" id="gender2" name="gender" value="FEMALE" th:checked="${gender eq 'FEMALE'}">
+                        <span>여자</span>
+                    </label>
+                    <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="jb-red"></p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
+                    </div>
+                </div>
 
-    <form th:action="@{/users}" method="post" th:object="${userDTO}" >
-        <div>
-            <label for="name">이름</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
-        </div>
-        <!--    <div>-->
-        <!--      <label for="male">성별</label>-->
-        <!--      <input type="radio" id="male" th:field="" class="form-control" placeholder="성을 입력하세요.">-->
-        <!--      <input type="radio" id="female" th:field="여" class="form-control" placehㅇlder="성을 입력하세요.">-->
-        <!--    </div>-->
-        <div>
-            <label for="email">이메일</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요.">
-        </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요.">
-        </div>
-        <div>
-            <label for="phone">번호</label>
-            <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
-        </div>
-        <div>
-            <label for="gender1">
-                <input type="radio" id="gender1" name="gender" value="MALE" th:checked="${gender eq 'MALE'}">
-                <span>남</span>
-            </label>
-            <label for="gender2">
-                <input type="radio" id="gender2" name="gender" value="FEMALE" th:checked="${gender eq 'FEMALE'}">
-                <span>여</span>
-            </label>
-        </div>
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
-            </div>
-            <!--      <div class="col">-->
-            <!--        <button class="w-100 btn btn-secondary btn-lg"-->
-            <!--                onclick="location.href='items.html'"-->
-            <!--                th:onclick="|location.href='@{product}'|"-->
-            <!--                type="button">취소</button>-->
-            <!--      </div>-->
-        </div>
+            </form>
 
-    </form>
-
-</div>
-</body>
+        </div>
+        </body>
+    </th:block>
+</th:block>
 </html>

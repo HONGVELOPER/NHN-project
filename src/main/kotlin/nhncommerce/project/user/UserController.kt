@@ -1,117 +1,158 @@
 package nhncommerce.project.user
 
-import nhncommerce.project.security.domain.FormLoginUserDetails
-import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import nhncommerce.project.user.domain.PasswordDTO
+import nhncommerce.project.user.domain.ProfileDTO
 import nhncommerce.project.user.domain.UserDTO
-import org.springframework.security.core.context.SecurityContextHolder
+import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.loginInfo.LoginInfoDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.ModelAndView
+import javax.validation.Valid
 
 
 @Controller
 class UserController(
-    val userService: UserService
+    val userService: UserService,
+    val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/user")
     fun userForm():String{
         return "user/index"
     }
-
+    
     @GetMapping("/loginForm")
     fun loginForm(): String {
         return "user/login"
     }
 
+    /*
+    * 회원 가입 페이지
+    * */
     @GetMapping("/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
+    /*
+    * 회원 프로필 수정 페이지
+    * */
     @GetMapping("/updateProfileForm")
     fun updateProfileForm(
-        model: Model,
-    ): String {
-        val userId: Long = getUserIdFromSession()
-        val userDTO: UserDTO = userService.findUserById(userId)
-        model.addAttribute("userDTO", userDTO)
-        return "user/updateProfile"
+        mav: ModelAndView,
+    ): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        if (loginInfo.isLogin) {
+            val profileDTO: ProfileDTO = userService.findUserProfileById(loginInfo.userId)
+            mav.addObject("profileDTO", profileDTO)
+            mav.viewName = "user/updateProfile"
+        } else {
+            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
+            mav.viewName = "user/alert"
+        }
+        return mav
     }
 
+    /*
+    * 회원 비밀번호 수정 페이지
+    * */
     @GetMapping("/updatePasswordForm")
-    fun updatePasswordForm(passwordDTO: PasswordDTO, ): String {
-        val userId: Long = getUserIdFromSession()
-        val userDTO: UserDTO = userService.findUserById(userId)
-        println("user dto : ${userDTO.toString()}")
-        return if (userDTO.provider == "") {
-            "user/updatePassword"
+    fun updatePasswordForm(
+        passwordDTO: PasswordDTO,
+        mav: ModelAndView,
+    ): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        if (loginInfo.isLogin) {
+            val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
+            if (userDTO.provider != "") {
+                mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
+                mav.viewName = "user/alert"
+                return mav
+            }
+            mav.viewName = "user/updatePassword"
         } else {
-            "user/index"
+            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
+            mav.viewName = "user/alert"
         }
+        return mav
     }
 
     @PostMapping("/users")
-    fun createUserByForm(@ModelAttribute userDTO: UserDTO, bindingResult: BindingResult):  String {
-        println("유저 회원가입 진입")
-        println(userDTO.toString())
+    fun createUserByForm(
+        @Valid @ModelAttribute userDTO: UserDTO,
+        bindingResult: BindingResult,
+        mav: ModelAndView
+    ): ModelAndView {
+        if (bindingResult.hasErrors()) {
+            mav.viewName = "user/join"
+            return mav
+        }
         userService.createUserByForm(userDTO)
-        return "user/index"
+        mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/user"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     @GetMapping("/users/me")
-    fun findUserById() {
-        val userId: Long = getUserIdFromSession()
-        userService.findUserById(userId)
+    fun findUserById(): String {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        userService.findUserById(loginInfo.userId)
+        return "user/index"
     }
 
     @PutMapping("/users/profile")
     fun updateUserProfileById(
-        @ModelAttribute userDTO: UserDTO,
+        @Valid @ModelAttribute profileDTO: ProfileDTO,
         bindingResult: BindingResult,
-    ) {
-        val userId: Long = getUserIdFromSession()
-        userService.updateUserProfileById(userId, userDTO)
+        mav: ModelAndView,
+    ): ModelAndView {
+        if (bindingResult.hasErrors()) {
+            mav.viewName = "user/updateProfile"
+            return mav
+        }
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        userService.updateUserProfileById(loginInfo.userId, profileDTO)
+        mav.addObject("data", alertDTO("회원 프로필이 정상적으로 수정되었습니다.", "/user"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     @PutMapping("/users/password")
     fun updateUserPasswordById(
-        @ModelAttribute passwordDTO: PasswordDTO,
+        @Valid @ModelAttribute passwordDTO: PasswordDTO,
         bindingResult: BindingResult,
-    ) {
-        val userId: Long = getUserIdFromSession()
-        println("password dto : ${passwordDTO.toString()}")
-        userService.updateUserPasswordById(userId, passwordDTO)
+        mav: ModelAndView
+    ):  ModelAndView {
+        if (bindingResult.hasErrors()) {
+            mav.viewName = "user/updatePassword"
+            return mav
+        }
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        userService.updateUserPasswordById(loginInfo.userId, passwordDTO)
+        mav.addObject("data", alertDTO("회원 비밀번호가 정상적으로 수정되었습니다.", "/user"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     @DeleteMapping("/users")
-    fun deleteUserById() {
-        val userId: Long = getUserIdFromSession()
-        userService.deleteUserById(userId)
+    fun deleteUserById(mav: ModelAndView): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        userService.deleteUserById(loginInfo.userId)
+        mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/user"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
-    // 권한 확인 위한 테스트 api
-    @GetMapping("/api/check")
-    fun test(): String {
-        println("api test 진입")
-        val userId: Long = getUserIdFromSession()
-        println("user id : $userId")
-        return "test"
-    }
+//     권한 확인 위한 테스트 api
+//    @GetMapping("/api/test")
+//    fun test(): String {
+//        println("api test 진입")
+//        val userId: Long = getUserIdFromSession()
+//        println("user id : $userId")
+//        return "redirect:/user"
+//    }
 
-    fun getUserIdFromSession(): Long {
-        val userId: Long
-        val auth = SecurityContextHolder.getContext().authentication.principal
-        val loginStatus = auth.javaClass.toString().split(".")[4]
-        if (loginStatus == "FormLoginUserDetails") {
-            val formLoginUserDetails: FormLoginUserDetails = auth as FormLoginUserDetails
-            userId = formLoginUserDetails.getId()
-        } else {
-            val oAuth2LoginUserDetails: Oauth2LoginUserDetails = auth as Oauth2LoginUserDetails
-            userId = oAuth2LoginUserDetails.getId()
-        }
-        return userId
-    }
 }

@@ -1,16 +1,10 @@
 package nhncommerce.project.deliver
 
 import nhncommerce.project.deliver.domain.Deliver
+import org.springframework.data.jpa.repository.JpaRepository
 
-data class DeliverRepository (
-    var id: Long? = null,
-    var address: String,
-) {
-    fun toEntity(): Deliver {
-        return Deliver(address = address)
-    }
+interface DeliverRepository: JpaRepository<Deliver, Long> {
 
-    fun toUpdateEntity(): Deliver {
-        return Deliver(id = id, address = address)
-    }
+    fun findByUserUserId(userId: Long): List<Deliver>
+
 }
