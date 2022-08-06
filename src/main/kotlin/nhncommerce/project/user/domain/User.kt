@@ -24,6 +24,7 @@ class User (
 
     @Column()
     @Enumerated(EnumType.STRING)
+
     var gender: Gender,
 
     @Column(nullable = false)
