@@ -65,15 +65,15 @@
         </section>
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${products.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.start-1}, categoryId=${categoryId})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${products.page == page? 'active':''}"th:each="page : ${products.pageList}">
+            <li th:class="'page-item ' + ${products.page==page?'active':''}" th:each="page : ${products.pageList}">
                 <a class="page-link" th:href="@{/categories/{categoryId}(page=${page}, categoryId=${categoryId})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${products.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.end+1}, categoryId=${categoryId})}">Next</a>
             </li>
         </ul>
 
