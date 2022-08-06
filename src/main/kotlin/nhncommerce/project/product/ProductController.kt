@@ -73,6 +73,8 @@ class ProductController(
         val optionListDTO = separate.get(1) as OptionListDTO
         optionListDTO.productDTO = createProduct.toProductDTO()
         optionService.createOptionDetail(optionListDTO)
+        println("test")
+
         return "redirect:/products"
     }
 
