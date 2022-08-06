@@ -4,23 +4,20 @@ import nhncommerce.project.security.domain.FormLoginUserDetails
 import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.UserDTO
-import nhncommerce.project.util.alert.AlertService
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletResponse
 
 
 @Controller
 class UserController(
-    val userService: UserService,
-    val alertService: AlertService,
+    val userService: UserService
 ) {
 
     @GetMapping("/user")
-    fun main():String{
+    fun userForm():String{
         return "user/index"
     }
 
@@ -45,14 +42,15 @@ class UserController(
     }
 
     @GetMapping("/updatePasswordForm")
-    fun updatePasswordForm(passwordDTO: PasswordDTO, response: HttpServletResponse): String {
+    fun updatePasswordForm(passwordDTO: PasswordDTO, ): String {
         val userId: Long = getUserIdFromSession()
         val userDTO: UserDTO = userService.findUserById(userId)
-        if (userDTO.provider != "") {
-            alertService.alertMessage("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/admin", response)
+        println("user dto : ${userDTO.toString()}")
+        return if (userDTO.provider == "") {
+            "user/updatePassword"
+        } else {
+            "user/index"
         }
-        println("안찍히지~~~~~~~~~~~~~~~")
-        return "user/updatePassword"
     }
 
     @PostMapping("/users")
@@ -82,11 +80,10 @@ class UserController(
     fun updateUserPasswordById(
         @ModelAttribute passwordDTO: PasswordDTO,
         bindingResult: BindingResult,
-        response: HttpServletResponse
     ) {
         val userId: Long = getUserIdFromSession()
         println("password dto : ${passwordDTO.toString()}")
-        userService.updateUserPasswordById(userId, passwordDTO, response)
+        userService.updateUserPasswordById(userId, passwordDTO)
     }
 
     @DeleteMapping("/users")
@@ -96,12 +93,12 @@ class UserController(
     }
 
     // 권한 확인 위한 테스트 api
-    @GetMapping("/api/test")
+    @GetMapping("/api/check")
     fun test(): String {
         println("api test 진입")
         val userId: Long = getUserIdFromSession()
         println("user id : $userId")
-        return "redirect:/user"
+        return "test"
     }
 
     fun getUserIdFromSession(): Long {
