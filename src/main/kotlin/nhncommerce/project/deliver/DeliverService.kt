@@ -2,64 +2,60 @@ package nhncommerce.project.deliver
 
 import nhncommerce.project.deliver.domain.Deliver
 import nhncommerce.project.deliver.domain.DeliverDTO
-import nhncommerce.project.exception.CustomException
-import nhncommerce.project.exception.ErrorCode
-import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
-import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.alert.AlertService
 import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class DeliverService (
     val deliverRepository: DeliverRepository,
     val userRepository: UserRepository,
+    val alertService: AlertService,
 ) {
     fun createDeliver(deliverDTO: DeliverDTO, userId: Long) {
         val user: User = userRepository.findById(userId).get()
         val deliver: Deliver = deliverDTO.toEntity(user)
-        if (deliver.user.userId != userId) {
-            throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
-        }
         deliverRepository.save(deliver)
     }
 
-    fun findDeliverById(deliverId: Long, userId: Long): DeliverDTO {
+    fun findDeliverById(deliverId: Long, userId: Long, response: HttpServletResponse): DeliverDTO {
         val deliver: Deliver = deliverRepository.findById(deliverId).get()
+        println("deliver user : ${deliver.user.userId}")
         if (deliver.user.userId != userId) {
-            throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
+            alertService.alertMessage("잘못된 접근입니다.", "/admin", response)
         }
         return DeliverDTO.fromEntity(deliver)
     }
 
-    fun findDeliverByUser(userId: Long): List<Deliver> {
-        val deliverList: List<Deliver> = deliverRepository.findByUserUserId(userId)
-        deliverList.map {
-            println(it)
-        }
-        return deliverList
-    }
+//    fun findDeliverByUser(UserId: Long): MutableList<DeliverDTO> {
+//        val deliverList: MutableList<Deliver> = deliverRepository.
+//    }
 
     fun updateDeliver(
         userId: Long,
         deliverId: Long,
         deliverDTO: DeliverDTO,
-    ) {
+        response: HttpServletResponse
+    ): Deliver {
         val deliver: Deliver = deliverRepository.findById(deliverId).get()
         if (deliver.user.userId != userId) {
-            throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
+            alertService.alertMessage("잘못된 접근입니다.", "/admin", response)
         }
         deliver.update(deliverDTO)
-        deliverRepository.save(deliver)
+        val updatedDeliver = deliverRepository.save(deliver)
+        return updatedDeliver
     }
 
-    fun deleteDeliverById(
+    fun deleteDeliver(
         userId: Long,
         deliverId: Long,
+        response: HttpServletResponse,
     ) {
         val deliver: Deliver = deliverRepository.findById(deliverId).get()
         if (deliver.user.userId != userId) {
-            throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
+            alertService.alertMessage("잘못된 접근입니다.", "/admin", response)
         }
         deliverRepository.deleteById(deliverId)
     }
