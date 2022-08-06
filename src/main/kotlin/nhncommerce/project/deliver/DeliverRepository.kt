@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface DeliverRepository: JpaRepository<Deliver, Long> {
 
-//    fun findByEmail
+    fun findByUserUserId(userId: Long): List<Deliver>
+
 }

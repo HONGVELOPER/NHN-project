@@ -3,7 +3,6 @@ package nhncommerce.project.option
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.option.domain.*
 import nhncommerce.project.product.ProductRepository
-import nhncommerce.project.product.domain.Product
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -113,7 +112,7 @@ class OptionService (
                 optionNameList.add(null)
             }
         }
-        var updateOptionDTO = UpdateOptionDTO(product, optionTypeList, optionNameList)
+        var updateOptionDTO = UpdateOptionDTO(product.toProductDTO(), optionTypeList, optionNameList)
         return updateOptionDTO
     }
 
@@ -121,7 +120,7 @@ class OptionService (
     //옵션 상세 생성
     fun createOptionDetail(optionListDTO: OptionListDTO) {
         //상품 생성
-        val product = optionListDTO.product
+        val product = optionListDTO.productDTO!!.toEntity()
         //옵션 생성
         val option1List = ArrayList<Option?>()
         val option2List = ArrayList<Option?>()

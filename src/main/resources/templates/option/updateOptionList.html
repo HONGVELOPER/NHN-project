@@ -1,50 +1,77 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/layout/optionLayout :: setContent(~{this::content})}">
+<th:block th:replace="~{/admin/layout :: setContent(~{this::content})}">
     <th:block th:fragment="content">
         <!--- -->
         <head>
         </head>
         <body>
-        <h1 class="mt-4">Update Option</h1>
-        <form th:action="@{/options/products/{productId}(productId = ${optionList.product?.productId})}" th:method="delete" th:object="${optionList}">
-            <div>
-                <input type="text" placeholder="name" th:field="*{product.productName}" readonly>
-                <input type="number" placeholder="price" th:field="*{product.price}" readonly>
-            </div>
-            <div id="box1" class="1">
-                <input type="hidden" value="1">
-                <input type="text" class="form-control" th:field="*{optionTypeList[0].name}" placeholder="Empty Option" readonly>
-                <div class="form-group" th:each="optionType1 : *{optionNameList[0]}">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <h1 class="mt-4">Update Option</h1>
+                <div class="row gx-4 gx-lg-5 align-items-center">
+
+                    <form th:action="@{/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="delete" th:object="${optionList}">
+                        <div class="col-md-6">
+                            <div th:if="*{productDTO.thumbnail !=''}">
+                                <img class="card-img-top" th:src="*{productDTO.thumbnail}" alt="..." />
+                            </div>
+                            <div th:if="*{productDTO.thumbnail == ''}">
+                                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                            </div>
+                        </div>
+                        <div>
+                            제품 이름 <br>
+                            <input class="form-control" type="text" placeholder="name" th:field="*{productDTO.productName}" readonly>
+                        </div>
+                        <div>
+                            제품 가격 <br>
+                            <input class="form-control" type="text" placeholder="name" th:field="*{productDTO.price}" readonly>
+                        </div>
+                        <div >
+                            제품 간략 설명
+                            <input type="text" class="form-control"  th:field="*{productDTO.briefDescription}" readonly/>
+                            <br>
+                        </div>
+                        <div id="box1" class="1">
+                            <input type="hidden" value="1">
+                            <input type="text" class="form-control" th:field="*{optionTypeList[0].name}" placeholder="Empty Option" readonly>
+                            <div class="form-group" th:each="optionType1 : *{optionNameList[0]}">
                     <span>
                         <input type="hidden" th:value="${optionType1.optionId}" readonly>
                     옵션명 <input type="text" class="form-control-sm" th:value="${optionType1.name}" readonly>
                     </span>
-                </div>
-            </div>
-            <div id="box2" class="2">
-                <input type="hidden" value="2">
-                <input type="text" class="form-control" th:field="*{optionTypeList[1].name}" placeholder="Empty Option" readonly>
-                <div class="form-group" th:each="optionType2 : *{optionNameList[1]}">
+                            </div>
+                        </div>
+                        <div id="box2" class="2">
+                            <input type="hidden" value="2">
+                            <input type="text" class="form-control" th:field="*{optionTypeList[1].name}" placeholder="Empty Option" readonly>
+                            <div class="form-group" th:each="optionType2 : *{optionNameList[1]}">
                     <span>
                         <input type="hidden" th:value="${optionType2.optionId}" readonly>
                     옵션명 <input type="text" class="form-control-sm" th:value="${optionType2.name}" readonly>
                     </span>
-                </div>
-            </div>
-            <div id="box3" class="3">
-                <input type="hidden" value="3">
-                <input type="text" class="form-control" th:field="*{optionTypeList[2].name}" placeholder="Empty Option" readonly>
-                <div class="form-group" th:each="optionType3 : *{optionNameList[2]}">
+                            </div>
+                        </div>
+                        <div id="box3" class="3">
+                            <input type="hidden" value="3">
+                            <input type="text" class="form-control" th:field="*{optionTypeList[2].name}" placeholder="Empty Option" readonly>
+                            <div class="form-group" th:each="optionType3 : *{optionNameList[2]}">
                     <span>
                         <input type="hidden" th:value="${optionType3.optionId}" readonly>
                     옵션명 <input type="text" class="form-control-sm" th:value="${optionType3.name}" readonly>
                     </span>
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">옵션 초기화 및 생성</button>
+                    </form>
+
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">옵션 초기화</button>
-        </form>
+        </section>
         </body>
     </th:block>
 </th:block>

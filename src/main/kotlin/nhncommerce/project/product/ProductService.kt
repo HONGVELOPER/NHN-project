@@ -46,7 +46,7 @@ class ProductService(
             productOptionDTO.viewCount,
         )
         val optionListDTO = OptionListDTO(
-            null,
+            productDTO,
            productOptionDTO.option1,
            productOptionDTO.option2,
            productOptionDTO.option3,
@@ -89,6 +89,10 @@ class ProductService(
 
     fun getProduct(productId: Long) : Product {
         return productRepository.findById(productId).get()
+    }
+
+    fun getProductDTO(productId : Long) : ProductDTO {
+        return productRepository.findById(productId).get().toProductDTO()
     }
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
@@ -140,13 +144,14 @@ class ProductService(
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
     fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream){
+        println("update검증")
+        println(productDTO.category?.name)
         var product = productRepository.findById(productDTO.productId!!.toLong()).get()
 
         var thumbnail = getThumbnailUUID(product)
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
         imageService.deleteImage(thumbnail)
-
         product.updateProduct(productDTO)
         productRepository.save(product)
     }

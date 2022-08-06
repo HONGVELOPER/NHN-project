@@ -72,6 +72,18 @@
                                 제품 상세 설명<br>
                                 <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
                             </div>
+                            <div>
+                                카테고리 선택 <br>
+                                <select name="categoryId" class="form-select">
+                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
+                                    <option value="none">=== 기존 ===</option>
+                                    <div th:each="category : ${categoryListDTO}">
+                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                    </div>
+                                </select>
+                            </div>
+
+
                             <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>
                         </form>
                         <form th:action="'/admin/products/'+${productId}" th:method="delete">

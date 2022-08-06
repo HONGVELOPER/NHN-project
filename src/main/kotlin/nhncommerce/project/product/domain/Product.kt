@@ -49,6 +49,7 @@ class Product(
         briefDescription = productDTO.briefDescription
         detailDescription=  productDTO.detailDescription
         thumbnail = productDTO.thumbnail
+        category = productDTO.category
     }
     
     fun toProductDTO() : ProductDTO {
