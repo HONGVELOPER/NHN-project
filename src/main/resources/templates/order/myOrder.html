@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+
+                        <tr th:each="order : ${orderInfo}">
+                            <div >
+                                제품 이름 : <td th:text="${order.get().productId.productName}">1</td>
+                            </div>
+                            <div >
+                                제품 상세 설명 : <td th:text="${order.get().productId.detailDescription}">1</td>
+                            </div>
+                            <div >
+                                제품 별 : <td th:text="${order.get().productId.totalStar}">1</td>
+                            </div>
+                            <div >
+                                사용한 쿠폰 이름 : <td th:text="${order.get().couponId.couponName}">1</td>
+                            </div>
+                            <div >
+                                결제한 금액 : <td th:text="${order.get().price}">1</td>
+                            </div>
+                            <div >
+                                주문 일자 : <td th:text="${order.get().createdAt}">1</td>
+                            </div>
+
+                        </tr>
+                            <a href="javascript:history.back();">이전 페이지로 이동</a>
+<!--                            <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>-->
+
+<!--                        <script th:inline="javascript">-->
+<!--                            const add_textbox = (num) => {-->
+<!--                                const box = document.getElementById("box"+num);-->
+<!--                                const newP = document.createElement('p');-->
+<!--                                newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +-->
+<!--                                    "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";-->
+<!--                                newP.firstElementChild.name = "option" + num + "List";-->
+<!--                                box.appendChild(newP);-->
+<!--                            }-->
+<!--                            const remove = (obj) => {-->
+<!--                                num = obj.parentNode.parentNode.firstElementChild.value-->
+<!--                                document.getElementById('box'+num).removeChild(obj.parentNode);-->
+<!--                            }-->
+<!--                        </script>-->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+</th:block>
+</html>
+

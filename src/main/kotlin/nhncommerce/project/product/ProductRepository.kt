@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository :JpaRepository<Product,Long>, QuerydslPredicateExecutor<Product> {
-
+    fun findByProductId(productId: Long): Product
 }
