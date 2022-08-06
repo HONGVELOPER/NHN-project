@@ -6,8 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
+import java.util.StringJoiner
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -16,6 +22,7 @@ import javax.validation.Valid
 class CouponController(
     val couponService: CouponService
 ) {
+
     @GetMapping("/")
     fun main():String{
         return "redirect:/admin"
@@ -50,9 +57,7 @@ class CouponController(
      */
     @GetMapping("/couponUpdatePage/{couponId}")
     fun couponUpdatePate(@PathVariable("couponId")couponId : Long, model: Model):String{
-        val coupon = couponService.getCoupon(couponId).get()
-        model.addAttribute("couponDTO", coupon)
-        model.addAttribute("expired",coupon.expired)
+        model.addAttribute("couponDTO",couponService.getCoupon(couponId))
         return "coupon/updateCoupon"
     }
 
@@ -63,13 +68,12 @@ class CouponController(
     fun createCoupon(@Valid couponDTO: CouponDTO, bindingResult: BindingResult,
                      @RequestParam("expired") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) expired:LocalDate,
                      session: HttpSession):String{
+        println(couponDTO.toString())
         if(bindingResult.hasErrors()){
             return "coupon/publishCoupon"
         }
         couponService.createCoupon(couponDTO,expired,session)
         session.removeAttribute("isPresentUser")
-        session.removeAttribute("email")
-        session.removeAttribute("user")
         return "redirect:/coupons"
     }
 

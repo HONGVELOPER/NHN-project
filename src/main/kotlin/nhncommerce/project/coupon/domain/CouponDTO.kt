@@ -15,7 +15,7 @@ import javax.validation.constraints.Size
 
 data class CouponDTO (
 
-    var couponId : Long?=null,
+    var couponId : String?=null,
 
     var status: Status = Status.ACTIVE,
 

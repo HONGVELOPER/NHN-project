@@ -31,11 +31,4 @@ class Coupon(
     @Column(nullable = false)
     var expired : LocalDate
 
-): BaseEntity(){
-    fun updateCoupon(couponDTO: CouponDTO, expired: LocalDate){
-        couponName = couponDTO.couponName
-        discountRate = couponDTO.discountRate
-        status = couponDTO.status
-        this.expired = expired
-    }
-}
+): BaseEntity()

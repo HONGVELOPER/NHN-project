@@ -1,7 +1,6 @@
 package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
-import nhncommerce.project.category.domain.Category
 import nhncommerce.project.option.domain.OptionListDTO
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -33,8 +32,6 @@ data class ProductOptionDTO (
     var viewCount:Int=0,
 
     var totalStar:Float=0F,
-
-    var categoryId: String?=null,
 
     var option1 : String?=null,
     var option2 : String?=null,

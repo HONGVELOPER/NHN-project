@@ -1,7 +1,6 @@
 package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.Status
-import nhncommerce.project.category.domain.Category
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -32,9 +31,6 @@ data class ProductDTO(
     var viewCount:Int=0,
 
     var totalStar:Float=0F,
-
-    //카테고리
-    var category: Category?=null
 
 ){
 
@@ -71,8 +67,7 @@ data class ProductDTO(
             detailDescription = detailDescription,
             thumbnail = thumbnail,
             viewCount = viewCount,
-            totalStar = totalStar,
-            category = category
+            totalStar = totalStar
         )
     }
 }
