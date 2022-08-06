@@ -3,18 +3,32 @@ package nhncommerce.project.user.domain
 import nhncommerce.project.baseentity.Gender
 import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
 data class UserDTO (
+
+    @field:NotBlank(message = "이메일을 입력해주세요.")
     var email: String = "",
+
+    @field:NotBlank(message = "성별을 선택해주세요.")
     var gender: String = "",
+
+    @field:NotBlank(message = "이름을 입력해주세요.")
     var name: String = "",
+
+    @field:NotBlank(message = "비밀번호를 입력해주세요.")
+    @field:Size(max = 20, message = "비밀번호를 30자 이내로 입력하세요")
     var password: String = "",
+
+    @field:NotBlank(message = "비밀번호를 한번 더 입력해주세요.")
+    var passwordVerify: String = "",
+
+    @field:NotBlank(message = "전회번호를 입력해주세요.")
     var phone: String = "",
+
     var provider: String = "",
 ) {
-    private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
-
     fun toEntity(): User {
         val genderStatus: Gender
         if (gender == "MALE") {
@@ -26,7 +40,7 @@ data class UserDTO (
             email = email,
             gender = genderStatus,
             name = name,
-            password = passwordEncoder.encode(password),
+            password = password,
             phone = phone,
             role = ROLE.ROLE_USER,
             status = Status.ACTIVE,

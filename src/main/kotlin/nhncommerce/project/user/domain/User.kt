@@ -50,10 +50,10 @@ class User (
 
 ): BaseEntity() {
 
-    fun updateProfile(userDTO: UserDTO) {
-        name = userDTO.name
-        email = userDTO.email
-        phone = userDTO.phone
+    fun updateProfile(profileDTO: ProfileDTO) {
+        name = profileDTO.name
+        email = profileDTO.email
+        phone = profileDTO.phone
     }
 
     fun updatePassword(newPassword: String) {
