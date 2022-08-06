@@ -1,5 +1,7 @@
 package nhncommerce.project.user
 
+import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.product.ProductService
 import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.ProfileDTO
 import nhncommerce.project.user.domain.UserDTO
@@ -7,6 +9,7 @@ import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
@@ -16,12 +19,15 @@ import javax.validation.Valid
 @Controller
 class UserController(
     val userService: UserService,
+    val productService: ProductService,
     val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/user")
-    fun userForm():String{
-        return "user/index"
+    fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
+
+        model.addAttribute("products",productService.getProductList(pageRequestDTO))
+        return "product/userProductList"
     }
     
     @GetMapping("/loginForm")

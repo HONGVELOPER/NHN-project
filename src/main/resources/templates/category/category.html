@@ -45,6 +45,10 @@
                                         <div class="text-center">
                                             <!-- Product name-->
                                             <h5 class="fw-bolder">[[${product.productName}]]</h5>
+                                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                                <div class="bi-star-fill"></div>
+                                                [[${product.totalStar}]]
+                                            </div>
                                             <!-- Product price-->
                                             [[${product.price}]]₩
                                         </div>
@@ -53,7 +57,7 @@
                                     <!-- Product actions-->
                                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                         <div class="text-center">
-                                            <a class="btn btn-outline-dark mt-auto" href="#">상세 화면</a>
+                                            <a class="btn btn-outline-dark mt-auto" th:href="@{/products/{productId}(productId = ${product.productId})}">상세 화면</a>
                                         </div>
                                     </div>
                                 </div>
