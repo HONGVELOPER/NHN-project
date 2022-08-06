@@ -6,12 +6,12 @@ import nhncommerce.project.baseentity.Status
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 data class UserDTO (
-        var email: String = "",
-        var gender: String = "",
-        var name: String = "",
-        var password: String = "",
-        var phone: String = "",
-        var provider: String = "",
+    var email: String = "",
+    var gender: String = "",
+    var name: String = "",
+    var password: String = "",
+    var phone: String = "",
+    var provider: String = "",
 ) {
     private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 
@@ -23,13 +23,13 @@ data class UserDTO (
             genderStatus = Gender.FEMALE
         }
         return User(
-                email = email,
-                gender = genderStatus,
-                name = name,
-                password = passwordEncoder.encode(password),
-                phone = phone,
-                role = ROLE.ROLE_USER,
-                status = Status.ACTIVE,
+            email = email,
+            gender = genderStatus,
+            name = name,
+            password = passwordEncoder.encode(password),
+            phone = phone,
+            role = ROLE.ROLE_USER,
+            status = Status.ACTIVE,
         )
     }
 
@@ -37,12 +37,12 @@ data class UserDTO (
         fun fromEntity(user: User): UserDTO {
             return user.run {
                 UserDTO(
-                        email = email,
-                        gender = gender.name,
-                        name = name,
-                        password = password?: "", // oauth 에서는 password가 없고 form login 에서는 provider 가 없음.
-                        phone = phone,
-                        provider = provider?: "",
+                    email = email,
+                    gender = gender.name,
+                    name = name,
+                    password = password?: "", // oauth 에서는 password가 없고 form login 에서는 provider 가 없음.
+                    phone = phone,
+                    provider = provider?: "",
                 )
             }
         }

@@ -1,20 +1,45 @@
 package nhncommerce.project.deliver.domain
 
+import nhncommerce.project.baseentity.BaseEntity
+import nhncommerce.project.baseentity.Status
+import nhncommerce.project.user.domain.User
 import javax.persistence.*
 
 @Table(name = "deliver")
-class Deliver (
+@Entity
+class Deliver(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deliver_id", nullable = false)
-    val id: Long? = null,
+    @Column(nullable = false)
+    val deliverId: Long? = null,
 
-//  enum status pull request 에 올라와 있어서 주석 처리 후 재 수정함. //
-//    @Column(nullable = false)
-//    open var status: Status,
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    var status: Status,
+
+    @Column(nullable = false)
+    var name: String, // 등록한 사람
+
+    @Column(nullable = false)
+    var addressName: String, // 자취방, 집, 회사
 
     @Column(nullable = false)
     var address: String,
 
-//    생성일, 수정일  base entity 가져와서 하기 위해 명세 안함. //
-)
+    @Column(length = 13)
+    var phone: String? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    val user: User
+
+): BaseEntity() {
+
+    fun update(deliverDTO: DeliverDTO) {
+        name = deliverDTO.name
+        addressName = deliverDTO.addressName
+        address = deliverDTO.address
+        phone = deliverDTO.phone
+    }
+}
