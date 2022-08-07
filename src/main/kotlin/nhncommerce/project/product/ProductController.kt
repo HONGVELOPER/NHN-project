@@ -111,4 +111,15 @@ class ProductController(
         return "redirect:/products"
     }
 
+    /**
+     * 상품 상세
+     */
+    @GetMapping("products/{productId}")
+    fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
+        val productDTO = productService.getProductDTO(productId)
+
+        model.addAttribute("productDTO", productDTO)
+        return "product/productDetail"
+    }
+
 }
