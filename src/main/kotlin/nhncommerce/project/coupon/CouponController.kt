@@ -41,7 +41,7 @@ class CouponController(
     /**
      * 쿠폰 발행 페이지
      */
-    @GetMapping("/publishCouponPage")
+    @GetMapping("/admin/publishCouponPage")
     fun createCouponPage(couponDTO: CouponDTO):String{
         return "coupon/publishCoupon"
     }
@@ -49,7 +49,7 @@ class CouponController(
     /**
      * 쿠폰 발행 리스트 페이지
      */
-    @GetMapping("/publishCouponListPage")
+    @GetMapping("/admin/publishCouponListPage")
     fun getCouponListPage():String{
         return "coupon/publishCouponList"
     }
@@ -57,7 +57,7 @@ class CouponController(
     /**
      * 쿠폰 수정 페이지
      */
-    @GetMapping("/couponUpdatePage/{couponId}")
+    @GetMapping("/admin/couponUpdatePage/{couponId}")
     fun couponUpdatePate(@PathVariable("couponId")couponId : Long, model: Model):String{
         val coupon = couponService.getCoupon(couponId).get()
         model.addAttribute("couponDTO", coupon)
@@ -79,22 +79,21 @@ class CouponController(
         session.removeAttribute("isPresentUser")
         session.removeAttribute("email")
         session.removeAttribute("user")
-        return "redirect:/coupons"
+        return "redirect:/admin/coupons"
     }
 
     /**
      * 쿠폰 발행 페이지에서 회원 존재 여부 판단
      */
     @PostMapping("/isPresentUser")
-    fun isPresentUser(@Valid @RequestParam("email") email:String, response: HttpServletResponse, session : HttpSession):String{
+    fun isPresentUser(@Valid @RequestParam("email") email:String, response: HttpServletResponse, session : HttpSession){
         couponService.isPresentUser(email,response,session)
-        return "/test"
     }
 
     /**
      * 쿠폰 목록 조회
      */
-    @GetMapping("/coupons")
+    @GetMapping("/admin/coupons")
     fun list(pageRequestDTO: PageRequestDTO, model : Model) : String{
         model.addAttribute("coupons",couponService.getCouponList(pageRequestDTO))
         return "coupon/publishCouponList"
@@ -106,7 +105,7 @@ class CouponController(
     @DeleteMapping("/admin/coupons/{couponId}")
     fun removeCoupon(@PathVariable("couponId")couponId : Long) : String{
         couponService.removeCoupon(couponId)
-        return "redirect:/coupons"
+        return "redirect:/admin/coupons"
     }
 
     /**
@@ -119,7 +118,7 @@ class CouponController(
             return "coupon/updateCoupon"
         }
         couponService.updateCoupon(couponDTO,expired)
-        return "redirect:/coupons"
+        return "redirect:/admin/coupons"
     }
 
 }

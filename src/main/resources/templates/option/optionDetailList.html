@@ -8,7 +8,7 @@
                 <h1 class="mt-4">OptionDetail List</h1>
                 <div class="row gx-4 gx-lg-5 align-items-center">
 
-                    <form th:object="${optionDetailList}" th:method="put" th:action="@{/options/products}">
+                    <form th:object="${optionDetailList}" th:method="put" th:action="@{/admin/options/products}">
                         <div class="form-group" th:each="optionDetail : ${optionDetailList}">
                             <p>
                                 <input type="hidden" th:value="${optionDetail.optionDetailId}" name="detailIdList">

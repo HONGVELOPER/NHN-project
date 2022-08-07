@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 @Controller
-@RequestMapping("/options")
+@RequestMapping("/admin/options")
 class OptionController (private val optionService: OptionService, private val productService: ProductService) {
 
     //옵션 수정
-    @GetMapping("products/{productId}/type")
+    @GetMapping("/products/{productId}/type")
     fun updateProductOptionPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val productOptionList = optionService.getProductOptionList(productId)
 
@@ -22,7 +22,7 @@ class OptionController (private val optionService: OptionService, private val pr
     }
 
     //옵션 초기화
-    @DeleteMapping("products/{productId}")
+    @DeleteMapping("/products/{productId}")
     fun deleteProductOption(@PathVariable(name = "productId") productId: Long, model: Model) : String{
         optionService.deleteOptions(productId)
 
@@ -33,18 +33,18 @@ class OptionController (private val optionService: OptionService, private val pr
         return "option/recreateOption"
     }
 
-    @PostMapping("products/{productId}")
+    @PostMapping("/products/{productId}")
     fun updateProductOption(@PathVariable(name = "productId") productId: Long, redirect : RedirectAttributes, @ModelAttribute optionList : OptionListDTO) : String{
         val productDTO = productService.getProductDTO(productId)
         optionList.productDTO = productDTO
         optionService.createOptionDetail(optionList)
         redirect.addAttribute("productId", productId )
-        return "redirect:/options/products/{productId}/type"
+        return "redirect:/admin/options/products/{productId}/type"
 
     }
 
     //product 재고수정 (이름 수정 필요)
-    @GetMapping("products/{productId}/stock")
+    @GetMapping("/products/{productId}/stock")
     fun updateOptionDetailPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val optionDetails = optionService.getProductOptionDetails(productId)
         model.addAttribute("optionDetailList", optionDetails)
@@ -53,11 +53,11 @@ class OptionController (private val optionService: OptionService, private val pr
     }
 
     //product 재고수정 (이름 수정 필요)
-    @PutMapping("products")
+    @PutMapping("/products")
     fun updateOptionDetail(@ModelAttribute optionStockDTO: OptionStockDTO ,model : Model) : String {
         optionService.updateOptionDetail(optionStockDTO)
 
-        return "redirect:/products"
+        return "redirect:/admin/products"
     }
 
 

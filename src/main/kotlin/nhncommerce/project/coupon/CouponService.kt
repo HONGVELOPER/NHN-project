@@ -14,6 +14,7 @@ import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -26,7 +27,8 @@ import javax.servlet.http.HttpSession
 @Service
 class CouponService(
     val userRepository: UserRepository,
-    val couponRepository: CouponRepository
+    val couponRepository: CouponRepository,
+    val loginInfoService: LoginInfoService
 ) {
 
     fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
@@ -52,13 +54,13 @@ class CouponService(
         session.setAttribute("email", email)
         session.setAttribute("isPresentUser", "true")
         session.setAttribute("user",findUser)
-        throw RedirectException(alertDTO("존재하는 회원 입니다.","/publishCouponPage"))
+        throw RedirectException(alertDTO("존재하는 회원 입니다.","/admin/publishCouponPage"))
     }
 
     private fun notFoundUser(response: HttpServletResponse, session: HttpSession) {
         session.removeAttribute("isPresentUser")
         session.removeAttribute("email")
-        throw RedirectException(alertDTO("존재하지 않는 회원 입니다. 다시 입력해주세요.","/publishCouponPage"))
+        throw RedirectException(alertDTO("존재하지 않는 회원 입니다. 다시 입력해주세요.","/admin/publishCouponPage"))
     }
 
     fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
