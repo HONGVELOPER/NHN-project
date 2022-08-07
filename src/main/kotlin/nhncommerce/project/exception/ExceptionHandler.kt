@@ -12,7 +12,7 @@ class ExceptionHandler {
     fun except(e : Exception) : String{
         return "errorPage/errorPage"
     }
-//
+
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(ex: CustomException) {
         println(ex.errorCode.message)
