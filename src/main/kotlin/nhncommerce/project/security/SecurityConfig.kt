@@ -26,8 +26,8 @@ class SecurityConfig(
     @Bean
     fun defaultSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeRequests()
-//            .antMatchers("/api/**").hasRole("USER")
-//            .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/admin/**").hasRole("ADMIN") // 어드민일경우
+            .antMatchers("/api/**").hasAnyRole("USER", "ADMIN") // 로그인 사람
             .anyRequest()
             .permitAll()
             .and()

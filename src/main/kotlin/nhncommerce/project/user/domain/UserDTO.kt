@@ -14,14 +14,16 @@ data class UserDTO (
     @field:NotBlank(message = "성별을 선택해주세요.")
     var gender: String = "",
 
+    @field:Size(max = 30, message = "이름을 30자 이내로 입력하세요")
     @field:NotBlank(message = "이름을 입력해주세요.")
     var name: String = "",
 
     @field:NotBlank(message = "비밀번호를 입력해주세요.")
-    @field:Size(max = 20, message = "비밀번호를 30자 이내로 입력하세요")
+    @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
     var password: String = "",
 
     @field:NotBlank(message = "비밀번호를 한번 더 입력해주세요.")
+    @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
     var passwordVerify: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")

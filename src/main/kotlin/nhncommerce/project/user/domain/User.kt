@@ -52,7 +52,6 @@ class User (
 
     fun updateProfile(profileDTO: ProfileDTO) {
         name = profileDTO.name
-        email = profileDTO.email
         phone = profileDTO.phone
     }
 
