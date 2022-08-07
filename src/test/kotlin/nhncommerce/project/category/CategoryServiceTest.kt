@@ -2,6 +2,8 @@ package nhncommerce.project.category
 
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.domain.Category
+import nhncommerce.project.option.OptionDetailRepository
+import nhncommerce.project.option.domain.OptionDetail
 import nhncommerce.project.product.ProductRepository
 import nhncommerce.project.product.ProductService
 import nhncommerce.project.product.domain.Product
@@ -20,6 +22,8 @@ class CategoryServiceTest {
     private lateinit var categoryService: CategoryService
     @Autowired
     private lateinit var categoryRepository: CategoryRepository
+    @Autowired
+    private lateinit var optionDetailRepository: OptionDetailRepository
 
 
     /**
@@ -100,8 +104,23 @@ class CategoryServiceTest {
                         0F,
                         category
                     )
-
                     productRepository.save(product)
+
+                    val optionDetail = OptionDetail(
+                        optionDetailId = null,
+                        status = Status.ACTIVE,
+                        extraCharge = 0,
+                        stock = 0,
+                        num = 3,
+                        name = "옵션 없음",
+                        product = product,
+                        option1 = null,
+                        option2 = null,
+                        option3 = null
+                    )
+
+                    optionDetailRepository.save(optionDetail)
+
                     count++
                 }
             }

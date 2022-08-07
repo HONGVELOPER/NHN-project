@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/layout/optionLayout :: setContent(~{this::content})}">
+<th:block th:replace="~{/admin/layout :: setContent(~{this::content})}">
     <th:block th:fragment="content">
-        <h1 class="mt-4">OptionDetail List</h1>
-        <form th:object="${optionDetailList}" th:method="put" th:action="@{/options/products}">
-            <div class="form-group" th:each="optionDetail : ${optionDetailList}">
-                <p>
-                    <input type="hidden" th:value="${optionDetail.optionDetailId}" name="detailIdList">
-                    옵션 <input type="text" class="form-control-sm" th:value="${optionDetail.name}" readonly>
-                     재고 <input type="text" class="form-control-sm" th:name="detailStockList" th:value="${optionDetail.stock}">
-                     추가금액 <input type="text" class="form-control-sm" th:name="detailChargeList" th:value="${optionDetail.extraCharge}">
-                </p>
-            </div>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <h1 class="mt-4">OptionDetail List</h1>
+                <div class="row gx-4 gx-lg-5 align-items-center">
 
+                    <form th:object="${optionDetailList}" th:method="put" th:action="@{/options/products}">
+                        <div class="form-group" th:each="optionDetail : ${optionDetailList}">
+                            <p>
+                                <input type="hidden" th:value="${optionDetail.optionDetailId}" name="detailIdList">
+                                옵션 <input type="text" class="form-control-sm" th:value="${optionDetail.name}" readonly>
+                                재고 <input type="text" class="form-control-sm" th:name="detailStockList" th:value="${optionDetail.stock}">
+                                추가금액 <input type="text" class="form-control-sm" th:name="detailChargeList" th:value="${optionDetail.extraCharge}">
+                            </p>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
     </th:block>
 </th:block>
 </html>
