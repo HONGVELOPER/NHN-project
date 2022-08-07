@@ -37,7 +37,7 @@ class ProductController(
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
         val categoryListDTO = categoryService.getCategoryList()
-정
+
         productService.generateToken()
 
         model.addAttribute("categoryListDTO", categoryListDTO)
