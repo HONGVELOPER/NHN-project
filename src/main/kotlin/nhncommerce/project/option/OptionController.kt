@@ -12,7 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 @RequestMapping("/admin/options")
 class OptionController (private val optionService: OptionService, private val productService: ProductService) {
 
-    //옵션 수정
+    /**
+     * 옵션 수정 페이지
+     */
     @GetMapping("/products/{productId}/type")
     fun updateProductOptionPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val productOptionList = optionService.getProductOptionList(productId)
@@ -21,7 +23,9 @@ class OptionController (private val optionService: OptionService, private val pr
         return "option/updateOptionList"
     }
 
-    //옵션 초기화
+    /**
+     * 옵션 초기화
+     */
     @DeleteMapping("/products/{productId}")
     fun deleteProductOption(@PathVariable(name = "productId") productId: Long, model: Model) : String{
         optionService.deleteOptions(productId)
@@ -33,6 +37,9 @@ class OptionController (private val optionService: OptionService, private val pr
         return "option/recreateOption"
     }
 
+    /**
+     * 옵션 수정
+     */
     @PostMapping("/products/{productId}")
     fun updateProductOption(@PathVariable(name = "productId") productId: Long, redirect : RedirectAttributes, @ModelAttribute optionList : OptionListDTO) : String{
         val productDTO = productService.getProductDTO(productId)
@@ -43,7 +50,9 @@ class OptionController (private val optionService: OptionService, private val pr
 
     }
 
-    //product 재고수정 (이름 수정 필요)
+    /**
+     * 재고 수정 페이지
+     */
     @GetMapping("/products/{productId}/stock")
     fun updateOptionDetailPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val optionDetails = optionService.getProductOptionDetails(productId)
@@ -52,7 +61,9 @@ class OptionController (private val optionService: OptionService, private val pr
         return "option/optionDetailList"
     }
 
-    //product 재고수정 (이름 수정 필요)
+    /**
+     * 재고 수정
+     */
     @PutMapping("/products")
     fun updateOptionDetail(@ModelAttribute optionStockDTO: OptionStockDTO ,model : Model) : String {
         optionService.updateOptionDetail(optionStockDTO)

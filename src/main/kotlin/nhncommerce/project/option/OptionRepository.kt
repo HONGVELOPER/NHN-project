@@ -10,18 +10,20 @@ import org.springframework.data.repository.query.Param
 
 interface OptionRepository : JpaRepository<Option, Long> {
 
-    fun findOptionsByProduct(product : Product) : MutableList<Option>
 
+    //product에 해당하는 option 찾기 (부모 option not null, optionId로 정렬)
     fun findOptionsByProductAndParentOptionIsNullOrderByOptionId(product: Product) : MutableList<Option>
 
-    fun findOptionsByProductAndParentOptionIsNotNullOrderByOptionId(product : Product) : MutableList<Option>
 
+    //부모 option에 해당하는 option 조회
     fun findOptionsByParentOption(parentOption : Option?) : MutableList<Option>
 
+    //productId를 통해 부모 option 삭제
     @Modifying
     @Query(value = "delete from Option as o where o.parentOption is null and o.product.productId=:productId")
     fun deleteParentOptionsByProductId(@Param("productId") productId: Long)
 
+    //productId를 통해 자식 option 삭제
     @Modifying
     @Query(value = "delete from Option as o where o.parentOption is not null and o.product.productId=:productId")
     fun deleteChildOptionsByProductId(@Param("productId") productId: Long)

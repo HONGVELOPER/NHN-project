@@ -20,12 +20,6 @@ class OptionService (
         return optionDetailList.map { it.toOptionDetailDTO() };
     }
 
-    //옵션 수정에서 삭제
-    fun deleteOption(optionId : Long) {
-        val option = optionRepository.findById(optionId).get()
-        optionDetailRepository.deleteOptionDetailsByOption(option)
-        optionRepository.deleteById(optionId)
-    }
 
     //옵션 초기화
     fun deleteOptions(productId: Long){
@@ -54,11 +48,13 @@ class OptionService (
     fun getProductOptionList(productId : Long) : UpdateOptionDTO{
         val product = productRepository.findById(productId).get()
         var parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
-        var optionTypeList = Array<Option?>(3, {null})
+        var optionTypeList = mutableListOf<Option?>(null, null, null)
+        var optionNameList = ArrayList<MutableList<Option>?>()
+        //옵션 타입
         for(i in 0 until parentOptionList.size)
             optionTypeList[i] = parentOptionList[i]
-        var optionNameList = ArrayList<MutableList<Option>?>()
 
+        //옵션 상세명
         for(i in 0..2){
             if (optionTypeList[i] != null){
                 var temp = optionRepository.findOptionsByParentOption(optionTypeList[i])
@@ -67,88 +63,50 @@ class OptionService (
                 optionNameList.add(null)
             }
         }
-        var updateOptionDTO = UpdateOptionDTO(product.toProductDTO(), optionTypeList, optionNameList)
-        return updateOptionDTO
+
+        return UpdateOptionDTO(product.toProductDTO(), optionTypeList, optionNameList)
     }
 
-    //Todo : 코드 리팩토링 필요
+
     //옵션 상세 생성
     fun createOptionDetail(optionListDTO: OptionListDTO) {
-        //상품 생성
         val product = optionListDTO.productDTO!!.toEntity()
-        //옵션 생성
-        val option1List = ArrayList<Option?>()
-        val option2List = ArrayList<Option?>()
-        val option3List = ArrayList<Option?>()
+        val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
+        //옵션 종류
+        val optionTypeList = mutableListOf<String?>(optionListDTO.option1, optionListDTO.option2, optionListDTO.option3)
+        //옵션 상세명
+        val optionNameList = mutableListOf(optionListDTO.option1List, optionListDTO.option2List, optionListDTO.option3List)
 
-        if (!(optionListDTO.option1.isNullOrEmpty())) {
-            //옵션 종류 생성
-            val option1 = optionRepository.save(Option(null, null, optionListDTO.option1, Status.ACTIVE, product))
-            for(s in optionListDTO.option1List) {
-                //옵션명 생성
-                val option = optionRepository.save(Option(null, option1, s, Status.ACTIVE, product))
-                option1List.add(option)
+        //option 생성
+        for(i in 0..2){
+            if (!optionTypeList[i].isNullOrEmpty()){
+                val optionType = optionRepository.save(Option(null, null, optionTypeList[i], Status.ACTIVE, product))
+                for(optionName in optionNameList[i]){
+                    val option = optionRepository.save(Option(null, optionType, optionName, Status.ACTIVE, product))
+                    optionList[i].add(option)
+                }
             }
         }
-        if (!(optionListDTO.option2.isNullOrEmpty())) {
-            val option2 = optionRepository.save(Option(null, null, optionListDTO.option2, Status.ACTIVE, product))
-            for(s in optionListDTO.option2List) {
-                val option = optionRepository.save(Option(null, option2, s, Status.ACTIVE, product))
-                option2List.add(option)
-            }
-        }
-        if (!optionListDTO.option3.isNullOrEmpty()) {
-            val option3 = optionRepository.save(Option(null, null, optionListDTO.option3, Status.ACTIVE, product))
-            for(s in optionListDTO.option3List){
-                val option = optionRepository.save(Option(null, option3, s, Status.ACTIVE, product))
-                option3List.add(option)
-            }
-        }
-        //옵션 디테일 생성
-        if (option1List.size == 0)
-            option1List.add(null)
-        if (option2List.size == 0)
-            option2List.add(null)
-        if (option3List.size == 0)
-            option3List.add(null)
 
-        for(o1 in 0 until option1List.size){
-            for(o2 in 0 until (if (option2List.size > 0) option2List.size else 1)){
-                for(o3 in 0 until (if (option3List.size > 0) option3List.size else 1)){
-                    val num = option1List.size + option2List.size + option3List.size
-                    val name = generateName(listOf(option1List[o1]?.name, option2List[o2]?.name, option3List[o3]?.name))
-                    //val name = "${option1List[o1]?.name?:""} / ${option2List[o2]?.name?:""} / ${option3List[o3]?.name?:""}"
+        //옵션이 비어있을 경우 null 넣어주기
+        for(i in 0..2){
+            if (optionList[i].size == 0)
+                optionList[i].add(null)
+        }
+
+        //옵션들의 경우의수에 맞게 optionDetail 생성
+        for(o1 in 0 until optionList[0].size){
+            for(o2 in 0 until (if (optionList[1].size > 0) optionList[1].size else 1)){
+                for(o3 in 0 until (if (optionList[2].size > 0) optionList[2].size else 1)){
+                    val num = optionList[0].size + optionList[1].size + optionList[2].size
+                    val name = generateName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
-                        null,
-                        Status.ACTIVE,
-                        0,
-                        0,
-                        num,
-                        name,
-                        product,
-                        option1List[o1],
-                        option2List[o2],
-                        option3List[o3]
+                        null, Status.ACTIVE, 0, 0, num, name, product,
+                        optionList[0][o1], optionList[1][o2], optionList[2][o3]
                     )
                     optionDetailRepository.save(optionDetail)
                 }
             }
         }
-
-    }
-
-    fun generateName(optionList : List<String?>) : String{
-        var name = ""
-        for(i in 0..2){
-            if (optionList[i] != null){
-                if (i > 0 && optionList[i-1] != null)
-                    name += " / "
-                name += optionList[i]
-            }
-        }
-        if (name.equals(""))
-            return "옵션 없음"
-        else
-            return name
     }
 }

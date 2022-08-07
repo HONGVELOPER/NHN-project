@@ -27,12 +27,10 @@ class OptionDetail (
     @Column(nullable = false)
     var name : String? = null,
 
-    //product
     @ManyToOne
     @JoinColumn(name="product_id")
     var product : Product? = null,
 
-    /**optionChild의 경우 각각을 갖는게 나은가? 아니면 List에 담아서 보관하는게 나은가?**/
     @OneToOne
     @JoinColumn(name="option_id1")
     var option1 : Option? = null,
