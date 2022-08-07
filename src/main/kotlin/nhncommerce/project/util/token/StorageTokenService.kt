@@ -44,7 +44,6 @@ class StorageTokenService(
             val expires = expiresParser(generateToken!!)
             val tokenId = tokenIdParser(generateToken!!)
             updateToken(tokenId,expires)
-            println("updateToken-------------------------------")
         }
     }
 

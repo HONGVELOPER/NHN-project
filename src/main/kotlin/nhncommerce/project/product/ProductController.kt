@@ -24,6 +24,9 @@ class ProductController(
 
 ) {
 
+    /**
+     * 사용자 보유 쿠폰 리스트
+     */
     @GetMapping("/products")
     fun getProductList(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))

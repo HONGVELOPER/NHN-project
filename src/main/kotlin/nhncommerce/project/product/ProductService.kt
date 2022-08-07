@@ -171,10 +171,9 @@ class ProductService(
     }
 
     fun generateToken(){
-        if(storageTokenService.hasToken()){
-            storageTokenService.checkExpired()
-        }else{
-            storageTokenService.generateToken()
+        when(storageTokenService.hasToken()){
+            true ->  storageTokenService.checkExpired()
+            false -> storageTokenService.generateToken()
         }
     }
 }
