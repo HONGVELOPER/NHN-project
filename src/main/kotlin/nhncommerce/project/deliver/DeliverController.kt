@@ -2,11 +2,15 @@ package nhncommerce.project.deliver
 
 import nhncommerce.project.deliver.domain.Deliver
 import nhncommerce.project.deliver.domain.DeliverDTO
+import nhncommerce.project.deliver.domain.DeliverListDTO
 import nhncommerce.project.exception.RedirectException
+import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
@@ -66,7 +70,7 @@ class DeliverController (
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         if (loginInfo.isLogin) {
             deliverService.createDeliver(deliverDTO, loginInfo.userId)
-            mav.addObject("data", alertDTO("배송지가 등록되었습니다.", "/user"))
+            mav.addObject("data", alertDTO("배송지가 등록되었습니다.", "/delivers/users"))
             mav.viewName = "user/alert"
             return mav
         } else {
@@ -92,11 +96,13 @@ class DeliverController (
     * 유저 배송지 목록 조회
     * */
     @GetMapping("/delivers/users")
-    fun findDeliverByUser() {
+    fun findDeliverByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         if (loginInfo.isLogin) {
-            val deliverList: List<Deliver> = deliverService.findDeliverByUser(loginInfo.userId)
-            println(deliverList.toString())
+            val result: PageResultDTO<DeliverListDTO, Deliver> = deliverService.findDeliverListByUser(loginInfo.userId, pageRequestDTO)
+            mav.addObject("delivers", result)
+            mav.viewName = "deliver/deliverList"
+            return mav
         } else {
             throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
         }
@@ -119,7 +125,7 @@ class DeliverController (
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         if (loginInfo.isLogin) {
             deliverService.updateDeliver(loginInfo.userId, deliverId, deliverDTO)
-            mav.addObject("data", alertDTO("배송지가 정상적으로 수정되었습니다.", "/user"))
+            mav.addObject("data", alertDTO("배송지가 정상적으로 수정되었습니다.", "/delivers/users"))
             mav.viewName = "user/alert"
             return mav
         } else {
@@ -138,7 +144,7 @@ class DeliverController (
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         if (loginInfo.isLogin) {
             deliverService.deleteDeliverById(loginInfo.userId, deliverId)
-            mav.addObject("data", alertDTO("배송지가 정상적으로 삭제되었습니다.", "/user"))
+            mav.addObject("data", alertDTO("배송지가 정상적으로 삭제되었습니다.", "/delivers/users"))
             mav.viewName = "user/alert"
             return mav
         } else {
