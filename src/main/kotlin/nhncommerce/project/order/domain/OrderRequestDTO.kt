@@ -11,5 +11,6 @@ data class OrderRequestDTO(
     var phone: String?=null,
     var userId: Long?=null,
     var couponId: Long?=null,
-    var productId: Long?=null
+    var optionDetailId: Long?=null,
+    var deliverId: Long?=null
 )

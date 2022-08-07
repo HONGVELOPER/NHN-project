@@ -3,7 +3,8 @@ package nhncommerce.project.order.domain
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.domain.Coupon
-import nhncommerce.project.product.domain.Product
+import nhncommerce.project.deliver.domain.Deliver
+import nhncommerce.project.option.domain.OptionDetail
 import nhncommerce.project.user.domain.User
 import javax.persistence.*
 
@@ -24,20 +25,19 @@ class Order (
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    var userId: User? = null,
+    var user: User? = null,
 
     @OneToOne
     @JoinColumn(name="coupon_id")
-    var couponId: Coupon?= null,
+    var coupon: Coupon?= null,
 
     @ManyToOne
-    @JoinColumn(name="product_id")
-    var productId: Product? = null,
-
+    @JoinColumn(name="option_detail_id")
+    var optionDetail: OptionDetail?= null,
     //배송지 추가되면 작성
-//    @OneToOne
-//    @JoinColumn(name="deliver_id")
-//    var deliver: Deliver,
+    @OneToOne
+    @JoinColumn(name="deliver_id")
+    var deliver: Deliver?= null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,9 +50,10 @@ class Order (
             status = status,
             price = price,
             phone = phone,
-            userId = userId,
-            couponId = couponId,
-            productId = productId
+            user = user,
+            coupon = coupon,
+            optionDetail = optionDetail ,
+            deliver = deliver
         )
     }
 }

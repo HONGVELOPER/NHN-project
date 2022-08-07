@@ -1,5 +1,7 @@
 package nhncommerce.project.order
 
+import nhncommerce.project.coupon.CouponService
+import nhncommerce.project.deliver.DeliverService
 import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.order.domain.OrderRequestDTO
 import nhncommerce.project.page.PageRequestDTO
@@ -14,13 +16,25 @@ import org.springframework.web.bind.annotation.RequestMapping
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-class OrderController (val orderService: OrderService) {
+class OrderController (
+    val orderService: OrderService,
+    val couponService: CouponService,
+    val deliverService: DeliverService)
+
+{
     /**
      * 상품 주문 페이지
      */
     @GetMapping("/orderProductPage")
     fun orderProductPage(model: Model): String {
         val orderRequestDTO = OrderRequestDTO()
+        //userId 테스트 값 나중에 프론트에서 받아와야함. 쿠키든 세션이든
+        var num = 1
+        val couponListViewDTO = couponService.getCouponViewList(num.toLong())
+        val deliverListviewDTO = deliverService.getDeliverViewList(num.toLong())
+
+        model.addAttribute("deliverListViewDTO", deliverListviewDTO)
+        model.addAttribute("couponListViewDTO", couponListViewDTO)
         model.addAttribute("orderRequestDTO", orderRequestDTO)
         return "order/orderProduct"
     }
@@ -29,12 +43,12 @@ class OrderController (val orderService: OrderService) {
      * 상품 주문
      */
     @PostMapping("/orders")
-    fun test2(orderRequestDTO: OrderRequestDTO): String {
-        println("test~~~~~~~~~~~~~~~~~~~~~~")
-        val order = orderService.createOrderDTO(orderRequestDTO)
-        orderService.createOrder(order)
-        println(order)
-        return "order/success"
+    fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse){
+        println(orderRequestDTO.couponId)
+        println(orderRequestDTO.deliverId)
+        val order = orderService.createOrder(orderRequestDTO,response)
+//        orderService.createOrder(order)
+//        return "order/success"
     }
 
     /**
@@ -50,7 +64,6 @@ class OrderController (val orderService: OrderService) {
      */
     @GetMapping("/orders/{userId}")
     fun orderList(@PathVariable("userId")userId: Long,pageRequestDTO: PageRequestDTO, model: Model):String{
-        println("첫번째")
         model.addAttribute("orders",orderService.getMyOrderList(pageRequestDTO,userId))
         return "order/myOrderList"
     }

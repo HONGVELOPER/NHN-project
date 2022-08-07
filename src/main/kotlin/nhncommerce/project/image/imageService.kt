@@ -15,8 +15,8 @@ import java.util.*
 @Service
 class imageService {
     var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    var tokenId = "gAAAAABi7cYYKgaqRb0Xo2avj7KsIJTqAsFCoGpAaHrA_hSaZ7qG_vV_P7vGsok-FlYM7kfOY8EeJitKrJt7TeJxEfo_6LHc94ptmB9MLqU9XCkqNE3_6Jg2ZcV75D6nHeMGdetsnlQodyHhJsMDlOLGPrhtyfMQrU7hhaZM13hboqA3085qfjg"
-    var containerName = "test"
+    var tokenId = "gAAAAABi7n1kq95-LSQbCAf2XgnjtNH9Szu2UDfG6Xi6whm9i3EuqMWv-hZNOmKAPJpjLtpMqwLXskvIySD1BEeXy-BCFbRilWm-z_LZ_nLt6WYf6KNbOBDVy8DnJuKrb_8Pumg5cinePFc_Sn6aQU_9fVtDHVX0kFrp9h7mbJw0_vAxZtwwjWI"
+    var containerName = "kirin"
     var objectPath = "/Users/soonbum/Documents/"
     var objectName = ""
     var restTemplate = RestTemplate()
@@ -38,6 +38,8 @@ class imageService {
             String::class.java, restTemplate.messageConverters
         )
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor)
+        println(url)
+        println("-----------------------")
         return url
     }
 

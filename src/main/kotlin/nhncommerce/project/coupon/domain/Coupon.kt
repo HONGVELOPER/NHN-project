@@ -16,7 +16,7 @@ class Coupon(
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    val userId : User,
+    val user : User,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -38,4 +38,5 @@ class Coupon(
         status = couponDTO.status
         this.expired = expired
     }
+
 }

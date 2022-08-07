@@ -3,13 +3,12 @@ package nhncommerce.project.coupon
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
-import nhncommerce.project.coupon.domain.Coupon
-import nhncommerce.project.coupon.domain.CouponDTO
-import nhncommerce.project.coupon.domain.CouponListDTO
-import nhncommerce.project.coupon.domain.QCoupon
+import nhncommerce.project.category.domain.CategoryListDTO
+import nhncommerce.project.coupon.domain.*
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
+import nhncommerce.project.user.domain.QUser.user
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
 import org.springframework.data.domain.Sort
@@ -30,14 +29,24 @@ class CouponService(
 
     fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
         val coupon = Coupon(couponName = couponDTO.couponName, discountRate = couponDTO.discountRate,
-            expired =expired, userId = user)
+            expired =expired, user = user)
         return coupon
     }
 
     fun entityToDto(coupon : Coupon): CouponListDTO{
-        val couponListDTO = CouponListDTO(coupon.couponId,coupon.userId.email, coupon.status, coupon.couponName, coupon.discountRate,
+        val couponListDTO = CouponListDTO(coupon.couponId,coupon.user.email, coupon.status, coupon.couponName, coupon.discountRate,
                                         coupon.expired, coupon.createdAt, coupon.updatedAt)
         return couponListDTO
+    }
+
+    /**
+     * 주문 시 쿠폰 상태 비활성화 하기위한 status 수정
+     * */
+    fun toEntity(couponRequestDTO: CouponRequestDTO): Coupon{
+        val coupon = Coupon(couponId = couponRequestDTO.couponId , user = couponRequestDTO.user!!,
+            status = couponRequestDTO.status, couponName = couponRequestDTO.couponName,
+            discountRate = couponRequestDTO.discountRate, expired = couponRequestDTO.expired)
+        return coupon
     }
 
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
@@ -76,11 +85,26 @@ class CouponService(
         return couponRepository.findById(couponId)
     }
 
+    /**
+     * 주문하기Page 에서 사용자의 사용가능한 쿠폰들 가져오기
+     * */
+    fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
+        val list = mutableListOf<CouponListViewDTO>()
+        val user = userRepository.findByUserId(userId)
+        val couponList = couponRepository.findByUser(user)
+        couponList.map {
+            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.status)
+            list.add(CouponListDTO)
+        }
+        return list.toList()
+    }
+
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
         var coupon = couponRepository.findById(couponDTO.couponId!!).get()
         coupon.updateCoupon(couponDTO,expired)
         couponRepository.save(coupon)
     }
+
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
@@ -109,7 +133,7 @@ class CouponService(
             conditionBuilder.or(qCoupon.discountRate.eq(keyword.toInt()))
         }
         if(type.contains("email")){
-            conditionBuilder.or(qCoupon.userId.email.contains(keyword))
+            conditionBuilder.or(qCoupon.user.email.contains(keyword))
         }
         if(type == "status" && keyword == Status.ACTIVE.toString()){
             conditionBuilder.or(qCoupon.status.eq(Status.ACTIVE))

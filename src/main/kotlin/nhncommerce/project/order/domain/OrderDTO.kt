@@ -2,17 +2,20 @@ package nhncommerce.project.order.domain
 
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.domain.Coupon
-import nhncommerce.project.product.domain.Product
+import nhncommerce.project.deliver.domain.Deliver
+import nhncommerce.project.option.domain.OptionDetail
 import nhncommerce.project.user.domain.User
+import java.util.*
 
 data class OrderDTO(
     var orderId: Long?=null,
     var status: Status?= Status.ACTIVE,
     var price: Int?=null,
     var phone: String?=null,
-    var userId: User?=null,
-    var couponId: Coupon?=null,
-    var productId: Product?=null
+    var user: User?=null,
+    var coupon: Coupon?=null,
+    var optionDetail: OptionDetail? =null,
+    var deliver: Deliver?=null
 ){
     fun toEntity(): Order{
         return Order(
@@ -20,9 +23,10 @@ data class OrderDTO(
             status = status,
             price = price,
             phone = phone,
-            userId = userId,
-            couponId = couponId,
-            productId = productId
+            user = user,
+            coupon = coupon,
+            optionDetail = optionDetail,
+            deliver = deliver
         )
     }
 }
