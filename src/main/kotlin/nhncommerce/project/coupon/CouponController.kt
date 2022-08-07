@@ -30,6 +30,15 @@ class CouponController(
     }
 
     /**
+     * 나의 쿠폰 리스트
+     */
+    @GetMapping("/api/myCouponList")
+    fun myCouponList(pageRequestDTO: PageRequestDTO, model : Model) : String{
+        model.addAttribute("myCoupon",couponService.getMyCouponList(pageRequestDTO))
+        return "coupon/myCouponList"
+    }
+
+    /**
      * 쿠폰 발행 페이지
      */
     @GetMapping("/publishCouponPage")
