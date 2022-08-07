@@ -99,7 +99,7 @@ class OptionService (
             for(o2 in 0 until (if (optionList[1].size > 0) optionList[1].size else 1)){
                 for(o3 in 0 until (if (optionList[2].size > 0) optionList[2].size else 1)){
                     val num = optionList[0].size + optionList[1].size + optionList[2].size
-                    val name = generateName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
+                    val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
                         null, Status.ACTIVE, 0, 0, num, name, product,
                         optionList[0][o1], optionList[1][o2], optionList[2][o3]
@@ -108,5 +108,20 @@ class OptionService (
                 }
             }
         }
+    }
+
+    fun generateDetailName(optionList : List<String?>) : String{
+        var name = ""
+        for(i in 0..2){
+            if (optionList[i] != null){
+                if (i > 0 && optionList[i-1] != null)
+                    name += " / "
+                name += optionList[i]
+            }
+        }
+        if (name.equals(""))
+            return "옵션 없음"
+        else
+            return name
     }
 }
