@@ -2,10 +2,20 @@ package nhncommerce.project.image
 
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 
-class AuthService(var authUrl: String, tenantId: String?, username: String?, password: String?) {
+@Service
+class AuthService {
+
+    var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+    var tenantId = "507cc2a432bc43de8721f24810f3daa1"
+    var username = "soonbum-jeong@nhn-commerce.com" //NHN Cloud Account
+    var password = "1234"
+    var tokenRequest = TokenRequest()
+    var restTemplate = RestTemplate()
+
     inner class TokenRequest {
         var auth = Auth()
 
@@ -20,11 +30,7 @@ class AuthService(var authUrl: String, tenantId: String?, username: String?, pas
         }
     }
 
-    var tokenRequest: TokenRequest
-    var restTemplate: RestTemplate
-
     init {
-
         // 요청 본문 생성
         tokenRequest = TokenRequest()
         tokenRequest.auth.tenantId = tenantId
@@ -49,16 +55,25 @@ class AuthService(var authUrl: String, tenantId: String?, username: String?, pas
         return response.body
     }
 
+    fun generateToken() : String?{
+        var authService = AuthService()
+        var token = authService.requestToken()
+        println(token)
+        return token
+    }
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-            var tenantId = "507cc2a432bc43de8721f24810f3daa1"
-            var username = "soonbum-jeong@nhn-commerce.com" //NHN Cloud Account
-            var password = "1234"
-            var authService = AuthService(authUrl, tenantId, username, password)
-            var token = authService.requestToken()
-            println(token)
+//            var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+//            var tenantId = "507cc2a432bc43de8721f24810f3daa1"
+//            var username = "soonbum-jeong@nhn-commerce.com" //NHN Cloud Account
+//            var password = "1234"
+//            var authService = AuthService(authUrl, tenantId, username, password)
+//            var token = authService.requestToken()
+//            println(token)
+            var authService = AuthService()
+            authService.generateToken()
         }
     }
 }
