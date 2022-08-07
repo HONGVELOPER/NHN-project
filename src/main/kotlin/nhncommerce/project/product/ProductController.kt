@@ -37,7 +37,7 @@ class ProductController(
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
         val categoryListDTO = categoryService.getCategoryList()
-
+정
         productService.generateToken()
 
         model.addAttribute("categoryListDTO", categoryListDTO)
@@ -82,7 +82,6 @@ class ProductController(
             session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
             return "product/addProduct"
         }
-        println("=============")
         println(productOptionDTO.categoryId)
         val separate = productService.separate(productOptionDTO)
         val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
@@ -96,12 +95,22 @@ class ProductController(
      * 상품 수정
      */
     @PutMapping("/admin/products/{productId}")
-    fun updateProduct(@PathVariable("productId")productId : String,productDTO: ProductDTO, categoryId : String,
+    fun updateProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult,
+                      categoryId : String, @PathVariable("productId")productId : String,
+                      response: HttpServletResponse, session : HttpSession,
                       @RequestPart file : MultipartFile) : String{
-        println("검증")
-        println(categoryId)
+        if(bindingResult.hasErrors()){
+            session.setAttribute("thumbnail", productDTO.thumbnail)
+            session.setAttribute("productName",productDTO.productName)
+            session.setAttribute("price",productDTO.price)
+            session.setAttribute("briefDescription",productDTO.briefDescription)
+            session.setAttribute("detailDescription",productDTO.detailDescription)
+            session.setAttribute("category", categoryService.getCategoryById(categoryId.toLong()))
+            // 카테고리 리스트를 위한 session
+            session.setAttribute("categoryList" , categoryService.getCategoryList())
+            return "product/updateProduct"
+        }
         productDTO.category = categoryService.getCategoryById(categoryId.toLong())
-        println(productDTO.category.toString() + " " + productDTO.category?.name)
         productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/admin/products"
     }
