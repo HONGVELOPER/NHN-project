@@ -3,7 +3,7 @@ package nhncommerce.project.product
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.CategoryRepository
-import nhncommerce.project.image.imageService
+import nhncommerce.project.image.ImageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -11,6 +11,7 @@ import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
 import nhncommerce.project.product.domain.QProduct
+import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.io.InputStream
@@ -20,7 +21,8 @@ import java.util.function.Function
 class ProductService(
     val productRepository: ProductRepository,
     val categoryRepository: CategoryRepository,
-    val imageService: imageService
+    val imageService: ImageService,
+    val storageTokenService: StorageTokenService
 ) {
 
     fun dtoTOEntity(productDTO: ProductDTO) : Product{
@@ -70,10 +72,9 @@ class ProductService(
      * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
      */
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream) : Product{
-
+        println("==========================$imageService.tokenId")
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
-
 
         val product = dtoTOEntity(productDTO)
         return productRepository.save(product)
@@ -167,5 +168,13 @@ class ProductService(
         var product = productRepository.findById(productId.toLong())
         product.get().status=Status.IN_ACTIVE
         productRepository.save(product.get())
+    }
+
+    fun generateToken(){
+        if(storageTokenService.hasToken()){
+            storageTokenService.checkExpired()
+        }else{
+            storageTokenService.generateToken()
+        }
     }
 }

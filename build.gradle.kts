@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.ir.backend.js.compile
 import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
@@ -51,6 +52,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2")
 
+    //json
+    implementation("org.json:json:20190722")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "junit", module = "junit")
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -65,7 +69,6 @@ dependencies {
     val querydslVersion = "5.0.0" //querydsl
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
     kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
-
 }
 
 tasks.withType<KotlinCompile> {
