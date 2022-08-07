@@ -22,13 +22,6 @@ class UserController(
     val productService: ProductService,
     val loginInfoService: LoginInfoService,
 ) {
-
-    @GetMapping("/user")
-    fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
-        model.addAttribute("products",productService.getProductList(pageRequestDTO))
-        return "product/userProductList"
-    }
-
     /*
     * 회원 가입 페이지
     * */

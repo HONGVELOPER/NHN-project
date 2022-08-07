@@ -22,7 +22,6 @@
                                     <div th:if="${session.email == null}">
                                         <input type="text" class="form-control" name="email"/><br>
                                     </div>
-                                    <a th:text="${session.isPresentUser}"></a>
                                     <p th:if="${session.isPresentUser != null}">
                                         <button class="btn btn-outline-dark mt-auto" type="submit" disabled>회원 검색</button>
                                     </p>

@@ -24,10 +24,16 @@ class ProductController(
 
 ) {
 
+    @GetMapping("/products")
+    fun getProductList(model : Model, pageRequestDTO: PageRequestDTO):String{
+        model.addAttribute("products",productService.getProductList(pageRequestDTO))
+        return "product/userProductList"
+    }
+
     /**
      * 상품 등록 페이지
      */
-    @GetMapping("/addProductPage")
+    @GetMapping("/admin/addProductPage")
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
         val categoryListDTO = categoryService.getCategoryList()
@@ -42,7 +48,7 @@ class ProductController(
     /**
      * 상품 전제 조회 페이지
      */
-    @GetMapping("/products")
+    @GetMapping("/admin/products")
     fun productListPage(model : Model, pageRequestDTO: PageRequestDTO):String{
 
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
@@ -52,7 +58,7 @@ class ProductController(
     /**
      * 상품 수정 페이지
      */
-    @GetMapping("/updateProductPage/{productId}")
+    @GetMapping("/admin/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
 
         model.addAttribute("categoryListDTO", categoryService.getCategoryList())
@@ -63,7 +69,7 @@ class ProductController(
     /**
      * 상품 등록
      */
-    @PostMapping("/products")
+    @PostMapping("/admin/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession,
                         @RequestPart file : MultipartFile) : String{
@@ -83,7 +89,7 @@ class ProductController(
         val optionListDTO = separate.get(1) as OptionListDTO
         optionListDTO.productDTO = createProduct.toProductDTO()
         optionService.createOptionDetail(optionListDTO)
-        return "redirect:/products"
+        return "redirect:/admin/products"
     }
 
     /**
@@ -97,7 +103,7 @@ class ProductController(
         productDTO.category = categoryService.getCategoryById(categoryId.toLong())
         println(productDTO.category.toString() + " " + productDTO.category?.name)
         productService.updateProduct(productDTO,file.inputStream)
-        return "redirect:/products"
+        return "redirect:/admin/products"
     }
 
     /**
@@ -106,7 +112,7 @@ class ProductController(
     @DeleteMapping("/admin/products/{productId}")
     fun deleteProduct(@PathVariable("productId")productId : String) : String{
         productService.deleteProduct(productId)
-        return "redirect:/products"
+        return "redirect:/admin/products"
     }
 
     /**

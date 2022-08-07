@@ -12,7 +12,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <h1 class="mt-4">Create Option</h1>
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <form th:action="@{/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="post" th:object="${optionList}">
+                    <form th:action="@{/admin/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="post" th:object="${optionList}">
                         <div class="col-md-6">
                             <div th:if="*{productDTO.thumbnail !=''}">
                                 <img class="card-img-top" th:src="*{productDTO.thumbnail}" alt="..." />
