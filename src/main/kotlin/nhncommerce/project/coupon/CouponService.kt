@@ -12,6 +12,7 @@ import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -25,17 +26,18 @@ import javax.servlet.http.HttpSession
 class CouponService(
     val userRepository: UserRepository,
     val alertService: AlertService,
-    val couponRepository: CouponRepository
+    val couponRepository: CouponRepository,
+    val loginInfoService: LoginInfoService
 ) {
 
     fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
         val coupon = Coupon(couponName = couponDTO.couponName, discountRate = couponDTO.discountRate,
-            expired =expired, userId = user)
+            expired =expired, user = user)
         return coupon
     }
 
     fun entityToDto(coupon : Coupon): CouponListDTO{
-        val couponListDTO = CouponListDTO(coupon.couponId,coupon.userId.email, coupon.status, coupon.couponName, coupon.discountRate,
+        val couponListDTO = CouponListDTO(coupon.couponId,coupon.user.email, coupon.status, coupon.couponName, coupon.discountRate,
                                         coupon.expired, coupon.createdAt, coupon.updatedAt)
         return couponListDTO
     }
@@ -109,7 +111,7 @@ class CouponService(
             conditionBuilder.or(qCoupon.discountRate.eq(keyword.toInt()))
         }
         if(type.contains("email")){
-            conditionBuilder.or(qCoupon.userId.email.contains(keyword))
+            conditionBuilder.or(qCoupon.user.email.contains(keyword))
         }
         if(type == "status" && keyword == Status.ACTIVE.toString()){
             conditionBuilder.or(qCoupon.status.eq(Status.ACTIVE))
@@ -118,8 +120,31 @@ class CouponService(
             conditionBuilder.or(qCoupon.status.eq(Status.IN_ACTIVE))
         }
 
-
         booleanBuilder.and(conditionBuilder)
+        return booleanBuilder
+    }
+
+    fun getMyCouponList(requestDTO: PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
+        val pageable = requestDTO.getPageable(Sort.by("discountRate").descending())
+        var booleanBuilder = getMyCouponListSearch(requestDTO)
+        val result = couponRepository.findAll(booleanBuilder, pageable)
+        val fn: Function<Coupon, CouponListDTO> =
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
+
+        return PageResultDTO<CouponListDTO,Coupon>(result,fn)
+    }
+
+    fun getMyCouponListSearch(pageRequestDTO: PageRequestDTO) : BooleanBuilder{
+        val loginUserId = loginInfoService.getUserIdFromSession().userId
+        val user = userRepository.findById(loginUserId).get() ?: null
+
+        var booleanBuilder = BooleanBuilder()
+
+        var qCoupon = QCoupon.coupon
+
+        var expression = qCoupon.user.eq(user)
+        booleanBuilder.and(expression)
+
         return booleanBuilder
     }
 
