@@ -25,64 +25,60 @@ class UserController(
 
     @GetMapping("/user")
     fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
-
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
         return "product/userProductList"
-    }
-    
-    @GetMapping("/loginForm")
-    fun loginForm(): String {
-        return "user/login"
     }
 
     /*
     * 회원 가입 페이지
     * */
-    @GetMapping("/joinForm")
+    @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
     /*
+    * 마이 페이지
+    * */
+    @GetMapping("/api/users/myPageForm")
+    fun myPageForm(mav: ModelAndView): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
+        mav.addObject("userDTO", userDTO)
+        mav.viewName = "user/myPage"
+        return mav
+    }
+
+    /*
     * 회원 프로필 수정 페이지
     * */
-    @GetMapping("/updateProfileForm")
+    @GetMapping("/api/users/updateProfileForm")
     fun updateProfileForm(
         mav: ModelAndView,
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val profileDTO: ProfileDTO = userService.findUserProfileById(loginInfo.userId)
-            mav.addObject("profileDTO", profileDTO)
-            mav.viewName = "user/updateProfile"
-        } else {
-            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-            mav.viewName = "user/alert"
-        }
+        val profileDTO: ProfileDTO = userService.findUserProfileById(loginInfo.userId)
+        mav.addObject("profileDTO", profileDTO)
+        mav.viewName = "user/updateProfile"
         return mav
     }
 
     /*
     * 회원 비밀번호 수정 페이지
     * */
-    @GetMapping("/updatePasswordForm")
+    @GetMapping("/api/users/updatePasswordForm")
     fun updatePasswordForm(
         passwordDTO: PasswordDTO,
         mav: ModelAndView,
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
-            if (userDTO.provider != "") {
-                mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
-                mav.viewName = "user/alert"
-                return mav
-            }
-            mav.viewName = "user/updatePassword"
-        } else {
-            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
+        val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
+        if (userDTO.provider != "") {
+            mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
             mav.viewName = "user/alert"
+            return mav
         }
+        mav.viewName = "user/updatePassword"
         return mav
     }
 
@@ -102,14 +98,14 @@ class UserController(
         return mav
     }
 
-    @GetMapping("/users/me")
-    fun findUserById(): String {
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        userService.findUserById(loginInfo.userId)
-        return "user/index"
-    }
+//    @GetMapping("/api/users/myPage")
+//    fun findUserById(): String {
+//        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+//        userService.findUserById(loginInfo.userId)
+//        return "user/index"
+//    }
 
-    @PutMapping("/users/profile")
+    @PutMapping("/api/users/profile")
     fun updateUserProfileById(
         @Valid @ModelAttribute profileDTO: ProfileDTO,
         bindingResult: BindingResult,
@@ -126,7 +122,7 @@ class UserController(
         return mav
     }
 
-    @PutMapping("/users/password")
+    @PutMapping("/api/users/password")
     fun updateUserPasswordById(
         @Valid @ModelAttribute passwordDTO: PasswordDTO,
         bindingResult: BindingResult,
@@ -143,7 +139,7 @@ class UserController(
         return mav
     }
 
-    @DeleteMapping("/users")
+    @DeleteMapping("/api/users")
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.deleteUserById(loginInfo.userId)
