@@ -13,13 +13,15 @@ import java.io.InputStream
 import java.util.*
 
 @Service
-class imageService {
+class ImageService {
     var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    var tokenId = "gAAAAABi7n1kq95-LSQbCAf2XgnjtNH9Szu2UDfG6Xi6whm9i3EuqMWv-hZNOmKAPJpjLtpMqwLXskvIySD1BEeXy-BCFbRilWm-z_LZ_nLt6WYf6KNbOBDVy8DnJuKrb_8Pumg5cinePFc_Sn6aQU_9fVtDHVX0kFrp9h7mbJw0_vAxZtwwjWI"
     var containerName = "kirin"
-    var objectPath = "/Users/soonbum/Documents/"
-    var objectName = ""
+    var tokenId = ""
     var restTemplate = RestTemplate()
+
+    fun insertTokenId(tokenId : String){
+        this.tokenId = tokenId
+    }
 
     private fun getUrl(containerName: String, objectName: String): String {
         return this.storageUrl + "/" + containerName + "/" + objectName
@@ -34,12 +36,11 @@ class imageService {
         var requestFactory = SimpleClientHttpRequestFactory()
         requestFactory.setBufferRequestBody(false)
         var restTemplate = RestTemplate(requestFactory)
+
         var responseExtractor = HttpMessageConverterExtractor(
             String::class.java, restTemplate.messageConverters
         )
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor)
-        println(url)
-        println("-----------------------")
         return url
     }
 
@@ -53,9 +54,8 @@ class imageService {
 
     fun uploadImage(inputStream: InputStream?) : String{
         try {
-            var imageService = imageService()
             var uuid = UUID.randomUUID().toString()
-            val url = imageService.uploadObject(containerName, uuid, inputStream)
+            val url = uploadObject(containerName, uuid, inputStream)
             return url
         } catch (e: Exception) {
             e.printStackTrace()
@@ -64,9 +64,8 @@ class imageService {
     }
 
     fun deleteImage(objectName : String){
-        var imageService = imageService()
         try {
-            imageService.deleteObject(objectName)
+            deleteObject(objectName)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }

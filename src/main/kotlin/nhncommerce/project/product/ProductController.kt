@@ -2,12 +2,9 @@ package nhncommerce.project.product
 
 
 import nhncommerce.project.category.CategoryService
-import nhncommerce.project.baseentity.Status
-import nhncommerce.project.image.imageService
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
-import nhncommerce.project.product.domain.Product
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
 import org.springframework.stereotype.Controller
@@ -15,17 +12,15 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.util.stream.IntStream
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 @Controller
 class ProductController(
-    val productService : ProductService,
+    val productService: ProductService,
     val optionService: OptionService,
     val categoryService: CategoryService,
-    val imageService: imageService
 
 ) {
 
@@ -36,6 +31,8 @@ class ProductController(
     fun addProductPage(model : Model):String{
         val productOptionDTO = ProductOptionDTO()
         val categoryListDTO = categoryService.getCategoryList()
+
+        productService.generateToken()
 
         model.addAttribute("categoryListDTO", categoryListDTO)
         model.addAttribute("productOptionDTO", productOptionDTO)
@@ -66,7 +63,6 @@ class ProductController(
     /**
      * 상품 등록
      */
-    //todo 세션 말고 쿠키로 할것 나중에 수정하기
     @PostMapping("/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession,
@@ -76,6 +72,8 @@ class ProductController(
             session.setAttribute("price",productOptionDTO.price)
             session.setAttribute("briefDescription",productOptionDTO.briefDescription)
             session.setAttribute("detailDescription",productOptionDTO.detailDescription)
+            // 카테고리 리스트를 위한 session
+            session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
             return "product/addProduct"
         }
         println("=============")
@@ -109,6 +107,19 @@ class ProductController(
     fun deleteProduct(@PathVariable("productId")productId : String) : String{
         productService.deleteProduct(productId)
         return "redirect:/products"
+    }
+
+    /**
+     * 상품 상세
+     */
+    @GetMapping("products/{productId}")
+    fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
+        val productDTO = productService.getProductDTO(productId)
+        val optionDetailDTOList = optionService.getProductOptionDetails(productId)
+
+        model.addAttribute("optionDetailList", optionDetailDTOList)
+        model.addAttribute("productDTO", productDTO)
+        return "product/productDetail"
     }
 
 }

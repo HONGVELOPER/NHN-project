@@ -1,5 +1,7 @@
 package nhncommerce.project.user
 
+import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.product.ProductService
 import nhncommerce.project.user.domain.PasswordDTO
 import nhncommerce.project.user.domain.ProfileDTO
 import nhncommerce.project.user.domain.UserDTO
@@ -7,6 +9,7 @@ import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
@@ -16,67 +19,66 @@ import javax.validation.Valid
 @Controller
 class UserController(
     val userService: UserService,
+    val productService: ProductService,
     val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/user")
-    fun userForm():String{
-        return "user/index"
-    }
-    
-    @GetMapping("/loginForm")
-    fun loginForm(): String {
-        return "user/login"
+    fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
+        model.addAttribute("products",productService.getProductList(pageRequestDTO))
+        return "product/userProductList"
     }
 
     /*
     * 회원 가입 페이지
     * */
-    @GetMapping("/joinForm")
+    @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
     /*
+    * 마이 페이지
+    * */
+    @GetMapping("/api/users/myPageForm")
+    fun myPageForm(mav: ModelAndView): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
+        mav.addObject("userDTO", userDTO)
+        mav.viewName = "user/myPage"
+        return mav
+    }
+
+    /*
     * 회원 프로필 수정 페이지
     * */
-    @GetMapping("/updateProfileForm")
+    @GetMapping("/api/users/updateProfileForm")
     fun updateProfileForm(
         mav: ModelAndView,
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val profileDTO: ProfileDTO = userService.findUserProfileById(loginInfo.userId)
-            mav.addObject("profileDTO", profileDTO)
-            mav.viewName = "user/updateProfile"
-        } else {
-            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-            mav.viewName = "user/alert"
-        }
+        val profileDTO: ProfileDTO = userService.findUserProfileById(loginInfo.userId)
+        mav.addObject("profileDTO", profileDTO)
+        mav.viewName = "user/updateProfile"
         return mav
     }
 
     /*
     * 회원 비밀번호 수정 페이지
     * */
-    @GetMapping("/updatePasswordForm")
+    @GetMapping("/api/users/updatePasswordForm")
     fun updatePasswordForm(
         passwordDTO: PasswordDTO,
         mav: ModelAndView,
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
-            if (userDTO.provider != "") {
-                mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
-                mav.viewName = "user/alert"
-                return mav
-            }
-            mav.viewName = "user/updatePassword"
-        } else {
-            mav.addObject("data", alertDTO("로그인이 필요한 서비스입니다.", "/login"))
+        val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
+        if (userDTO.provider != "") {
+            mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
             mav.viewName = "user/alert"
+            return mav
         }
+        mav.viewName = "user/updatePassword"
         return mav
     }
 
@@ -96,14 +98,14 @@ class UserController(
         return mav
     }
 
-    @GetMapping("/users/me")
-    fun findUserById(): String {
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        userService.findUserById(loginInfo.userId)
-        return "user/index"
-    }
+//    @GetMapping("/api/users/myPage")
+//    fun findUserById(): String {
+//        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+//        userService.findUserById(loginInfo.userId)
+//        return "user/index"
+//    }
 
-    @PutMapping("/users/profile")
+    @PutMapping("/api/users/profile")
     fun updateUserProfileById(
         @Valid @ModelAttribute profileDTO: ProfileDTO,
         bindingResult: BindingResult,
@@ -120,7 +122,7 @@ class UserController(
         return mav
     }
 
-    @PutMapping("/users/password")
+    @PutMapping("/api/users/password")
     fun updateUserPasswordById(
         @Valid @ModelAttribute passwordDTO: PasswordDTO,
         bindingResult: BindingResult,
@@ -137,7 +139,7 @@ class UserController(
         return mav
     }
 
-    @DeleteMapping("/users")
+    @DeleteMapping("/api/users")
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.deleteUserById(loginInfo.userId)
@@ -147,12 +149,16 @@ class UserController(
     }
 
 //     권한 확인 위한 테스트 api
-//    @GetMapping("/api/test")
-//    fun test(): String {
-//        println("api test 진입")
-//        val userId: Long = getUserIdFromSession()
-//        println("user id : $userId")
-//        return "redirect:/user"
-//    }
+    @GetMapping("/api/test")
+    fun test(): String {
+        println("api test 진입")
+        return "redirect:/user"
+    }
+
+    @GetMapping("/admin/test")
+    fun adminTest(): String {
+        println("admin test 진입")
+        return "redirect:/user"
+    }
 
 }

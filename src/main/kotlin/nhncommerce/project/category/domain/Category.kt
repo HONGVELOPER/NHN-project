@@ -18,8 +18,9 @@ class Category (
     @JoinColumn(name ="parent_id")
     var parentCategory : Category? = null,
 
-    @Enumerated(EnumType.STRING)
+
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     var status : Status? = Status.ACTIVE
 ): BaseEntity() {
     fun toCategoryDTO() : CategoryDTO {

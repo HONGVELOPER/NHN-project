@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <h1 class="mt-4">배송지 목록</h1>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">배송지 이름</th>
+                <th scope="col">주소</th>
+                <th scope="col">받는 사람</th>
+                <th scope="col">전화번호</th>
+                <th scope="col">등록 날짜</th>
+                <th scope="col">수정/삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="deliver : ${delivers.dtoList}">
+                <td>[[${deliver.addressName}]]</td>
+                <td>[[${deliver.address}]]</td>
+                <td>[[${deliver.name}]]</td>
+                <td>[[${deliver.phone}]]</td>
+                <td>[[${#temporals.format(deliver.createdAt,'yyyy/MM/dd')}]]</td>
+                <td>
+<!--                    href 로 링크 하면 delete 안먹음-->
+                    <form th:method="get" th:action="'/api/delivers/updateForm/'+${deliver.deliverId}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
+                    </form>
+                    <form th:method="delete" th:action="'/api/delivers/'+${deliver.deliverId}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination justify-content-center align-items-center">
+            <li class="page-item" th:if="${delivers.prev}">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${delivers.page == page? 'active':''}"th:each="page : ${delivers.pageList}">
+                <a class="page-link" th:href="@{/delivers(page=${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${delivers.next}">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </th:block>
+
+</th:block>
