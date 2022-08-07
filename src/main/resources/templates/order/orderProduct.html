@@ -1,56 +1,47 @@
 <!DOCTYPE html>
-<html lang="en xmlns:th=http://www.thymeleaf.org">
+<html lang="en xmlns:th=http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
                     <div class="col-md-6">
+                        <img class="card-img-top mb-5 mb-md-0" th:src="${optionDetailDTO.product.thumbnail}" alt="..." />
+                    </div>
+                    <div class="col-md-6">
+<!--                        <div class="small mb-1" th:filed="${optionDetailDTO.product.category.parentCategory.name} + ' > ' + ${productDTO.category.name}"></div>-->
                         <form th:action="@{/orders}"  method="post" th:object="${orderRequestDTO}">
-
                             <div>
-                                선택한 제품 인덱스
-                                <input type="text" class="form-control"  th:field="*{optionDetailId}" /><br>
+<!--                                선택한 제품 인덱스-->
+                                <input type="text" class="form-control" th:field="${optionDetailDTO.optionDetailId}">
+                                <h1 class="display-5 fw-bolder" th:text="${optionDetailDTO.product.productName}"></h1>
 <!--                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>-->
-                            </div>
-
-                            <div id="box2" class="2">
-                                유저인덱스
-                                <input type="hidden" value="2">
-                                <input type="text" class="form-control" th:field="*{userId}" placeholder="Enter Option 2">
-                                <input type="button" value="추가" onclick="add_textbox(2)">
-                            </div>
-
-                            <div>
-                                연락처<br>
-                                <input type="text" class="form-control" th:field="*{phone}"><br>
                             </div>
 
                             <div>
                                 제품 가격
-                                <input type="number" class="form-control"  th:field="*{price}" /><br>
+                                <!--                                <input type="number" class="form-control"  th:field="*{price}" /><br>-->
+                                <input type="number" class="form-control" th:value="${optionDetailDTO.product.price}" th:name="price">
+
                             </div>
 
+                            <h5 class="fw-bolder">상세 설명</h5>
+                            <p class="form-control" th:text="${optionDetailDTO.product.detailDescription}"></p>
 
-<!--                            <div id="box1" class="1">-->
-<!--                                쿠폰인덱스-->
-<!--                                <input type="hidden" value="1">-->
-<!--                                <input type="text" class="form-control" th:field="*{couponId}" placeholder="Enter Option 1">-->
-<!--                                <input type="button" value="추가" onclick="add_textbox(1)">-->
-<!--                            </div>-->
+                            <h5 class="fw-bolder">옵션</h5>
+                            <p class="form-control" th:text="${optionDetailDTO.name}"></p>
+                            <p class="form-control" th:text="${optionDetailDTO.product.detailDescription}"></p>
 
-<!--                            <div id="box3" class="1">-->
-<!--                                배송지 인덱스-->
-<!--                                <input type="hidden" value="1">-->
-<!--                                <input type="text" class="form-control" th:field="*{deliverId}" placeholder="Enter Option 1">-->
-<!--                                <input type="button" value="추가" onclick="add_textbox(1)">-->
-<!--                            </div>-->
+                            <div>
+                                연락처<br>
+                                <input type="text" class="form-control" name="phone" th:field="*{phone}"><br>
+                            </div>
 
                             <div>
                                 배송지 선택 <br>
                                 <select name="deliverId" class="form-select">
+                                        <option value="0" name="deliverId">배송지 직접 입력</option>
                                     <div th:each="delivers : ${deliverListViewDTO}">
                                         <option th:text="${delivers.fullAddress}" th:value="${delivers.deliverId}" name="deliverId"></option>
                                     </div>
@@ -61,18 +52,12 @@
                             <div>
                                 쿠폰 선택 <br>
                                 <select name="couponId" class="form-select">
-                                    <div th:each="coupons : ${couponListViewDTO}">
-                                        <option th:if="${coupons.status.toString().equals('ACTIVE')}" th:text="${coupons.couponName}" th:value="${coupons.couponId}" name="couponId"></option>
+                                    <option value="0" name="couponId">선택 안함</option>
+                                    <div th:if="${coupons.status.toString().equals('ACTIVE')}" th:each="coupons : ${couponListViewDTO}">
+                                        <option th:text="${coupons.couponName}" th:value="${coupons.couponId}" name="couponId"></option>
                                     </div>
                                 </select>
                             </div>
-
-
-<!--                            <div id="box3" class="3">-->
-<!--                                <input type="hidden" value="3">-->
-<!--                                <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">-->
-<!--                                <input type="button" value="추가" onclick="add_textbox(3)">-->
-<!--                            </div>-->
                             <button class="btn btn-outline-dark mt-auto" type="submit">상품 주문</button>
                         </form>
 

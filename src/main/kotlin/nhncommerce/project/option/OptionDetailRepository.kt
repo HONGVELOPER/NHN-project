@@ -27,4 +27,6 @@ interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
 
     fun findByOptionDetailId(optionDetailId: Long) : OptionDetail
 
+//    fun findByProduct(product: Product): OptionDetail
+
 }

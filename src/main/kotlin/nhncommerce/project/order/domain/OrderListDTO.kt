@@ -17,5 +17,6 @@ data class OrderListDTO(
     var coupon: Coupon?=null,
     var optionDetail: OptionDetail?=null,
     var deliver: Deliver?=null,
-    var createdAt : LocalDateTime
+    var createdAt : LocalDateTime,
+    var updatedAt : LocalDateTime
 )

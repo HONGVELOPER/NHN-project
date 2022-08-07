@@ -43,6 +43,7 @@ class CouponService(
      * 주문 시 쿠폰 상태 비활성화 하기위한 status 수정
      * */
     fun toEntity(couponRequestDTO: CouponRequestDTO): Coupon{
+        println("쿠폰 : " + couponRequestDTO.user)
         val coupon = Coupon(couponId = couponRequestDTO.couponId , user = couponRequestDTO.user!!,
             status = couponRequestDTO.status, couponName = couponRequestDTO.couponName,
             discountRate = couponRequestDTO.discountRate, expired = couponRequestDTO.expired)

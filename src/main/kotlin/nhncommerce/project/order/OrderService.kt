@@ -4,19 +4,20 @@ import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponRepository
 import nhncommerce.project.coupon.CouponService
-import nhncommerce.project.coupon.domain.CouponDTO
 import nhncommerce.project.coupon.domain.CouponRequestDTO
 import nhncommerce.project.deliver.DeliverRepository
 import nhncommerce.project.option.OptionDetailRepository
-import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionDetailDTO
 import nhncommerce.project.order.domain.*
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.util.alert.AlertService
+import nhncommerce.project.util.loginInfo.LoginInfoDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
 import javax.servlet.http.HttpServletResponse
@@ -30,26 +31,25 @@ class OrderService (
     val deliverRepository: DeliverRepository,
     val alertService: AlertService,
     val couponService: CouponService,
-    val optionService: OptionService
+    val loginInfoService: LoginInfoService
 
 ){
     fun createOrder(orderRequestDTO: OrderRequestDTO,response:HttpServletResponse) {
-        val user = orderRequestDTO.userId?.let { userRepository.findByUserId(it) }
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val user = userRepository.findByUserId(loginInfo.userId)
         val coupon = orderRequestDTO.couponId?.let { couponRepository.findByCouponId(it) }
         val optiondetail = orderRequestDTO.optionDetailId?.let { optionDetailRepository.findByOptionDetailId(it) }
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
         var productPrice = orderRequestDTO.price!! + optiondetail!!.extraCharge!!
-        println("추가금액 합친 총 금액 : " + productPrice )
         val totalProductPrice: Int = (productPrice!! -  (productPrice!! * (coupon!!.discountRate * 0.01))).toInt()
 
-        println("계산할 금액 : " + totalProductPrice)
         val orderDTO = OrderDTO(
             orderId = null, status = Status.ACTIVE,totalProductPrice,
             orderRequestDTO.phone,user,coupon,optiondetail,deliver)
 
         val couponDTO = CouponRequestDTO(
                 couponId = coupon.couponId,
-                user = user,
+                user = coupon.user,
                 status = Status.IN_ACTIVE,
                 couponName = coupon.couponName,
                 discountRate = coupon.discountRate,
@@ -77,28 +77,26 @@ class OrderService (
 
         val order = orderDTO.toEntity()
         orderRepository.save(order)
-        alertService.alertMessage("주문이 완료되었습니다.","/products",response) // userProductPage로 바꿔야힘.
+        alertService.alertMessage("주문이 완료되었습니다.","/products",response) // 사용자 메인 페이지로 바꿔야힘.
 
     }
 
 
     fun toOrderListDTO(order: Order): OrderListDTO{
-        //todo 출력되어야 할것들.
-        //todo 상품이름, 상품옵션, 옵션값, 가격, 쿠폰, 배송지, 주문 시간
         return OrderListDTO(order.orderId, order.status!!,order.price,order.phone,order.user,order.coupon
-        ,order.optionDetail,order.deliver,order.createdAt)
+        ,order.optionDetail,order.deliver,order.createdAt, order.updatedAt)
     }
 
     /**
      * user 조회
      * */
-    fun getMyOrderList(myOrderDTO: PageRequestDTO,userId: Long) : PageResultDTO<OrderListDTO,Order>{ val Id: Long = 1L //test value
+    fun getMyOrderList(myOrderDTO: PageRequestDTO,userId: Long) : PageResultDTO<OrderListDTO,Order>{
         val pageable = myOrderDTO.getPageable(Sort.by("createdAt").ascending())
-        var booleanBuilder2=getUserSearch(userId,myOrderDTO)
-        val result2 = orderRepository.findAll(booleanBuilder2,pageable)
+        var booleanBuilder=getUserSearch(userId,myOrderDTO)
+        val result = orderRepository.findAll(booleanBuilder,pageable)
         val fn: Function<Order, OrderListDTO> =
             Function<Order, OrderListDTO> { entity: Order? -> toOrderListDTO(entity!!) }
-        return PageResultDTO<OrderListDTO,Order>(result2,fn)
+        return PageResultDTO<OrderListDTO,Order>(result,fn)
 
     }
 
@@ -122,15 +120,31 @@ class OrderService (
         val user = userRepository.findByUserId(userId)
         return orderRepository.findByUserAndOrderId(user,orderId)
     }
+
+
+    /**
+     * 주문 취소
+     * */
     fun cancelMyOrder(orderDTO: OrderDTO,orderId: Long, userId: Long,response: HttpServletResponse){
         val user = userRepository.findByUserId(userId)
         var order = orderRepository.findByUserAndOrderId(user,orderId)
         order.get().status = Status.IN_ACTIVE
+        order.get().updatedAt = LocalDateTime.now()
         orderRepository.save(order.get())
-        //todo 쿠폰 상태 ACTIVE로 변경하는 서비스 삽입
 
-        alertService.alertMessage("주문이 취소되었습니다.","/orders",response)
+        val couponDTO = CouponRequestDTO(
+            couponId = order.get().coupon!!.couponId,
+            user = order.get().coupon!!.user,
+            status = Status.ACTIVE,
+            couponName = order.get().coupon!!.couponName,
+            discountRate = order.get().coupon!!.discountRate,
+            expired = order.get().coupon!!.expired
+        )
+        val useCoupon = couponService.toEntity(couponDTO)
+        couponRepository.save(useCoupon)
+        alertService.alertMessage("주문이 취소되었습니다.","/orders/myOrderList",response)
     }
+
 
 
     fun getUserSearch(userId : Long,pageRequestDTO: PageRequestDTO):BooleanBuilder{

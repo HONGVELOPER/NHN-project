@@ -34,7 +34,7 @@ class Order (
     @ManyToOne
     @JoinColumn(name="option_detail_id")
     var optionDetail: OptionDetail?= null,
-    //배송지 추가되면 작성
+
     @OneToOne
     @JoinColumn(name="deliver_id")
     var deliver: Deliver?= null,
