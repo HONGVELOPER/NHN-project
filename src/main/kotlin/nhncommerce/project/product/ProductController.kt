@@ -72,6 +72,8 @@ class ProductController(
             session.setAttribute("price",productOptionDTO.price)
             session.setAttribute("briefDescription",productOptionDTO.briefDescription)
             session.setAttribute("detailDescription",productOptionDTO.detailDescription)
+            // 카테고리 리스트를 위한 session
+            session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
             return "product/addProduct"
         }
         println("=============")
@@ -113,7 +115,9 @@ class ProductController(
     @GetMapping("products/{productId}")
     fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
         val productDTO = productService.getProductDTO(productId)
+        val optionDetailDTOList = optionService.getProductOptionDetails(productId)
 
+        model.addAttribute("optionDetailList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
         return "product/productDetail"
     }

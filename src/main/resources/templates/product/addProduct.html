@@ -56,13 +56,22 @@
                         </div>
 
                         <div>
-                            카테고리 선택 <br>
-                            <select name="categoryId" class="form-select">
-                                <div th:each="category : ${categoryListDTO}">
-                                    <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                </div>
-                            </select>
-
+                            <div th:if="${session.categoryListDTO != null}">
+                                카테고리 선택 <br>
+                                <select name="categoryId" class="form-select">
+                                    <div th:each="category : ${session.categoryListDTO}">
+                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                    </div>
+                                </select>
+                            </div>
+                            <div th:if="${session.categoryListDTO == null}">
+                                카테고리 선택 <br>
+                                <select name="categoryId" class="form-select">
+                                    <div th:each="category : ${categoryListDTO}">
+                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                    </div>
+                                </select>
+                            </div>
                         </div>
                         <br>
 

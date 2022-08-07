@@ -9,16 +9,11 @@
 
     <div class="container">
       <p>회원 프로필 수정</p>
-      <form th:action="@{/users/profile}" th:method="put" th:object="${profileDTO}" >
+      <form th:action="@{/api/users/profile}" th:method="put" th:object="${profileDTO}" >
         <div>
           <label for="name">이름</label>
           <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
           <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="jb-red"></p>
-        </div>
-        <div>
-          <label for="email">이메일</label>
-          <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요.">
-          <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="jb-red"></p>
         </div>
         <div>
           <label for="phone">번호</label>
