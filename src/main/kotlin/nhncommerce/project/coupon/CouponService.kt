@@ -7,12 +7,13 @@ import nhncommerce.project.coupon.domain.Coupon
 import nhncommerce.project.coupon.domain.CouponDTO
 import nhncommerce.project.coupon.domain.CouponListDTO
 import nhncommerce.project.coupon.domain.QCoupon
+import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.AlertService
-import nhncommerce.project.util.loginInfo.LoginInfoService
+import nhncommerce.project.util.alert.alertDTO
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -25,9 +26,7 @@ import javax.servlet.http.HttpSession
 @Service
 class CouponService(
     val userRepository: UserRepository,
-    val alertService: AlertService,
-    val couponRepository: CouponRepository,
-    val loginInfoService: LoginInfoService
+    val couponRepository: CouponRepository
 ) {
 
     fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
@@ -49,15 +48,17 @@ class CouponService(
     }
 
     fun isPresentUser(email: String, response: HttpServletResponse, session: HttpSession) {
-        val findUser = userRepository.findByEmail(email) ?: notFoundUser(response)
+        val findUser = userRepository.findByEmail(email) ?: notFoundUser(response,session)
         session.setAttribute("email", email)
         session.setAttribute("isPresentUser", "true")
         session.setAttribute("user",findUser)
-        alertService.alertMessage("존재하는 회원 입니다.","/publishCouponPage",response)
+        throw RedirectException(alertDTO("존재하는 회원 입니다.","/publishCouponPage"))
     }
 
-    private fun notFoundUser(response: HttpServletResponse) {
-        alertService.alertMessage("존재하지 않는 회원 입니다. 다시 입력해주세요.","/publishCouponPage",response)
+    private fun notFoundUser(response: HttpServletResponse, session: HttpSession) {
+        session.removeAttribute("isPresentUser")
+        session.removeAttribute("email")
+        throw RedirectException(alertDTO("존재하지 않는 회원 입니다. 다시 입력해주세요.","/publishCouponPage"))
     }
 
     fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{

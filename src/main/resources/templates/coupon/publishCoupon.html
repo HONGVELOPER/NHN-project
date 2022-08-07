@@ -15,14 +15,20 @@
 
                                 회원 email
                                 <form th:action="@{/isPresentUser}"  method="post">
-                                    <div th:if="${session.email != null}">
-                                        <input type="text" class="form-control" name="email" th:value="${session.email}" /><br>
+                                    <div th:if="${session.isPresentUser != null}">
+                                        <input type="text" class="form-control" name="email" th:value="${session.email}" disabled/><br>
                                     </div>
 
                                     <div th:if="${session.email == null}">
                                         <input type="text" class="form-control" name="email"/><br>
                                     </div>
-                                    <button class="btn btn-outline-dark mt-auto" type="submit">회원 검색</button>
+                                    <a th:text="${session.isPresentUser}"></a>
+                                    <p th:if="${session.isPresentUser != null}">
+                                        <button class="btn btn-outline-dark mt-auto" type="submit" disabled>회원 검색</button>
+                                    </p>
+                                    <p th:if="${session.isPresentUser == null}">
+                                        <button class="btn btn-outline-dark mt-auto" type="submit">회원 검색</button>
+                                    </p>
                                 </form>
                                 <br>
                                 <form th:action="@{/admin/coupons}"  method="post" th:object="${couponDTO}">
