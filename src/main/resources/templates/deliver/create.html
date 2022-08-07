@@ -9,7 +9,7 @@
         <p>배송지 추가</p>
         <div class="container">
 
-            <form th:action="@{/delivers}" method="post" th:object="${deliverDTO}" >
+            <form th:action="@{/api/delivers}" method="post" th:object="${deliverDTO}" >
                 <div>
                     <label for="addressName">배송지 이름</label>
                     <input type="text" id="addressName" th:field="*{addressName}" class="form-control" placeholder="배송지 이름을 입력하세요.">

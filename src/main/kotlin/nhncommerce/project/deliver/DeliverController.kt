@@ -24,40 +24,31 @@ class DeliverController (
     /*
     * 배송지 추가 페이지
     * */
-    @GetMapping("deliverCreateForm")
+    @GetMapping("/api/delivers/createForm")
     fun createDeliverForm(deliverDTO: DeliverDTO): String {
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            return "deliver/create"
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        return "deliver/create"
     }
 
     /*
     * 배송지 수정 페이지
     */
-    @GetMapping("deliverUpdateForm/{deliverId}")
+    @GetMapping("/api/delivers/updateForm/{deliverId}")
     fun updateDeliverForm(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView,
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val deliverDTO: DeliverDTO = deliverService.findDeliverById(deliverId, loginInfo.userId)
-            mav.addObject("deliverId", deliverId)
-            mav.addObject("deliverDTO", deliverDTO)
-            mav.viewName = "deliver/update"
-            return mav
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        val deliverDTO: DeliverDTO = deliverService.findDeliverById(deliverId, loginInfo.userId)
+        mav.addObject("deliverId", deliverId)
+        mav.addObject("deliverDTO", deliverDTO)
+        mav.viewName = "deliver/update"
+        return mav
     }
 
     /*
     * 배송지 추가
     * */
-    @PostMapping("/delivers")
+    @PostMapping("/api/delivers")
     fun createDeliver(
         @ModelAttribute deliverDTO: DeliverDTO,
         bindingResult: BindingResult,
@@ -68,50 +59,38 @@ class DeliverController (
             return mav
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            deliverService.createDeliver(deliverDTO, loginInfo.userId)
-            mav.addObject("data", alertDTO("배송지가 등록되었습니다.", "/delivers/users"))
-            mav.viewName = "user/alert"
-            return mav
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        deliverService.createDeliver(deliverDTO, loginInfo.userId)
+        mav.addObject("data", alertDTO("배송지가 등록되었습니다.", "/api/delivers/users"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     /*
     * 단일 배송지 조회
     * */
-    @GetMapping("/delivers/{deliverId}")
+    @GetMapping("/api/delivers/{deliverId}")
     fun findDeliverById(@PathVariable("deliverId") deliverId: Long) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val deliverDTO: DeliverDTO = deliverService.findDeliverById(deliverId, loginInfo.userId)
-            println(deliverDTO.toString())
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        val deliverDTO: DeliverDTO = deliverService.findDeliverById(deliverId, loginInfo.userId)
+        println(deliverDTO.toString())
     }
 
     /*
     * 유저 배송지 목록 조회
     * */
-    @GetMapping("/delivers/users")
+    @GetMapping("/api/delivers/users")
     fun findDeliverByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            val result: PageResultDTO<DeliverListDTO, Deliver> = deliverService.findDeliverListByUser(loginInfo.userId, pageRequestDTO)
-            mav.addObject("delivers", result)
-            mav.viewName = "deliver/deliverList"
-            return mav
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        val result: PageResultDTO<DeliverListDTO, Deliver> = deliverService.findDeliverListByUser(loginInfo.userId, pageRequestDTO)
+        mav.addObject("delivers", result)
+        mav.viewName = "deliver/deliverList"
+        return mav
     }
 
    /*
     * 배송지 수정
     * */
-    @PutMapping("/delivers/{deliverId}")
+    @PutMapping("/api/delivers/{deliverId}")
     fun updateDeliver(
         @PathVariable("deliverId") deliverId: Long,
         @ModelAttribute deliverDTO: DeliverDTO,
@@ -123,32 +102,24 @@ class DeliverController (
             return mav
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            deliverService.updateDeliver(loginInfo.userId, deliverId, deliverDTO)
-            mav.addObject("data", alertDTO("배송지가 정상적으로 수정되었습니다.", "/delivers/users"))
-            mav.viewName = "user/alert"
-            return mav
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        deliverService.updateDeliver(loginInfo.userId, deliverId, deliverDTO)
+        mav.addObject("data", alertDTO("배송지가 정상적으로 수정되었습니다.", "/api/delivers/users"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     /*
     * 배송지 삭제
     * */
-    @DeleteMapping("/delivers/{deliverId}")
+    @DeleteMapping("/api/delivers/{deliverId}")
     fun deleteDeliverById(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (loginInfo.isLogin) {
-            deliverService.deleteDeliverById(loginInfo.userId, deliverId)
-            mav.addObject("data", alertDTO("배송지가 정상적으로 삭제되었습니다.", "/delivers/users"))
-            mav.viewName = "user/alert"
-            return mav
-        } else {
-            throw RedirectException(alertDTO("로그인이 필요한 서비스입니다.", "/login"))
-        }
+        deliverService.deleteDeliverById(loginInfo.userId, deliverId)
+        mav.addObject("data", alertDTO("배송지가 정상적으로 삭제되었습니다.", "/api/delivers/users"))
+        mav.viewName = "user/alert"
+        return mav
     }
 }
