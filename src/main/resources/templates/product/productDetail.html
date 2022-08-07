@@ -25,6 +25,18 @@
                         </div>
                         <h5 class="fw-bolder">상세 설명</h5>
                         <p class="lead" th:text="${productDTO.detailDescription}"></p>
+                        <h5 class="fw-bolder">옵션</h5>
+                        <select name="optionDetailId" class="form-select">
+                            <div th:each="optionDetail : ${optionDetailList}">
+                                <div th:if="${optionDetail.stock > 0}">
+                                    <option th:text="${optionDetail.name}" th:value="${optionDetail.optionDetailId}" name="optionDetailId"></option>
+                                </div>
+                                <div th:if="${optionDetail.stock <= 0}">
+                                    <option th:text="${optionDetail.name} + '(품절)'" disabled="disabled"></option>
+                                </div>
+                            </div>
+                        </select>
+                        <br>
                         <div class="d-flex">
                             <a class="btn btn-outline-dark mt-auto" href="#}">상품 구매</a>
                         </div>
