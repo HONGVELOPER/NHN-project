@@ -1,7 +1,7 @@
 package nhncommerce.project.option.domain
 
 data class OptionStockDTO (
-    var detailIdList : ArrayList<Long>,
-    var detailStockList : ArrayList<Int>,
-    var detailChargeList : ArrayList<Int>
+    var detailIdList : MutableList<Long>,
+    var detailStockList : MutableList<Int>,
+    var detailChargeList : MutableList<Int>
 )

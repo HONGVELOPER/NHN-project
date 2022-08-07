@@ -3,6 +3,7 @@ package nhncommerce.project.category
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.domain.Category
 import nhncommerce.project.option.OptionDetailRepository
+import nhncommerce.project.option.domain.Option
 import nhncommerce.project.option.domain.OptionDetail
 import nhncommerce.project.product.ProductRepository
 import nhncommerce.project.product.ProductService
@@ -30,6 +31,7 @@ class CategoryServiceTest {
      * 항상 카테고리 생성 먼저하고 상품 생성하기
      */
 
+    //카테고리 생성
     @Test
     @Rollback(value = false)
     fun insertCategory() {
@@ -77,6 +79,8 @@ class CategoryServiceTest {
             }
         }
     }
+
+    //상품 생성
     @Test
     @Rollback(value = false)
     fun insertProduct() {
@@ -126,4 +130,5 @@ class CategoryServiceTest {
             }
         }
     }
+
 }

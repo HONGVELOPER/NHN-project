@@ -23,13 +23,13 @@ class CategoryService (
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository
 ) {
+
     //카테고리 생성
     fun createCategory(postCategoryDTO: CategoryDTO) : CategoryDTO {
         val category = categoryRepository.save(postCategoryDTO.toEntity())
         return category.toCategoryDTO()
     }
 
-    //카테고리id 로 카테고리
     fun getCategoryById(categoryId : Long) : Category{
         return categoryRepository.findById(categoryId).get()
     }
@@ -49,11 +49,12 @@ class CategoryService (
             return findCategory.parentCategory?.toCategoryDTO()
     }
 
+    //자식 카테고리 찾기
     fun findChildCategory(parentCategoryDTO: CategoryDTO?) : List<Category> {
         return categoryRepository.findCategoriesByParentCategory(parentCategoryDTO?.toEntity())
     }
 
-    //product 생성및 수정을 위한 category List
+    //product 생성 및 수정을 위한 category List
     fun getCategoryList():List<CategoryListDTO> {
         val list = mutableListOf<CategoryListDTO>()
         val categories = categoryRepository.findAllByParentCategoryIsNotNull()
@@ -64,6 +65,7 @@ class CategoryService (
         return list.toList()
     }
 
+    //해당 카테고리의 productList 조회
     fun findProducts(categoryId : Long) : List<Product> {
         //카테고리
         val category = categoryRepository.findById(categoryId).get()
@@ -89,7 +91,7 @@ class CategoryService (
         return productDTO
     }
 
-    //카테고리 조회 및 페이징
+    //카테고리 조회 및 페이징 처리
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
         pageRequestDTO.size = 12
@@ -108,7 +110,7 @@ class CategoryService (
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
 
-    //대 카테고리 조회시
+    //대 카테고리 조회 (페이징)
     fun getParentCategorySearch(pageRequestDTO: PageRequestDTO, categoryIdList : List<Long>) : BooleanBuilder {
         var type = pageRequestDTO.type
         var booleanBuilder = BooleanBuilder()
@@ -122,7 +124,7 @@ class CategoryService (
         return booleanBuilder
     }
 
-    //소 카테고리 조회시
+    //소 카테고리 조회 (패이징)
     fun getChildCategorySearch(pageRequestDTO: PageRequestDTO, category: Category) : BooleanBuilder {
         var type = pageRequestDTO.type
         var booleanBuilder = BooleanBuilder()
