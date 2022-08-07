@@ -11,10 +11,10 @@
 
                             <div class="col-md-6">
                                 <input type="file" name="file" onchange="previewFile()" required><br>
-                                <div th:if="${productDTO.thumbnail !=''}">
+                                <div th:if="${session.thumbnail !=''}">
                                     <img class="card-img-top" th:src="${productDTO.thumbnail}" alt="..." />
                                 </div>
-                                <div th:if="${productDTO.thumbnail == ''}">
+                                <div th:if="${session.thumbnail == ''}">
                                     <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
                                 </div>
                             </div>
@@ -72,17 +72,39 @@
                                 제품 상세 설명<br>
                                 <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
                             </div>
+<!--                            <div>-->
+<!--                                카테고리 선택 <br>-->
+<!--                                <select name="categoryId" class="form-select">-->
+<!--                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>-->
+<!--                                    <option value="none">=== 기존 ===</option>-->
+<!--                                    <div th:each="category : ${categoryListDTO}">-->
+<!--                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>-->
+<!--                                    </div>-->
+<!--                                </select>-->
+<!--                            </div>-->
                             <div>
-                                카테고리 선택 <br>
-                                <select name="categoryId" class="form-select">
-                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
-                                    <option value="none">=== 기존 ===</option>
-                                    <div th:each="category : ${categoryListDTO}">
-                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                    </div>
-                                </select>
+                                <div th:if="${session.categoryList != null}">
+                                    카테고리 선택 <br>
+                                    <select name="categoryId" class="form-select">
+                                        <option selected th:text="${session.category.parentCategory.name}+' > '+${session.category.name}" th:value="${session.category.categoryId}"></option>
+                                        <option value="none">=== 기존 ===</option>
+                                        <div th:each="category : ${session.categoryList}">
+                                            <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                        </div>
+                                    </select>
+                                </div>
+                                <div th:if="${session.categoryList == null}">
+                                    카테고리 선택 <br>
+                                    <select name="categoryId" class="form-select">
+                                        <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
+                                        <option value="none">=== 기존 ===</option>
+                                        <div th:each="category : ${categoryListDTO}">
+                                            <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                        </div>
+                                    </select>
+                                </div>
                             </div>
-
+                            <br>
 
                             <button class="btn btn-outline-dark mt-auto" type="submit" >상품 등록</button>
                         </form>
