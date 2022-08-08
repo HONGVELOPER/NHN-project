@@ -19,11 +19,9 @@
 <!--                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>-->
                             </div>
                             <div>
-                                <h5 class="fw-bolder">총 결제 가격</h5>
-                                <p class="form-control" th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
-                                <p hidden class="form-control" th:text="${optionDetailDTO.product.price}" th:name="price"></p>
-<!--                                <h5 class="fw-bolder">제품 추가가격</h5>-->
-<!--                                <p class="form-control" th:text="${optionDetailDTO.extraCharge}"></p>-->
+                                결제 가격
+                               <h1 class="display-5 fw-bolder" th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></h1>
+                               <input hidden type="number" class="form-control" th:value="${optionDetailDTO.product.price}" th:name="price">
 
                             </div>
 
@@ -38,12 +36,12 @@
                                 <input type="text" class="form-control" name="phone" th:field="*{phone}"><br>
                             </div>
 
-                            <div th:if="${deliverListViewDTO != null}">
-                                배송지 선택 <br>
-                                <select name="deliverId" class="form-select">
-                                        <option value="0" name="deliverId">배송지 직접 입력</option>
+                            <div>
+                                배송지 선택<br>
+                                <select name="deliverId" class="form-select" th:if="${deliverListViewDTO != null}">
+                                    <option value="0" name="deliverId">배송지 직접 입력</option>
                                     <div th:each="delivers : ${deliverListViewDTO}">
-                                        <option th:text="${delivers.fullAddress}" th:value="${delivers.deliverId}" name="deliverId"></option>
+                                        <option th:if="${delivers != null}" th:text="${delivers.fullAddress}" th:value="${delivers.deliverId}" name="deliverId"></option>
                                     </div>
                                 </select>
                             </div>
