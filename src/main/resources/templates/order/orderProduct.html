@@ -36,15 +36,19 @@
                                 <input type="text" class="form-control" name="phone" th:field="*{phone}"><br>
                             </div>
 
-                            <div>
+                            <div th:disabled="${deliverListViewDTO != null}">
                                 배송지 선택<br>
-                                <select name="deliverId" class="form-select" th:if="${deliverListViewDTO != null}">
-                                    <option value="0" name="deliverId">배송지 직접 입력</option>
+                                <select name="deliverId" class="form-select" th:disabled="${deliverListViewDTO == null}">
+
                                     <div th:each="delivers : ${deliverListViewDTO}">
                                         <option th:if="${delivers != null}" th:text="${delivers.fullAddress}" th:value="${delivers.deliverId}" name="deliverId"></option>
                                     </div>
                                 </select>
                             </div>
+                            <div>
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{/api/delivers/createForm}">새 배송지 추가</a>
+                            </div>
+
 
 
                             <div>

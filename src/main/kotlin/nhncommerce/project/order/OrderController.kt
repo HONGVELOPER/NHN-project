@@ -3,6 +3,7 @@ package nhncommerce.project.order
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
+import nhncommerce.project.deliver.domain.DeliverDTO
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.order.domain.OrderRequestDTO
@@ -44,6 +45,7 @@ class OrderController (
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
+
         model.addAttribute("optionDetailDTO", optionDetailDTO)
         model.addAttribute("deliverListViewDTO", deliverListviewDTO)
         model.addAttribute("couponListViewDTO", couponListViewDTO)

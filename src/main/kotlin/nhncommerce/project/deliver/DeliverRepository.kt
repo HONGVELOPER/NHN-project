@@ -10,5 +10,4 @@ interface DeliverRepository: JpaRepository<Deliver, Long>, QuerydslPredicateExec
 
     fun findByUser(user: User): List<Deliver>
 
-
 }
