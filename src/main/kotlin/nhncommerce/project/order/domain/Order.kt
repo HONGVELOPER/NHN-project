@@ -46,7 +46,6 @@ class Order (
 ): BaseEntity() {
     fun toOrderDTO(): OrderDTO{
         return OrderDTO(
-            orderId = orderId,
             status = status,
             price = price,
             phone = phone,

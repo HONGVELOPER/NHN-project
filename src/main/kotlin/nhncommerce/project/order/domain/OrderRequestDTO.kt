@@ -9,10 +9,11 @@ import javax.validation.constraints.NotBlank
 
 data class OrderRequestDTO(
     var status: Status=Status.ACTIVE,
-    var price: Int?=null,
+    var price: Int,
     var phone: String?=null,
-    var userId: Long?=null,
+    var userId: Long,
     var couponId: Long?=null,
-    var optionDetailId: Long?=null,
+    var optionDetailId: Long,
+    @field:NotBlank(message = "불러올 배송지가 없니다")
     var deliverId: Long?=null
 )

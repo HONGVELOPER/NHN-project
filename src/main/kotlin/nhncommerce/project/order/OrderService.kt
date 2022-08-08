@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponRepository
 import nhncommerce.project.coupon.CouponService
+import nhncommerce.project.coupon.domain.Coupon
 import nhncommerce.project.coupon.domain.CouponRequestDTO
 import nhncommerce.project.deliver.DeliverRepository
 import nhncommerce.project.option.OptionDetailRepository
@@ -17,6 +18,7 @@ import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
@@ -34,51 +36,44 @@ class OrderService (
     val loginInfoService: LoginInfoService
 
 ){
-    fun createOrder(orderRequestDTO: OrderRequestDTO,response:HttpServletResponse) {
+
+
+
+    fun createOrder(orderRequestDTO: OrderRequestDTO, response:HttpServletResponse) {
+        println("!~~~~~~~~~~~!")
+        println(orderRequestDTO.userId)
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val user = userRepository.findByUserId(loginInfo.userId)
-        val coupon = orderRequestDTO.couponId?.let { couponRepository.findByCouponId(it) }
-        val optiondetail = orderRequestDTO.optionDetailId?.let { optionDetailRepository.findByOptionDetailId(it) }
+        val optionDetail = orderRequestDTO.optionDetailId.let {
+            optionDetailRepository.findByOptionDetailId(it)
+        }
+//        if (optionDetail.stock < orderRequestDTO.orderNum) {
+//            return
+//        } // 재고 보다
+        optionDetail.stock = optionDetail.stock?.minus(1)
+        var productPrice = orderRequestDTO.price
+        if (optionDetail.extraCharge != null) {
+            productPrice += optionDetail.extraCharge!!
+        }
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
-        var productPrice = orderRequestDTO.price!! + optiondetail!!.extraCharge!!
-        val totalProductPrice: Int = (productPrice!! -  (productPrice!! * (coupon!!.discountRate * 0.01))).toInt()
+        var coupon: Coupon? = null
+        if (orderRequestDTO.couponId != 0.toLong()){
+            coupon = orderRequestDTO.couponId.let { couponRepository.findByCouponId(it!!) }
+            val saledPrice: Int = (productPrice * (coupon.discountRate * 0.01)).toInt()
+            productPrice -= saledPrice
+            coupon.status = Status.IN_ACTIVE
+            couponRepository.save(coupon)
+        }
 
         val orderDTO = OrderDTO(
-            orderId = null, status = Status.ACTIVE,totalProductPrice,
-            orderRequestDTO.phone,user,coupon,optiondetail,deliver)
-
-        val couponDTO = CouponRequestDTO(
-                couponId = coupon.couponId,
-                user = coupon.user,
-                status = Status.IN_ACTIVE,
-                couponName = coupon.couponName,
-                discountRate = coupon.discountRate,
-                expired = coupon.expired
+            status = Status.ACTIVE, productPrice,
+            orderRequestDTO.phone, user, coupon, optionDetail,deliver
         )
-
-        val optionDetailDTO = OptionDetailDTO(
-            optionDetailId = optiondetail!!.optionDetailId,
-            status = optiondetail.status,
-            extraCharge = optiondetail.extraCharge,
-            stock = optiondetail.stock!! - 1,
-            num = optiondetail.num,
-            name = optiondetail.name,
-            product = optiondetail.product,
-            option1 = optiondetail.option1,
-            option2 = optiondetail.option2,
-            option3 = optiondetail.option3
-        )
-
-        val useCoupon = couponService.toEntity(couponDTO)
-        couponRepository.save(useCoupon)
-
-        val decreaseStock = optionDetailDTO.toEntity()
-        optionDetailRepository.save(decreaseStock)
 
         val order = orderDTO.toEntity()
         orderRepository.save(order)
+        optionDetailRepository.save(optionDetail)
         alertService.alertMessage("주문이 완료되었습니다.","/products",response) // 사용자 메인 페이지로 바꿔야힘.
-
     }
 
 

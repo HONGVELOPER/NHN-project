@@ -1,5 +1,6 @@
 package nhncommerce.project.order
 
+import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
 import nhncommerce.project.option.OptionService
@@ -39,16 +40,19 @@ class OrderController (
         @RequestParam("optionDetailId") optionDetailId: Long,
         model: Model): String
     {
-        val orderRequestDTO = OrderRequestDTO()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE,0,null,loginInfo.userId,0,optionDetailId,0)
+        println("!~~~~~~~~~~~!")
+        println(orderRequestDTO.userId)
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
-
+        println(orderRequestDTO.userId)
         model.addAttribute("optionDetailDTO", optionDetailDTO)
         model.addAttribute("deliverListViewDTO", deliverListviewDTO)
         model.addAttribute("couponListViewDTO", couponListViewDTO)
         model.addAttribute("orderRequestDTO", orderRequestDTO)
+        println(orderRequestDTO.userId)
         return "order/orderProduct"
     }
 
@@ -57,7 +61,14 @@ class OrderController (
      */
     @PostMapping("/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse){
-        orderService.createOrder(orderRequestDTO,response)
+        println(orderRequestDTO.toString())
+        println("!~~~~~~~~~~~!")
+        println(orderRequestDTO.userId)
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        orderRequestDTO.userId = loginInfo.userId
+        println("!~~~~~~~~~~~!")
+        println(orderRequestDTO.userId)
+        orderService.createOrder(orderRequestDTO, response)
     }
 
     /**
