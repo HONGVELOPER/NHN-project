@@ -44,15 +44,15 @@ class Order (
     var status: Status? = Status.ACTIVE
 
 ): BaseEntity() {
-    fun toOrderDTO(): OrderDTO{
-        return OrderDTO(
-            status = status,
-            price = price,
-            phone = phone,
-            user = user,
-            coupon = coupon,
-            optionDetail = optionDetail ,
-            deliver = deliver
-        )
-    }
+//    fun toOrderDTO(): OrderDTO{
+//        return OrderDTO(
+//            status = status,
+//            price = price,
+//            phone = phone,
+//            user = user,
+//            coupon = coupon,
+//            optionDetail = optionDetail ,
+//            deliver = deliver
+//        )
+//    }
 }

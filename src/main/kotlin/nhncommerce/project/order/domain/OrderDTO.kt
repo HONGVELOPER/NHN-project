@@ -8,7 +8,6 @@ import nhncommerce.project.user.domain.User
 import java.util.*
 
 data class OrderDTO(
-//    var orderId: Long?=null,
     var status: Status?= Status.ACTIVE,
     var price: Int?=null,
     var phone: String?=null,

@@ -12,6 +12,7 @@ import nhncommerce.project.option.domain.OptionDetailDTO
 import nhncommerce.project.order.domain.*
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
+import nhncommerce.project.product.ProductRepository
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
@@ -33,7 +34,8 @@ class OrderService (
     val deliverRepository: DeliverRepository,
     val alertService: AlertService,
     val couponService: CouponService,
-    val loginInfoService: LoginInfoService
+    val loginInfoService: LoginInfoService,
+    val productRepository: ProductRepository
 
 ){
 
@@ -47,11 +49,11 @@ class OrderService (
         val optionDetail = orderRequestDTO.optionDetailId.let {
             optionDetailRepository.findByOptionDetailId(it)
         }
-//        if (optionDetail.stock < orderRequestDTO.orderNum) {
-//            return
-//        } // 재고 보다
+
         optionDetail.stock = optionDetail.stock?.minus(1)
-        var productPrice = orderRequestDTO.price
+//        var productPrice = orderRequestDTO.price
+        var product = optionDetailRepository.findByOptionDetailId(orderRequestDTO.optionDetailId)
+        var productPrice = product.product!!.price  //DB에 저장된 해당되는 옵션을 가진 상품의 가격을 불러온다.
         if (optionDetail.extraCharge != null) {
             productPrice += optionDetail.extraCharge!!
         }
@@ -127,16 +129,12 @@ class OrderService (
         order.get().updatedAt = LocalDateTime.now()
         orderRepository.save(order.get())
 
-        val couponDTO = CouponRequestDTO(
-            couponId = order.get().coupon!!.couponId,
-            user = order.get().coupon!!.user,
-            status = Status.ACTIVE,
-            couponName = order.get().coupon!!.couponName,
-            discountRate = order.get().coupon!!.discountRate,
-            expired = order.get().coupon!!.expired
-        )
-        val useCoupon = couponService.toEntity(couponDTO)
-        couponRepository.save(useCoupon)
+        if (orderDTO.coupon?.couponId != null){
+            var coupon = couponRepository.findByCouponId(orderDTO.coupon!!.couponId!!)
+            coupon.status = Status.IN_ACTIVE
+            couponRepository.save(coupon)
+        }
+
         alertService.alertMessage("주문이 취소되었습니다.","/orders/myOrderList",response)
     }
 

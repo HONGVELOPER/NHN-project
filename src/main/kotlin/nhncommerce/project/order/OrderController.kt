@@ -26,7 +26,6 @@ class OrderController (
     val orderService: OrderService,
     val couponService: CouponService,
     val deliverService: DeliverService,
-    val productService: ProductService,
     val optionService: OptionService,
     val loginInfoService: LoginInfoService
 )
@@ -41,18 +40,14 @@ class OrderController (
         model: Model): String
     {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE,0,null,loginInfo.userId,0,optionDetailId,0)
-        println("!~~~~~~~~~~~!")
-        println(orderRequestDTO.userId)
+        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE,0,null,null,0,optionDetailId,0)
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
-        println(orderRequestDTO.userId)
         model.addAttribute("optionDetailDTO", optionDetailDTO)
         model.addAttribute("deliverListViewDTO", deliverListviewDTO)
         model.addAttribute("couponListViewDTO", couponListViewDTO)
         model.addAttribute("orderRequestDTO", orderRequestDTO)
-        println(orderRequestDTO.userId)
         return "order/orderProduct"
     }
 
@@ -61,13 +56,8 @@ class OrderController (
      */
     @PostMapping("/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse){
-        println(orderRequestDTO.toString())
-        println("!~~~~~~~~~~~!")
-        println(orderRequestDTO.userId)
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         orderRequestDTO.userId = loginInfo.userId
-        println("!~~~~~~~~~~~!")
-        println(orderRequestDTO.userId)
         orderService.createOrder(orderRequestDTO, response)
     }
 

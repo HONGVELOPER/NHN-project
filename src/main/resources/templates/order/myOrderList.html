@@ -14,7 +14,6 @@
                     <option value="productName" th:selected="${pageRequestDTO.type=='productName'}">제품 이름</option>
                     <option value="price" th:selected="${pageRequestDTO.type=='price'}">제품 가격</option>
                     <option value="status" th:selected="${pageRequestDTO.type=='status'}">주문 상태</option>
-                    <option value="couponName" th:selected="${pageRequestDTO.type=='couponName'}">사용한 쿠폰 아름</option>
                     <option value="createdAt" th:selected="${pageRequestDTO.type=='createdAt'}">주문 날짜</option>
                 </select>
                 <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
@@ -32,7 +31,6 @@
                 <th scope="col">제품 옵션</th>
                 <th scope="col">배송지</th>
                 <th scope="col">주문 상태</th>
-                <th scope="col">사용된 쿠폰</th>
                 <th scope="col">주문 날짜</th>
                 <th scope="col">관리</th>
             </tr>
@@ -45,7 +43,6 @@
                 <td>[[${order.deliver.address}]]</td>
                 <td th:if="${order.status.toString().equals('ACTIVE')}">결제 완료</td>
                 <td th:if="${order.status.toString().equals('IN_ACTIVE')}">주문 취소</td>
-                <td>[[${order.coupon.couponName}]]</td>
                 <td>[[${#temporals.format(order.createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
                 <td>
                     <form th:method="get" th:action="'/orders/'+${order.orderId}" style="display: inline">
