@@ -10,7 +10,7 @@
 <!--                        <input type="file" name="file" multiple /><br />-->
 <!--                    </form>-->
 
-                <form th:action="@{/products}"  method="post" enctype="multipart/form-data" th:object="${productOptionDTO}">
+                <form th:action="@{/admin/products}"  method="post" enctype="multipart/form-data" th:object="${productOptionDTO}">
                     <div class="col-md-6">
                         <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()" required><br>
                         <img src="" height="200" alt="Image preview">

@@ -6,7 +6,7 @@
     <th:block th:fragment="content">
         <h1 class="mt-4">발행 쿠폰 목록</h1>
 
-        <form th:action="@{/coupons}" method="get" id="searchForm">
+        <form th:action="@{/admin/coupons}" method="get" id="searchForm">
             <div class="input-group">
                 <input type="hidden" name="page" value="1">
                 <select class="custom-select" name="type">
@@ -47,7 +47,7 @@
                 <td>[[${#temporals.format(coupon.updatedAt,'yyyy/MM/dd')}]]</td>
                 <td>
 <!--                    href 로 링크 하면 delete 안먹음-->
-                    <form th:method="get" th:action="'/couponUpdatePage/'+${coupon.couponId}" style="display: inline">
+                    <form th:method="get" th:action="'/admin/couponUpdatePage/'+${coupon.couponId}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
                     <form th:method="delete" th:action="'/admin/coupons/'+${coupon.couponId}" style="display: inline">
@@ -63,7 +63,7 @@
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${coupons.page == page? 'active':''}"th:each="page : ${coupons.pageList}">
-                <a class="page-link" th:href="@{/coupons(page=${page})}">
+                <a class="page-link" th:href="@{/admin/coupons(page=${page})}">
                     [[${page}]]
                 </a>
             </li>

@@ -152,10 +152,7 @@ class ProductService(
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
     fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream){
-        println("update검증")
-        println(productDTO.category?.name)
         var product = productRepository.findById(productDTO.productId!!.toLong()).get()
-
         var thumbnail = getThumbnailUUID(product)
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
@@ -171,10 +168,9 @@ class ProductService(
     }
 
     fun generateToken(){
-        if(storageTokenService.hasToken()){
-            storageTokenService.checkExpired()
-        }else{
-            storageTokenService.generateToken()
+        when(storageTokenService.hasToken()){
+            true ->  storageTokenService.checkExpired()
+            false -> storageTokenService.generateToken()
         }
     }
 }

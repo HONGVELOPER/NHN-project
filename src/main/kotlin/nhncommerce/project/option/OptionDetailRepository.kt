@@ -11,16 +11,16 @@ import java.util.Optional
 
 interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
 
-    //fun findOptionDetailsByProductId(productId : Long) : List<OptionDetail>
-
     fun findOptionDetailsByProduct(product: Product) : List<OptionDetail>
 
+    //option에 해당하는 optionDetail 삭제
     @Modifying
     @Query(value = "delete from OptionDetail as d " +
             "where d.option1=:option or " +
             "d.option2=:option or d.option3=:option")
     fun deleteOptionDetailsByOption(@Param("option") option : Option)
 
+    //productId의 optionDetail 삭제
     @Modifying
     @Query(value = "delete from OptionDetail as d where d.product.productId=:productId")
     fun deleteOptionDetailsByProductId(@Param("productId") productId: Long)

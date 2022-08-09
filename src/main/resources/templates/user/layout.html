@@ -17,7 +17,7 @@
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="index.html">Kulture</a>
+    <a class="navbar-brand ps-3" th:href="@{/user}">Kulture</a>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
@@ -48,33 +48,41 @@
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Interface</div>
 
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#home" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        홈
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="home" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/user}">홈</a>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#user" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                         유저
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <div class="collapse" id="user" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/user}">홈</a>
-                            <a class="nav-link" th:href="@{/joinForm}">회원 가입</a>
-                            <a class="nav-link" th:href="@{/updateProfileForm}">회원 프로필 수정</a>
-                            <a class="nav-link" th:href="@{/updatePasswordForm}">회원 비밀번호 수정</a>
-                            <a class="nav-link" th:href="@{/login}">로그인</a>
-                            <a class="nav-link" th:href="@{/users/me}">마이페이지</a>
+                            <a class="nav-link" th:href="@{/api/users/updateProfileForm}">프로필 수정</a>
+                            <a class="nav-link" th:href="@{/api/users/updatePasswordForm}">비밀번호 수정</a>
+                            <a class="nav-link" th:href="@{/logout}">로그아웃</a>
                         </nav>
                     </div>
 
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#deliver" aria-expanded="false" aria-controls="collapsePages">
                         <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                         배송지
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                    <div class="collapse" id="deliver" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/deliverCreateForm}" >배송지 등록</a>
-                            <a class="nav-link" th:href="@{/deliverUpdateForm}" >배송지 수정</a>
+                            <a class="nav-link" th:href="@{/api/delivers/createForm}" >배송지 등록</a>
+                            <a class="nav-link" th:href="@{/api/delivers/users}" >배송지 목록</a>
                         </nav>
                     </div>
+
                     <div class="sb-sidenav-menu-heading">Addons</div>
                     <a class="nav-link" th:href="@{/publishCouponPage}">
                         <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
