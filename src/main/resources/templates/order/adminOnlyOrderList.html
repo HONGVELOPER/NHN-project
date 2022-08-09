@@ -62,7 +62,7 @@
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${orders.page == page? 'active':''}"th:each="page : ${orders.pageList}">
-                <a class="page-link" th:href="@{/orders(page=${page})}">
+                <a class="page-link" th:href="@{/admin/orders(page=${page})}">
                     [[${page}]]
                 </a>
             </li>

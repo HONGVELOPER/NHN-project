@@ -167,7 +167,7 @@ class OrderService (
             order.get().updatedAt = LocalDateTime.now()
             orderRepository.save(order.get())
         }
-        alertService.alertMessage("주문이 취소되었습니다.","admin/orders",response)
+        alertService.alertMessage("주문이 취소되었습니다.","/admin/orders",response)
 
     }
 
