@@ -55,6 +55,16 @@ class User (
         phone = profileDTO.phone
     }
 
+    fun updateProfileByAdmin(adminProfileDTO: AdminProfileDTO) {
+        name = adminProfileDTO.name
+        phone = adminProfileDTO.phone
+        if (adminProfileDTO.role == "ROLE_ADMIN") {
+            role = ROLE.ROLE_ADMIN
+        } else {
+            role = ROLE.ROLE_USER
+        }
+    }
+
     fun updatePassword(newPassword: String) {
         password = newPassword
     }

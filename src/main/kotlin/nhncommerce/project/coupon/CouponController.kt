@@ -18,7 +18,7 @@ class CouponController(
 ) {
     @GetMapping("/")
     fun main():String{
-        return "redirect:/admin"
+        return "redirect:/user"
     }
 
     /**

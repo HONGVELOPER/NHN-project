@@ -16,6 +16,9 @@ class LoginInfoService {
             return loginInfo
         } else {
             loginInfo.isLogin = true
+            if (SecurityContextHolder.getContext().authentication.authorities.toList()[0].toString() == "ROLE_ADMIN") {
+                loginInfo.isAdmin = true
+            }
             val loginStatus = auth.javaClass.toString().split(".")[4]
             if (loginStatus == "FormLoginUserDetails") {
                 val formLoginUserDetails: FormLoginUserDetails = auth as FormLoginUserDetails

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <h1 class="mt-4">회원 관리</h1>
+
+        <form th:action="@{/admin/users/manage}" method="get" id="searchForm">
+            <div class="input-group">
+                <input type="hidden" name="page" value="1">
+                <select class="custom-select" name="type">
+                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
+                    <option value="name" th:selected="${pageRequestDTO.type=='name'}">이름</option>
+                    <option value="email" th:selected="${pageRequestDTO.type=='email'}">이메일</option>
+                </select>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="submit">search</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">index</th>
+                <th scope="col">권한</th>
+                <th scope="col">이메일</th>
+                <th scope="col">성별</th>
+                <th scope="col">이름</th>
+                <th scope="col">전화번호</th>
+                <th scope="col">가입일</th>
+                <th scope="col">수정/탈퇴</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users.dtoList}">
+                <td>[[${user.userId}]]</td>
+                <td>[[${user.role}]]</td>
+                <td>[[${user.email}]]</td>
+                <td>[[${user.gender}]]</td>
+                <td>[[${user.name}]]</td>
+                <td>[[${user.phone}]]</td>
+                <td>[[${#temporals.format(user.createdAt,'yyyy/MM/dd')}]]</td>
+                <td>
+<!--                    href 로 링크 하면 delete 안먹음-->
+                    <form th:method="get" th:action="@{/admin/users/{userId}/updateProfileForm(userId = ${user.userId})}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
+                    </form>
+                    <form th:method="delete" th:action="@{/admin/users/{userId}(userId = ${user.userId})}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination justify-content-center align-items-center">
+            <li class="page-item" th:if="${users.prev}">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${users.page == page? 'active':''}"th:each="page : ${users.pageList}">
+                <a class="page-link" th:href="@{/users(page=${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${users.next}">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </th:block>
+
+</th:block>
