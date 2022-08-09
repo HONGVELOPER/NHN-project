@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+  <th:block th:fragment="content">
+    <head>
+      <title>회원 프로필 수정 - 관리자</title>
+    </head>
+    <body>
+
+    <div class="container">
+      <p>회원 프로필 수정 - 관리자</p>
+      <form th:action="@{/admin/users/{userId}/profile(userId = ${userId})}" th:method="put" th:object="${adminProfileDTO}" >
+        <div>
+          <label for="name">이름</label>
+          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
+          <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="jb-red"></p>
+        </div>
+        <div>
+          <label for="phone">번호</label>
+          <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
+          <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
+        </div>
+        <div>
+          <div>권한</div>
+          <select name="role" id="role">
+            <option value="">== 권한 선택 ==</option>
+            <option value="ROLE_USER">회원</option>
+            <option value="ROLE_ADMIN">관리자</option>
+          </select>
+          <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="jb-red"></p>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button class="w-100 btn btn-primary btn-lg" type="submit">회원 수정</button>
+          </div>
+        </div>
+      </form>
+     </div>
+    </body>
+  </th:block>
+</th:block>
+</html>

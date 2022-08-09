@@ -50,6 +50,7 @@ class SecurityConfig(
             .and()
             .and()
             .logout()
+            .logoutSuccessUrl("/user")
             .and()
             .sessionManagement()
             .maximumSessions(1)
