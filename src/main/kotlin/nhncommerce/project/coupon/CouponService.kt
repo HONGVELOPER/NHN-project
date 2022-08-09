@@ -12,15 +12,14 @@ import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
-import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
@@ -149,6 +148,16 @@ class CouponService(
         booleanBuilder.and(expression)
 
         return booleanBuilder
+    }
+
+    fun updateCouponStatus(){
+        val loginUserId = loginInfoService.getUserIdFromSession().userId
+        val user = userRepository.findById(loginUserId).get() ?: null
+        val findCouponsByUser = couponRepository.findCouponsByUser(user!!,LocalDate.now())
+        for (coupon in findCouponsByUser) {
+            coupon.status=Status.IN_ACTIVE
+            couponRepository.save(coupon)
+        }
     }
 
 }
