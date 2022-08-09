@@ -3,13 +3,11 @@ package nhncommerce.project.order
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
-import nhncommerce.project.deliver.domain.DeliverDTO
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.order.domain.OrderRequestDTO
 import nhncommerce.project.page.PageRequestDTO
-import nhncommerce.project.product.ProductService
-import nhncommerce.project.product.domain.ProductOptionDTO
+import nhncommerce.project.user.UserService
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import javax.servlet.http.HttpServletResponse
 
@@ -28,7 +25,9 @@ class OrderController (
     val couponService: CouponService,
     val deliverService: DeliverService,
     val optionService: OptionService,
-    val loginInfoService: LoginInfoService
+    val loginInfoService: LoginInfoService,
+    val userService: UserService
+
 )
 
 {
@@ -45,7 +44,9 @@ class OrderController (
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
+        val userDTO = userService.findUserById(loginInfo.userId)
 
+        model.addAttribute("userDTO",userDTO)
         model.addAttribute("optionDetailDTO", optionDetailDTO)
         model.addAttribute("deliverListViewDTO", deliverListviewDTO)
         model.addAttribute("couponListViewDTO", couponListViewDTO)
@@ -59,54 +60,65 @@ class OrderController (
     @PostMapping("/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse){
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        orderRequestDTO.userId = loginInfo.userId
-        orderService.createOrder(orderRequestDTO, response)
+        orderService.createOrder(orderRequestDTO,loginInfo.userId,response)
     }
 
-    /**
-     * 나의 주문내역 조회 페이지
-     */
-    @GetMapping("/myOrderListPage")
-    fun getMyOrderListPage(): String {
-        return "order/myOrderList"
-    }
 
     /**
-     * 나의 주문내역 전체 조회
+     * 나의 주문내역 전체 조회 페이지 -user
      */
-    @GetMapping("/orders/myOrderList")
+    @GetMapping("/orders")
     fun orderList(pageRequestDTO: PageRequestDTO, model: Model):String{
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         model.addAttribute("orders",orderService.getMyOrderList(pageRequestDTO,loginInfo.userId))
-        return "order/myOrderList"
+        return "order/orderList"
     }
 
+
     /**
-     * 모든 사용자 주문내역 전체 조회
+     * 관라자용 모든 사용자 주문내역 전체 조회 페이지 -admin
      */
-    @GetMapping("/orders")
+    @GetMapping("/admin/orders")
     fun orderListTest(pageRequestDTO: PageRequestDTO, model: Model): String {
         model.addAttribute("orders", orderService.getOrderList(pageRequestDTO))
-        return "order/myOrderList"
+        return "order/adminOnlyOrderList"
     }
 
     /**
-     * 사용자 주문내역 단건조회
+     * 나의 주문내역 단건조회 - user
      */
     @GetMapping("/orders/{orderId}")
     fun getMyOrder(@PathVariable("orderId")orderId: Long, model: Model):String{
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        model.addAttribute("orderInfo",orderService.getOrder(orderId,loginInfo.userId))
-        return "order/MyOrder"
+        model.addAttribute("orderInfo",orderService.getUserOrder(orderId,loginInfo.userId))
+        return "order/myOrderView"
     }
 
     /**
-     * 나의 주문 취소
+     * 관리자용 사용자 주문내역 단건조회 - admin
+     */
+    @GetMapping("/admin/orders/{orderId}")
+    fun getOrder(@PathVariable("orderId")orderId: Long,model: Model):String{
+        model.addAttribute("orderInfo",orderService.getOrder(orderId))
+        return "order/adminOnlyOrderView"
+    }
+
+
+    /**
+     * 주문 취소 - user
      */
     @PutMapping("/orders/orderCancel/{orderId}")
-    fun cancelMyOrder(@PathVariable("orderId")orderId:Long, orderDTO:OrderDTO, response: HttpServletResponse): String {
+    fun cancelMyOrder(@PathVariable("orderId")orderId:Long, orderDTO:OrderDTO, response: HttpServletResponse) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         orderService.cancelMyOrder(orderDTO,orderId,loginInfo.userId,response)
-        return "order/myOrderList"
     }
+
+    /**
+     * 주문 취소 - admin
+     */
+    @PutMapping("/admin/orders/orderCancel/{orderId}")
+    fun calcelOrder(@PathVariable("orderId")orderId:Long,orderDTO:OrderDTO,response: HttpServletResponse){
+        orderService.cancelOrder(orderDTO,orderId,response)
+    }
+
 }

@@ -18,5 +18,7 @@ interface OrderRepository : JpaRepository<Order, Long>, QuerydslPredicateExecuto
 
     fun findByUserAndOrderId(user: User,orderId: Long) : Optional<Order>
 
+    fun findByOrderId(orderId: Long):Optional<Order>
+
 
 }

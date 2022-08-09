@@ -94,7 +94,7 @@ class CouponService(
         val user = userRepository.findByUserId(userId)
         val couponList = couponRepository.findByUser(user)
         couponList.map {
-            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.status)
+            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
             list.add(CouponListDTO)
         }
         return list.toList()

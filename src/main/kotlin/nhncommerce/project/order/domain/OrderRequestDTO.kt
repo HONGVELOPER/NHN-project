@@ -14,6 +14,5 @@ data class OrderRequestDTO(
     var userId: Long?=null,
     var couponId: Long?=null,
     var optionDetailId: Long,
-    @field:NotBlank(message = "불러올 배송지가 없니다")
     var deliverId: Long?=null
 )

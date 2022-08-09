@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+        <h1 class="mt-4">모든 사용자 주문 내역</h1>
+
+        <form th:action="@{/admin/orders}" method="get" id="searchForm">
+            <div class="input-group">
+                <input type="hidden" name="page" value="1">
+                <select class="custom-select" name="type">
+                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
+                    <option value="productName" th:selected="${pageRequestDTO.type=='productName'}">제품 이름</option>
+                    <option value="price" th:selected="${pageRequestDTO.type=='price'}">제품 가격</option>
+                    <option value="address" th:selected="${pageRequestDTO.type=='address'}">배송지</option>
+                    <option value="status" th:selected="${pageRequestDTO.type=='status'}">주문 상태</option>
+                </select>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="submit">search</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">제품 이름</th>
+                <th scope="col">결제 가격</th>
+                <th scope="col">제품 옵션</th>
+                <th scope="col">배송지</th>
+                <th scope="col">주문 상태</th>
+                <th scope="col">주문 날짜</th>
+                <th scope="col">관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders.dtoList}">
+                <td>[[${order.optionDetail.product.productName}]]</td>
+                <td>[[${order.price}]]</td>
+                <td>[[${order.optionDetail.name}]]</td>
+                <td>[[${order.deliver.address}]]</td>
+                <td th:if="${order.status.toString().equals('ACTIVE')}">주문 완료</td>
+                <td th:if="${order.status.toString().equals('IN_ACTIVE')}">주문 취소</td>
+                <td>[[${#temporals.format(order.createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
+                <td>
+                    <form th:method="get" th:action="'/admin/orders/'+${order.orderId}" style="display: inline">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">상세 보기</button>
+                    </form>
+                    <form th:method="put" th:action="'/admin/orders/orderCancel/'+${order.orderId}" style="display: inline">
+                        <button th:if="${order.status.toString().equals('ACTIVE')}" class="btn btn-outline-dark mt-auto" type="submit">주문 취소</button>
+                    </form>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination  justify-content-center align-items-center">
+            <li class="page-item" th:if="${orders.prev}">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${orders.page == page? 'active':''}"th:each="page : ${orders.pageList}">
+                <a class="page-link" th:href="@{/orders(page=${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${orders.next}">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </th:block>
+
+</th:block>
