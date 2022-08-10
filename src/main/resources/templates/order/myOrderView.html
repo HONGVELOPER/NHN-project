@@ -1,81 +1,77 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org">
-<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6">
-                    <tr th:each="order : ${orderInfo}">
-                    <img class="card-img-top mb-5 mb-md-0" th:src="${order.get().optionDetail.product.thumbnail}" alt="..." />
-                    </tr>
+                        <tr th:each="order : ${orderInfo}">
+                            <img class="card-img-top mb-5 mb-md-0"
+                                 th:src="${order.get().optionDetail.product.thumbnail}" alt="..."/>
+                        </tr>
                     </div>
-
                     <div class="col-md-6">
                         <tr th:each="order : ${orderInfo}">
-
-                            <div >
-                                <h3 class="display-5 fw-bolder" th:text="'제품이름 : ' + ${order.get().optionDetail.product.productName}"></h3>
+                            <div>
+                                <h3 class="display-5 fw-bolder"
+                                    th:text="'제품이름 : ' + ${order.get().optionDetail.product.productName}"></h3>
                             </div>
-
                             <div class="text-warning">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-star-fill" viewBox="0 0 16 16">
                                     <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                 </svg>
                                 [[${order.get().optionDetail.product.totalStar}]]
                             </div>
-
-                            <div >
-                                제품 상세 설명 : <td th:text="${order.get().optionDetail.product.detailDescription}">1</td>
+                            <div>
+                                제품 상세 설명 :
+                                <td th:text="${order.get().optionDetail.product.detailDescription}">1</td>
                             </div>
-
-
                             <div th:if="${order.get().coupon?.couponName != null}">
-                                사용한 쿠폰 이름 : <td th:text="${order.get().coupon?.couponName}">1</td>
+                                사용한 쿠폰 이름 :
+                                <td th:text="${order.get().coupon?.couponName}">1</td>
                             </div>
-
-                            <div >
-                                결제한 금액 : <td th:text="${order.get().price} + '원'">1</td>
+                            <div>
+                                결제한 금액 :
+                                <td th:text="${order.get().price} + '원'">1</td>
                             </div>
-
-                            <div >
-                                배송지 : <td>[[${order.get().deliver.address}]]</td>
+                            <div>
+                                배송지 :
+                                <td>[[${order.get().deliver.address}]]</td>
                             </div>
-                            <div >
-                                연락처 : <td>[[${order.get().phone}]]</td>
+                            <div>
+                                연락처 :
+                                <td>[[${order.get().phone}]]</td>
                             </div>
-
                             <div th:if="${order.get().status.toString().equals('ACTIVE')}">
-                                주문 상태 : <td> 결졔 완료(배송 진행 중)</td>
+                                주문 상태 :
+                                <td> 결졔 완료(배송 진행 중)</td>
                             </div>
-
                             <div th:if="${order.get().status.toString().equals('IN_ACTIVE')}">
-                                주문 상태 : <td> 주문 취소</td>
+                                주문 상태 :
+                                <td> 주문 취소</td>
                             </div>
-
                             <div th:if="${order.get().status.toString().equals('ACTIVE')}">
-                                주문 일자 : <td>[[${#temporals.format(order.get().createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
+                                주문 일자 :
+                                <td>[[${#temporals.format(order.get().createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
                             </div>
-
                             <div th:if="${order.get().status.toString().equals('IN_ACTIVE')}">
-                                주문 일자 : <td>[[${#temporals.format(order.get().createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td><br>
-                                주문 취소 일자 : <td>[[${#temporals.format(order.get().updatedAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
+                                주문 일자 :
+                                <td>[[${#temporals.format(order.get().createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
+                                <br>
+                                주문 취소 일자 :
+                                <td>[[${#temporals.format(order.get().updatedAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
                             </div>
-
-                            <div >
-
-                            </div>
-
                         </tr>
                         <div class="d-flex">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{/orders}">뒤로 가기</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/api/orders}">뒤로 가기</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </th:block>
 </th:block>
 </html>

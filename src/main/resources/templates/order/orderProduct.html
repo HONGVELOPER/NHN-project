@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6">
-                        <img class="card-img-top mb-5 mb-md-0" th:src="${optionDetailDTO.product.thumbnail}" alt="..." />
+                        <img class="card-img-top mb-5 mb-md-0" th:src="${optionDetailDTO.product.thumbnail}" alt="..."/>
                     </div>
                     <div class="col-md-6">
-<!--                        <div class="small mb-1" th:filed="${optionDetailDTO.product.category.parentCategory.name} + ' > ' + ${optionDetailDTO.product.category.category.name}"></div>-->
-                        <form th:action="@{/orders}"  method="post" th:object="${orderRequestDTO}">
+
+                        <form th:action="@{/api/orders}" method="post" th:object="${orderRequestDTO}">
                             <div>
-                                <input hidden type="text" class="form-control" th:field="${optionDetailDTO.optionDetailId}">
+                                <input hidden type="text" class="form-control"
+                                       th:field="${optionDetailDTO.optionDetailId}">
                                 <h5 class="fw-bolder" th:text="${optionDetailDTO.product.productName}"></h5>
-<!--                                <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>-->
+
                             </div>
                             <div>
-                                <h5 class="fw-bolder">총 결제 가격  </h5>
-                                <p class="form-control" th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
-                                <input hidden type="number" class="form-control" th:value="${optionDetailDTO.product.price}" th:name="price">
+                                <h5 class="fw-bolder">총 결제 가격 </h5>
+                                <p class="form-control"
+                                   th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
+                                <input hidden type="number" class="form-control"
+                                       th:value="${optionDetailDTO.product.price}" th:name="price">
 
                             </div>
 
@@ -34,13 +37,14 @@
                             <input hidden type="text" class="form-control" th:name="phone" th:value="${userDTO.phone}">
                             <p class="form-control" th:text="${userDTO.phone}"></p>
 
-
                             <div th:disabled="${deliverListViewDTO != null}">
                                 <h5 class="fw-bolder">배송지 선택</h5>
-                                <select name="deliverId" class="form-select" th:disabled="${deliverListViewDTO == null}">
+                                <select name="deliverId" class="form-select"
+                                        th:disabled="${deliverListViewDTO == null}">
 
                                     <div th:each="delivers : ${deliverListViewDTO}">
-                                        <option th:if="${delivers != null}" th:text="${delivers.fullAddress}" th:value="${delivers.deliverId}" name="deliverId"></option>
+                                        <option th:if="${delivers != null}" th:text="${delivers.fullAddress}"
+                                                th:value="${delivers.deliverId}" name="deliverId"></option>
                                     </div>
                                 </select>
                             </div>
@@ -50,13 +54,14 @@
                             </div>
                             <br>
                             <br>
-
                             <div>
                                 <h5 class="fw-bolder">쿠폰 선택</h5>
                                 <select name="couponId" class="form-select">
                                     <option value="0" name="couponId">선택 안함</option>
-                                    <div th:if="${coupons.status.toString().equals('ACTIVE')} " th:each="coupons : ${couponListViewDTO}">
-                                        <option th:text="${coupons.couponName}" th:value="${coupons.couponId}" name="couponId"></option>
+                                    <div th:if="${coupons.status.toString().equals('ACTIVE')}"
+                                         th:each="coupons : ${couponListViewDTO}">
+                                        <option th:text="${coupons.couponName}" th:value="${coupons.couponId}"
+                                                name="couponId"></option>
                                     </div>
                                 </select>
                             </div>

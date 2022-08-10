@@ -33,7 +33,7 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" th:href="@{/api/users/myPageForm}" sec:authorize="isAuthenticated()">My Page</a></li>
                 <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()" /></li>
-                <li><a class="dropdown-item" href="#!" sec:authorize="isAuthenticated()">My Order</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/orders}" sec:authorize="isAuthenticated()">My Order</a></li>
                 <li><a class="dropdown-item" th:href="@{/api/delivers/users}" sec:authorize="isAuthenticated()">Deliver Address</a></li>
                 <li><a class="dropdown-item" th:href="@{/api/myCouponList}" sec:authorize="isAuthenticated()">My Coupon</a></li>
                 <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()"/></li>

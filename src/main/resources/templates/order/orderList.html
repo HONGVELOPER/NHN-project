@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
 
     <th:block th:fragment="content">
         <h1 class="mt-4">나의 주문 내역</h1>
 
-        <form th:action="@{/orders}" method="get" id="searchForm">
+        <form th:action="@{/api/orders}" method="get" id="searchForm">
             <div class="input-group">
                 <input type="hidden" name="page" value="1">
                 <select class="custom-select" name="type">
@@ -45,11 +45,14 @@
                 <td th:if="${order.status.toString().equals('IN_ACTIVE')}">주문 취소</td>
                 <td>[[${#temporals.format(order.createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
                 <td>
-                    <form th:method="get" th:action="'/orders/'+${order.orderId}" style="display: inline">
+                    <form th:method="get" th:action="'/api/orders/'+${order.orderId}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">상세 보기</button>
                     </form>
-                    <form th:method="put" th:action="'/orders/orderCancel/'+${order.orderId}" style="display: inline">
-                        <button th:if="${order.status.toString().equals('ACTIVE')}" class="btn btn-outline-dark mt-auto" type="submit">주문 취소</button>
+                    <form th:method="put" th:action="'/api/orders/orderCancel/'+${order.orderId}"
+                          style="display: inline">
+                        <button th:if="${order.status.toString().equals('ACTIVE')}" class="btn btn-outline-dark mt-auto"
+                                type="submit">주문 취소
+                        </button>
                     </form>
 
                 </td>
@@ -61,8 +64,8 @@
             <li class="page-item" th:if="${orders.prev}">
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${orders.page == page? 'active':''}"th:each="page : ${orders.pageList}">
-                <a class="page-link" th:href="@{/orders(page=${page})}">
+            <li th:class="'page-item' + ${orders.page == page? 'active':''}" th:each="page : ${orders.pageList}">
+                <a class="page-link" th:href="@{/api/orders(page=${page})}">
                     [[${page}]]
                 </a>
             </li>

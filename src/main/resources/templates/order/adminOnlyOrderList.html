@@ -48,8 +48,11 @@
                     <form th:method="get" th:action="'/admin/orders/'+${order.orderId}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">상세 보기</button>
                     </form>
-                    <form th:method="put" th:action="'/admin/orders/orderCancel/'+${order.orderId}" style="display: inline">
-                        <button th:if="${order.status.toString().equals('ACTIVE')}" class="btn btn-outline-dark mt-auto" type="submit">주문 취소</button>
+                    <form th:method="put" th:action="'/admin/orders/orderCancel/'+${order.orderId}"
+                          style="display: inline">
+                        <button th:if="${order.status.toString().equals('ACTIVE')}" class="btn btn-outline-dark mt-auto"
+                                type="submit">주문 취소
+                        </button>
                     </form>
 
                 </td>
@@ -61,7 +64,7 @@
             <li class="page-item" th:if="${orders.prev}">
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${orders.page == page? 'active':''}"th:each="page : ${orders.pageList}">
+            <li th:class="'page-item' + ${orders.page == page? 'active':''}" th:each="page : ${orders.pageList}">
                 <a class="page-link" th:href="@{/admin/orders(page=${page})}">
                     [[${page}]]
                 </a>
