@@ -49,6 +49,13 @@ class CouponService(
         couponRepository.save(coupon)
     }
 
+    //이벤트 쿠폰 발급
+    fun createEventCoupon(userId : Long, discountRate : Int,  expired: LocalDate, couponName : String){
+        val user = userRepository.findById(userId).get()
+        val coupon = Coupon(null, user, Status.ACTIVE, couponName, discountRate, expired)
+        couponRepository.save(coupon)
+    }
+
     fun isPresentUser(email: String, response: HttpServletResponse, session: HttpSession) {
         val findUser = userRepository.findByEmail(email) ?: notFoundUser(response,session)
         session.setAttribute("email", email)
