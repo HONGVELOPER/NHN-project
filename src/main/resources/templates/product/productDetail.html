@@ -27,10 +27,10 @@
                         <select name="optionDetailId" class="form-select">
                             <div th:each="optionDetail : ${optionDetailList}">
                                 <div th:if="${optionDetail.stock > 0}">
-                                    <option th:text="${optionDetail.name}" th:value="${optionDetail.optionDetailId}" name="optionDetailId"></option>
+                                    <option th:text="${optionDetail.name} + ' (+'+${optionDetail.extraCharge} + '원)'" th:value="${optionDetail.optionDetailId}" name="optionDetailId"></option>
                                 </div>
                                 <div th:if="${optionDetail.stock <= 0}">
-                                    <option th:text="${optionDetail.name} + '(품절)'" disabled="disabled"></option>
+                                    <option th:text="${optionDetail.name} + ' (+'+${optionDetail.extraCharge} + '원)' + ' (품절)'" disabled="disabled"></option>
                                 </div>
                             </div>
                         </select>
