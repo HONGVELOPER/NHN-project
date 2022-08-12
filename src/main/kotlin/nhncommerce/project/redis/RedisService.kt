@@ -1,8 +1,8 @@
-package nhncommerce.project.radis
+package nhncommerce.project.redis
 
-import nhncommerce.project.radis.Constant.EventCoupon
-import nhncommerce.project.radis.domain.CouponCount
-import nhncommerce.project.radis.domain.TimeCoupon
+import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.domain.CouponCount
+import nhncommerce.project.redis.domain.TimeCoupon
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.StringRedisTemplate

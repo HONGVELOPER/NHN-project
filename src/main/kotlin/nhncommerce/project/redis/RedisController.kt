@@ -1,20 +1,16 @@
-package nhncommerce.project.radis
+package nhncommerce.project.redis
 
 import nhncommerce.project.coupon.CouponService
-import nhncommerce.project.product.ProductService
-import nhncommerce.project.radis.Constant.EventCoupon
-import nhncommerce.project.radis.RedisService.Companion.couponCount
-import nhncommerce.project.radis.config.SchedulerConfiguration
-import nhncommerce.project.radis.domain.CouponCount
-import nhncommerce.project.radis.domain.EventCheckDTO
-import nhncommerce.project.radis.domain.RedisReqDTO
+import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.RedisService.Companion.couponCount
+import nhncommerce.project.redis.config.SchedulerConfiguration
+import nhncommerce.project.redis.domain.EventCheckDTO
+import nhncommerce.project.redis.domain.RedisReqDTO
 import nhncommerce.project.user.UserService
-import nhncommerce.project.user.domain.UserDTO
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

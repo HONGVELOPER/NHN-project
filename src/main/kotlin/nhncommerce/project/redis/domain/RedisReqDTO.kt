@@ -1,4 +1,4 @@
-package nhncommerce.project.radis.domain
+package nhncommerce.project.redis.domain
 
 data class RedisReqDTO (
     var key : String,

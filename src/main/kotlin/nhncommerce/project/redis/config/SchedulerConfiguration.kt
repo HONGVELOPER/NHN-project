@@ -1,10 +1,8 @@
-package nhncommerce.project.radis.config
+package nhncommerce.project.redis.config
 
-import nhncommerce.project.radis.Constant.EventCoupon
-import nhncommerce.project.radis.RedisController
-import nhncommerce.project.radis.RedisService
-import nhncommerce.project.radis.RedisService.Companion.couponCount
-import nhncommerce.project.radis.domain.CouponCount
+import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.RedisService
+import nhncommerce.project.redis.RedisService.Companion.couponCount
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling

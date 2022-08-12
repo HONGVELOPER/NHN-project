@@ -1,7 +1,6 @@
-package nhncommerce.project.radis.domain
+package nhncommerce.project.redis.domain
 
-import nhncommerce.project.coupon.domain.Coupon
-import nhncommerce.project.radis.Constant.EventCoupon
+import nhncommerce.project.redis.Constant.EventCoupon
 import java.util.*
 
 data class TimeCoupon (

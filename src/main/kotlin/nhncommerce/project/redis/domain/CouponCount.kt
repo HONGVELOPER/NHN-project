@@ -1,6 +1,6 @@
-package nhncommerce.project.radis.domain
+package nhncommerce.project.redis.domain
 
-import nhncommerce.project.radis.Constant.EventCoupon
+import nhncommerce.project.redis.Constant.EventCoupon
 import java.time.LocalDate
 
 data class CouponCount (
