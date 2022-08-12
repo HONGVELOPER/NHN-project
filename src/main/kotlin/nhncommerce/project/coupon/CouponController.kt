@@ -16,9 +16,10 @@ import javax.validation.Valid
 class CouponController(
     val couponService: CouponService
 ) {
+
     @GetMapping("/")
     fun main():String{
-        return "redirect:/admin"
+        return "redirect:/user"
     }
 
     /**
@@ -34,6 +35,7 @@ class CouponController(
      */
     @GetMapping("/api/myCouponList")
     fun myCouponList(pageRequestDTO: PageRequestDTO, model : Model) : String{
+        couponService.updateCouponStatus()
         model.addAttribute("myCoupon",couponService.getMyCouponList(pageRequestDTO))
         return "coupon/myCouponList"
     }
@@ -106,6 +108,15 @@ class CouponController(
     fun removeCoupon(@PathVariable("couponId")couponId : Long) : String{
         couponService.removeCoupon(couponId)
         return "redirect:/admin/coupons"
+    }
+
+    /**
+     * 사용자 나의 쿠폰 삭제
+     */
+    @DeleteMapping("/coupons/{couponId}")
+    fun removeMyCoupon(@PathVariable("couponId")couponId : Long) : String{
+        couponService.removeCoupon(couponId)
+        return "redirect:/api/myCouponList"
     }
 
     /**

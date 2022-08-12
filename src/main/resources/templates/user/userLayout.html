@@ -31,13 +31,15 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Account</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">My Order</a></li>
-                <li><a class="dropdown-item" href="#!">Address</a></li>
-                <li><a class="dropdown-item" th:href="@{/api/myCouponList}">My Coupon</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/users/myPageForm}" sec:authorize="isAuthenticated()">My Page</a></li>
+                <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()" /></li>
+                <li><a class="dropdown-item" th:href="@{/api/orders}" sec:authorize="isAuthenticated()">My Order</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/delivers/users}" sec:authorize="isAuthenticated()">Deliver Address</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/myCouponList}" sec:authorize="isAuthenticated()">My Coupon</a></li>
+                <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()"/></li>
+                <li><a class="dropdown-item" href="/login" sec:authorize="!isAuthenticated()">Login</a></li>
+                <li><a class="dropdown-item" href="/logout" sec:authorize="isAuthenticated()">Logout</a></li>
+                <li><a class="dropdown-item" th:href="@{/users/joinForm}" sec:authorize="!isAuthenticated()">sign up</a></li>
             </ul>
         </li>
     </ul>

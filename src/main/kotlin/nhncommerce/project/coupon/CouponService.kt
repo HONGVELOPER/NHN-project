@@ -3,6 +3,8 @@ package nhncommerce.project.coupon
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.domain.CategoryListDTO
+import nhncommerce.project.coupon.domain.*
 import nhncommerce.project.coupon.domain.Coupon
 import nhncommerce.project.coupon.domain.CouponDTO
 import nhncommerce.project.coupon.domain.CouponListDTO
@@ -11,16 +13,16 @@ import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
+import nhncommerce.project.user.domain.QUser.user
 import nhncommerce.project.user.domain.User
-import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
@@ -42,6 +44,7 @@ class CouponService(
                                         coupon.expired, coupon.createdAt, coupon.updatedAt)
         return couponListDTO
     }
+
 
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
         var user = session.getAttribute("user")
@@ -88,11 +91,26 @@ class CouponService(
         return couponRepository.findById(couponId)
     }
 
+    /**
+     * 주문하기Page 에서 사용자의 사용가능한 쿠폰들 가져오기
+     * */
+    fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
+        val list = mutableListOf<CouponListViewDTO>()
+        val user = userRepository.findById(userId).get()
+        val couponList = couponRepository.findByUser(user)
+        couponList.map {
+            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
+            list.add(CouponListDTO)
+        }
+        return list.toList()
+    }
+
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
         var coupon = couponRepository.findById(couponDTO.couponId!!).get()
         coupon.updateCoupon(couponDTO,expired)
         couponRepository.save(coupon)
     }
+
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
@@ -157,5 +175,17 @@ class CouponService(
 
         return booleanBuilder
     }
+
+    fun updateCouponStatus(){
+        val loginUserId = loginInfoService.getUserIdFromSession().userId
+        val user = userRepository.findById(loginUserId).get() ?: null
+        val findCouponsByUser = couponRepository.findCouponsByUser(user!!,LocalDate.now())
+        for (coupon in findCouponsByUser) {
+            coupon.status=Status.IN_ACTIVE
+            couponRepository.save(coupon)
+        }
+    }
+
+
 
 }
