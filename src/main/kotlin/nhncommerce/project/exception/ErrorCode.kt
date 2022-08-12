@@ -7,6 +7,7 @@ enum class ErrorCode(
 
     //400 BAD_REQUEST 잘못된 요청
     DUPLICATE_EMAIL(400, "중복된 이메일입니다."),
+    WRONG_ACCESS(400, "유저가 일치하지 않습니다.")
 //    INVALID_PARAMETER(400, "파라미터 값을 확인해주세요."),
 //    //404 NOT_FOUND 잘못된 리소스 접근
 //    DISPLAY_NOT_FOUND(404, "존재하지 않는 전시회 ID 입니다."),

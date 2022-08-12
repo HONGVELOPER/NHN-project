@@ -1,4 +1,8 @@
 package nhncommerce.project.review
 
-class ReviewRepository {
+import nhncommerce.project.review.domain.Review
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.querydsl.QuerydslPredicateExecutor
+
+interface ReviewRepository: JpaRepository<Review, Long>, QuerydslPredicateExecutor<Review> {
 }

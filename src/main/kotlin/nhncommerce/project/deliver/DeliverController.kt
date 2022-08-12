@@ -30,7 +30,7 @@ class DeliverController (
     }
 
     /*
-    * 배송지 수정 페이지
+    * 배송지 수정 페이지 // deliver id 앞으로 경로 수정 하자
     */
     @GetMapping("/api/delivers/updateForm/{deliverId}")
     fun updateDeliverForm(
