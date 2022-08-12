@@ -15,6 +15,7 @@ import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
@@ -26,36 +27,35 @@ class OrderService(
     val userRepository: UserRepository,
     val couponRepository: CouponRepository,
     val optionDetailRepository: OptionDetailRepository,
-    val deliverRepository: DeliverRepository,
-    val alertService: AlertService
+    val deliverRepository: DeliverRepository
 ) {
 
 
-    fun createOrder(orderRequestDTO: OrderRequestDTO, userId: Long, response: HttpServletResponse) {
-        val user = userRepository.findByUserId(userId)
-        val optionDetail = orderRequestDTO.optionDetailId.let {
-            optionDetailRepository.findByOptionDetailId(it)
-        }
+    fun createOrder(orderRequestDTO: OrderRequestDTO, userId: Long) {
 
+        val user = userRepository.findById(userId).get()
+        val optionDetail = optionDetailRepository.findById(orderRequestDTO.optionDetailId).get()
         if (optionDetail.stock!! < 1) {
             throw RedirectException(alertDTO("주문하신 제품의 재고가 소진되었습니다. 죄송합니다.", "/user"))
         }
+
         optionDetail.stock = optionDetail.stock?.minus(1)
-        var product = optionDetailRepository.findByOptionDetailId(orderRequestDTO.optionDetailId)
-        var productPrice = product.product!!.price  //DB에 저장된 해당되는 옵션을 가진 상품의 가격을 불러온다.
+        var productPrice = optionDetail.product!!.price
 
         optionDetail.extraCharge?.let {
             productPrice += optionDetail.extraCharge!!
         }
+
         if (orderRequestDTO.deliverId == null) {
             throw RedirectException(alertDTO("배송지가 없습니다. 배송지를 등록해주세요.", "/api/delivers/createForm"))
         }
+
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
 
         var coupon: Coupon? = null
         if (orderRequestDTO.couponId != 0.toLong()) {
-            coupon = orderRequestDTO.couponId.let { couponRepository.findByCouponId(it!!) }
-            val saledPrice: Int = (productPrice * (coupon.discountRate * 0.01)).toInt()
+            coupon = orderRequestDTO.couponId?.let { couponRepository.findById(it).get() }
+            val saledPrice: Int = (productPrice * (coupon!!.discountRate * 0.01)).toInt()
             productPrice -= saledPrice
             coupon.status = Status.IN_ACTIVE
             couponRepository.save(coupon)
@@ -69,7 +69,6 @@ class OrderService(
         val order = orderDTO.toEntity()
         orderRepository.save(order)
         optionDetailRepository.save(optionDetail)
-        alertService.alertMessage("주문이 완료되었습니다.", "/user", response)
     }
 
 
@@ -92,7 +91,7 @@ class OrderService(
      * user 조회
      * */
     fun getMyOrderList(myOrderDTO: PageRequestDTO, userId: Long): PageResultDTO<OrderListDTO, Order> {
-        val pageable = myOrderDTO.getPageable(Sort.by("createdAt").descending())
+        val pageable = myOrderDTO.getPageable(Sort.by("updatedAt").descending())
         var booleanBuilder = getUserSearch(userId, myOrderDTO)
         val result = orderRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Order, OrderListDTO> =
@@ -105,7 +104,7 @@ class OrderService(
      * admin 조회
      * */
     fun getOrderList(myOrderDTO: PageRequestDTO): PageResultDTO<OrderListDTO, Order> {
-        val pageable = myOrderDTO.getPageable(Sort.by("createdAt").descending())
+        val pageable = myOrderDTO.getPageable(Sort.by("updatedAt").descending())
         var booleanBuilder = getSearch(myOrderDTO)
         val result = orderRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Order, OrderListDTO> =
@@ -117,21 +116,17 @@ class OrderService(
     /**
      * 주문 내역 단건 조회 - user
      * */
-    fun getUserOrder(orderId: Long, userId: Long): Optional<Order> {
-        val user = userRepository.findByUserId(userId)
-
+    fun getUserOrder(orderId: Long, userId: Long): Order {
+        val user = userRepository.findById(userId).get()
         val order = orderRepository.findByUserAndOrderId(user, orderId)
-
         return order
-
-
     }
 
     /**
      * 주문 내역 단건 조회 - admin
      * */
-    fun getOrder(orderId: Long): Optional<Order> {
-        val order = orderRepository.findByOrderId(orderId)
+    fun getOrder(orderId: Long): Order {
+        val order = orderRepository.findById(orderId).get()
         return order
     }
 
@@ -139,44 +134,37 @@ class OrderService(
     /**
      * 주문 취소 - 사용자
      * */
-    fun cancelMyOrder(orderDTO: OrderDTO, orderId: Long, userId: Long, response: HttpServletResponse) {
-        val user = userRepository.findByUserId(userId)
+    fun cancelMyOrder(orderId: Long, userId: Long) {
+        val user = userRepository.findById(userId).get()
         var order = orderRepository.findByUserAndOrderId(user, orderId)
-        if (order.isPresent()) {
 
-            if (order.get().user!!.userId != userId) {
+            if (order.user!!.userId != userId) {
                 throw RedirectException(alertDTO("잘못된 접근입니다.", "/api/orders"))
             }
-            if (orderDTO.coupon?.couponId != null) {
-                var coupon = couponRepository.findByCouponId(orderDTO.coupon!!.couponId!!)
+            if (order.coupon?.couponId != null) {
+                var coupon = couponRepository.findById(order.coupon!!.couponId!!).get()
                 coupon.status = Status.ACTIVE
                 couponRepository.save(coupon)
             }
-            order.get().status = Status.IN_ACTIVE
-            order.get().updatedAt = LocalDateTime.now()
-            orderRepository.save(order.get())
-        }
-        alertService.alertMessage("주문이 취소되었습니다.", "/api/orders", response)
+
+            order.status = Status.IN_ACTIVE
+            orderRepository.save(order)
     }
 
     /**
      * 주문 취소 - 관리자
      * */
-    fun cancelOrder(orderDTO: OrderDTO, orderId: Long, response: HttpServletResponse) {
-        val order = orderRepository.findByOrderId(orderId)
-        if (order.isPresent) {
+    fun cancelOrder(orderId: Long) {
+        val order = orderRepository.findById(orderId).get()
 
-            if (orderDTO.coupon?.couponId != null) {
-                var coupon = couponRepository.findByCouponId(orderDTO.coupon!!.couponId!!)
+            if (order.coupon?.couponId != null) {
+                var coupon = couponRepository.findById(order.coupon!!.couponId!!).get()
                 coupon.status = Status.ACTIVE
                 couponRepository.save(coupon)
             }
 
-            order.get().status = Status.IN_ACTIVE
-            order.get().updatedAt = LocalDateTime.now()
-            orderRepository.save(order.get())
-        }
-        alertService.alertMessage("주문이 취소되었습니다.", "/admin/orders", response)
+            order.status = Status.IN_ACTIVE
+            orderRepository.save(order)
 
     }
 
@@ -189,7 +177,7 @@ class OrderService(
         var expression = qOrder.orderId.gt(0L)
         booleanBuilder.and(expression)
         var conditionBuilder = BooleanBuilder()
-        val user = userRepository.findByUserId(userId)
+        val user = userRepository.findById(userId).get()
 
         if (type.contains("productName")) {
             conditionBuilder.or(qOrder.optionDetail.product.productName.contains(keyword)).and(qOrder.user.eq(user))

@@ -31,19 +31,19 @@
                 <th scope="col">제품 옵션</th>
                 <th scope="col">배송지</th>
                 <th scope="col">주문 상태</th>
-                <th scope="col">주문 날짜</th>
+                <th scope="col">주문 생성 및 수정 날짜</th>
                 <th scope="col">관리</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="order : ${orders.dtoList}">
+            <tr th:each="order : ${userOrders.dtoList}">
                 <td>[[${order.optionDetail.product.productName}]]</td>
                 <td>[[${order.price}]]</td>
                 <td>[[${order.optionDetail.name}]]</td>
                 <td>[[${order.deliver.address}]]</td>
                 <td th:if="${order.status.toString().equals('ACTIVE')}">주문 완료</td>
                 <td th:if="${order.status.toString().equals('IN_ACTIVE')}">주문 취소</td>
-                <td>[[${#temporals.format(order.createdAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
+                <td>[[${#temporals.format(order.updatedAt,'yyyy/MM/dd HH:mm:ss')}]]</td>
                 <td>
                     <form th:method="get" th:action="'/api/orders/'+${order.orderId}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">상세 보기</button>
@@ -61,15 +61,15 @@
         </table>
 
         <ul class="pagination  justify-content-center align-items-center">
-            <li class="page-item" th:if="${orders.prev}">
+            <li class="page-item" th:if="${userOrders.prev}">
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${orders.page == page? 'active':''}" th:each="page : ${orders.pageList}">
+            <li th:class="'page-item' + ${userOrders.page == page? 'active':''}" th:each="page : ${userOrders.pageList}">
                 <a class="page-link" th:href="@{/api/orders(page=${page})}">
                     [[${page}]]
                 </a>
             </li>
-            <li class="page-item" th:if="${orders.next}">
+            <li class="page-item" th:if="${userOrders.next}">
                 <a class="page-link" href="#">Next</a>
             </li>
         </ul>

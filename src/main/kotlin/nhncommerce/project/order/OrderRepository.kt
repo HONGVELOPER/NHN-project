@@ -8,9 +8,6 @@ import java.util.Optional
 
 interface OrderRepository : JpaRepository<Order, Long>, QuerydslPredicateExecutor<Order> {
 
-    fun findByUserAndOrderId(user: User,orderId: Long) : Optional<Order>
-
-    fun findByOrderId(orderId: Long):Optional<Order>
-
+    fun findByUserAndOrderId(user: User,orderId: Long) : Order
 
 }

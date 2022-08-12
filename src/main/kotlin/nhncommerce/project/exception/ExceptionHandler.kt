@@ -9,10 +9,10 @@ import org.springframework.web.servlet.ModelAndView
 class ExceptionHandler {
 
 
-    @ExceptionHandler(Exception::class)
-    fun except(e : Exception) : String{
-        return "errorPage/errorPage"
-    }
+//    @ExceptionHandler(Exception::class)
+//    fun except(e : Exception) : String{
+//        return "errorPage/errorPage"
+//    }
 
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(ex: CustomException) {

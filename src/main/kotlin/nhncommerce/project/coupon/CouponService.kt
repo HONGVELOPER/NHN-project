@@ -45,16 +45,6 @@ class CouponService(
         return couponListDTO
     }
 
-    /**
-     * 주문 시 쿠폰 상태 비활성화 하기위한 status 수정
-     * */
-    fun toEntity(couponRequestDTO: CouponRequestDTO): Coupon{
-        println("쿠폰 : " + couponRequestDTO.user)
-        val coupon = Coupon(couponId = couponRequestDTO.couponId , user = couponRequestDTO.user!!,
-            status = couponRequestDTO.status, couponName = couponRequestDTO.couponName,
-            discountRate = couponRequestDTO.discountRate, expired = couponRequestDTO.expired)
-        return coupon
-    }
 
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
         var user = session.getAttribute("user")
@@ -99,7 +89,7 @@ class CouponService(
      * */
     fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
         val list = mutableListOf<CouponListViewDTO>()
-        val user = userRepository.findByUserId(userId)
+        val user = userRepository.findById(userId).get()
         val couponList = couponRepository.findByUser(user)
         couponList.map {
             val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
@@ -188,5 +178,7 @@ class CouponService(
             couponRepository.save(coupon)
         }
     }
+
+
 
 }

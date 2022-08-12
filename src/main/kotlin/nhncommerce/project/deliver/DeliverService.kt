@@ -74,7 +74,7 @@ class DeliverService (
 
     fun getDeliverViewList(userId: Long):List<DeliverListViewDTO>{
         val list = mutableListOf<DeliverListViewDTO>()
-        val user = userRepository.findByUserId(userId)
+        val user = userRepository.findById(userId).get()
         val deliverList = deliverRepository.findByUser(user)
         deliverList.map {
             val deliverListDTO = DeliverListViewDTO(it.deliverId, it.addressName + " : " + it.address)

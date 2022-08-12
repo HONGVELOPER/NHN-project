@@ -8,6 +8,7 @@ import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.order.domain.OrderRequestDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.user.UserService
+import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
@@ -26,7 +27,9 @@ class OrderController(
     val deliverService: DeliverService,
     val optionService: OptionService,
     val loginInfoService: LoginInfoService,
-    val userService: UserService
+    val userService: UserService,
+    val alertService: AlertService
+
 
 ) {
     /**
@@ -37,9 +40,11 @@ class OrderController(
         @RequestParam("optionDetailId") optionDetailId: Long,
         model: Model
     ): String {
+        couponService.updateCouponStatus()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, null, null, 0, optionDetailId, 0)
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
+
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         val userDTO = userService.findUserById(loginInfo.userId)
@@ -58,7 +63,8 @@ class OrderController(
     @PostMapping("/api/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        orderService.createOrder(orderRequestDTO, loginInfo.userId, response)
+        orderService.createOrder(orderRequestDTO, loginInfo.userId)
+        alertService.alertMessage("주문이 완료되었습니다.", "/user", response)
     }
 
 
@@ -68,7 +74,7 @@ class OrderController(
     @GetMapping("/api/orders")
     fun orderList(pageRequestDTO: PageRequestDTO, model: Model): String {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        model.addAttribute("orders", orderService.getMyOrderList(pageRequestDTO, loginInfo.userId))
+        model.addAttribute("userOrders", orderService.getMyOrderList(pageRequestDTO, loginInfo.userId))
         return "order/orderList"
     }
 
@@ -88,7 +94,7 @@ class OrderController(
     @GetMapping("/api/orders/{orderId}")
     fun getMyOrder(@PathVariable("orderId") orderId: Long, model: Model): String {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        model.addAttribute("orderInfo", orderService.getUserOrder(orderId, loginInfo.userId))
+        model.addAttribute("userOrderInfo", orderService.getUserOrder(orderId, loginInfo.userId))
         return "order/myOrderView"
     }
 
@@ -106,17 +112,19 @@ class OrderController(
      * 주문 취소 - user
      */
     @PutMapping("/api/orders/orderCancel/{orderId}")
-    fun cancelMyOrder(@PathVariable("orderId") orderId: Long, orderDTO: OrderDTO, response: HttpServletResponse) {
+    fun cancelMyOrder(@PathVariable("orderId") orderId: Long, response: HttpServletResponse) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        orderService.cancelMyOrder(orderDTO, orderId, loginInfo.userId, response)
+        orderService.cancelMyOrder(orderId, loginInfo.userId)
+        alertService.alertMessage("주문이 취소되었습니다.", "/api/orders", response)
     }
 
     /**
      * 주문 취소 - admin
      */
     @PutMapping("/admin/orders/orderCancel/{orderId}")
-    fun calcelOrder(@PathVariable("orderId") orderId: Long, orderDTO: OrderDTO, response: HttpServletResponse) {
-        orderService.cancelOrder(orderDTO, orderId, response)
+    fun calcelOrder(@PathVariable("orderId") orderId: Long, response: HttpServletResponse) {
+        orderService.cancelOrder(orderId)
+        alertService.alertMessage("주문이 취소되었습니다.", "/admin/orders", response)
     }
 
 }
