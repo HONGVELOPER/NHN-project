@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProductRepository :JpaRepository<Product,Long>, QuerydslPredicateExecutor<Product> {
 
+    fun findByProductId(productId: Long): Product
+
     @Query(value = "select p from Product as p where p.category.categoryId =:categoryId")
     fun findProductsByCategoryId(@Param("categoryId") categoryId: Long) : List<Product>
 }

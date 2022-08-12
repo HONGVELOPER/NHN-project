@@ -38,4 +38,5 @@ class Coupon(
         status = couponDTO.status
         this.expired = expired
     }
+
 }

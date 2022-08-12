@@ -124,4 +124,10 @@ class OptionService (
         else
             return name
     }
+
+    fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{
+        val optionDetail = optionDetailRepository.findByOptionDetailId(optionDetailId)
+        return optionDetail.toOptionDetailDTO();
+
+    }
 }
