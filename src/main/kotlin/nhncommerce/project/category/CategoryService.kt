@@ -112,10 +112,10 @@ class CategoryService (
 
     //대 카테고리 조회 (페이징)
     fun getParentCategorySearch(pageRequestDTO: PageRequestDTO, categoryIdList : List<Long>) : BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qProduct = QProduct.product
-        var keyword = pageRequestDTO.keyword
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qProduct = QProduct.product
+        val keyword = pageRequestDTO.keyword
         //자식 categoryId에 해당하는 product 검색
         for (categoryId in categoryIdList){
             booleanBuilder.or(qProduct.category.categoryId.eq(categoryId))
@@ -126,11 +126,11 @@ class CategoryService (
 
     //소 카테고리 조회 (패이징)
     fun getChildCategorySearch(pageRequestDTO: PageRequestDTO, category: Category) : BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qProduct = QProduct.product
-        var keyword = pageRequestDTO.keyword
-        var expression = qProduct.category.eq(category).and(qProduct.status.eq(Status.ACTIVE))
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qProduct = QProduct.product
+        val keyword = pageRequestDTO.keyword
+        val expression = qProduct.category.eq(category).and(qProduct.status.eq(Status.ACTIVE))
 
         booleanBuilder.and(expression)
 
