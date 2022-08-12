@@ -4,9 +4,11 @@ import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.deliver.domain.Deliver
 import nhncommerce.project.deliver.domain.DeliverDTO
+import nhncommerce.project.deliver.domain.DeliverListViewDTO
+import nhncommerce.project.exception.CustomException
+import nhncommerce.project.exception.ErrorCode
 import nhncommerce.project.deliver.domain.DeliverListDTO
 import nhncommerce.project.deliver.domain.QDeliver
-
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -69,6 +71,18 @@ class DeliverService (
         booleanBuilder.and(expression)
         return booleanBuilder
     }
+
+    fun getDeliverViewList(userId: Long):List<DeliverListViewDTO>{
+        val list = mutableListOf<DeliverListViewDTO>()
+        val user = userRepository.findById(userId).get()
+        val deliverList = deliverRepository.findByUser(user)
+        deliverList.map {
+            val deliverListDTO = DeliverListViewDTO(it.deliverId, it.addressName + " : " + it.address)
+            list.add(deliverListDTO)
+        }
+        return list.toList()
+    }
+
 
     fun updateDeliver(
         userId: Long,

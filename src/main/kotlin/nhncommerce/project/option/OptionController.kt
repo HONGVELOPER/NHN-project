@@ -57,7 +57,6 @@ class OptionController (private val optionService: OptionService, private val pr
     fun updateOptionDetailPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val optionDetails = optionService.getProductOptionDetails(productId)
         model.addAttribute("optionDetailList", optionDetails)
-
         return "option/optionDetailList"
     }
 
@@ -67,7 +66,6 @@ class OptionController (private val optionService: OptionService, private val pr
     @PutMapping("/products")
     fun updateOptionDetail(@ModelAttribute optionStockDTO: OptionStockDTO ,model : Model) : String {
         optionService.updateOptionDetail(optionStockDTO)
-
         return "redirect:/admin/products"
     }
 

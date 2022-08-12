@@ -9,7 +9,7 @@ import javax.persistence.*
 class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productId:Long? = null,
+    val productId:Long? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

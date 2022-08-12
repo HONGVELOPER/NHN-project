@@ -3,10 +3,7 @@ package nhncommerce.project.coupon
 
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
-import nhncommerce.project.coupon.domain.Coupon
-import nhncommerce.project.coupon.domain.CouponDTO
-import nhncommerce.project.coupon.domain.CouponListDTO
-import nhncommerce.project.coupon.domain.QCoupon
+import nhncommerce.project.coupon.domain.*
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -17,7 +14,6 @@ import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
 import javax.servlet.http.HttpServletResponse
@@ -31,20 +27,27 @@ class CouponService(
 ) {
 
     fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
-        val coupon = Coupon(couponName = couponDTO.couponName, discountRate = couponDTO.discountRate,
-            expired =expired, user = user)
+        val coupon = Coupon(null,user,couponDTO.status,couponDTO.couponName,couponDTO.discountRate,expired)
         return coupon
     }
 
     fun entityToDto(coupon : Coupon): CouponListDTO{
-        val couponListDTO = CouponListDTO(coupon.couponId,coupon.user.email, coupon.status, coupon.couponName, coupon.discountRate,
-                                        coupon.expired, coupon.createdAt, coupon.updatedAt)
+        val couponListDTO = CouponListDTO(null,coupon.user.email,coupon.status,coupon.couponName,
+            coupon.discountRate,coupon.expired,coupon.createdAt, coupon.updatedAt)
         return couponListDTO
     }
 
+
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
-        var user = session.getAttribute("user")
+        val user = session.getAttribute("user")
         val coupon = dtoToEntity(couponDTO, user as User,expired)
+        couponRepository.save(coupon)
+    }
+
+    //이벤트 쿠폰 발급
+    fun createEventCoupon(userId : Long, discountRate : Int,  expired: LocalDate, couponName : String){
+        val user = userRepository.findById(userId).get()
+        val coupon = Coupon(null, user, Status.ACTIVE, couponName, discountRate, expired)
         couponRepository.save(coupon)
     }
 
@@ -64,7 +67,7 @@ class CouponService(
 
     fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
         val pageable = requestDTO.getPageable(Sort.by("couponId").descending())
-        var booleanBuilder = getSearch(requestDTO)
+        val booleanBuilder = getSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
             Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
@@ -80,31 +83,46 @@ class CouponService(
         return couponRepository.findById(couponId)
     }
 
+    /**
+     * 주문하기Page 에서 사용자의 사용가능한 쿠폰들 가져오기
+     * */
+    fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
+        val list = mutableListOf<CouponListViewDTO>()
+        val user = userRepository.findById(userId).get()
+        val couponList = couponRepository.findByUser(user)
+        couponList.map {
+            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
+            list.add(CouponListDTO)
+        }
+        return list.toList()
+    }
+
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
-        var coupon = couponRepository.findById(couponDTO.couponId!!).get()
+        val coupon = couponRepository.findById(couponDTO.couponId!!).get()
         coupon.updateCoupon(couponDTO,expired)
         couponRepository.save(coupon)
     }
 
+
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
-        var type = pageRequestDTO.type
+        val type = pageRequestDTO.type
 
-        var booleanBuilder = BooleanBuilder()
+        val booleanBuilder = BooleanBuilder()
 
-        var qCoupon = QCoupon.coupon
+        val qCoupon = QCoupon.coupon
 
-        var keyword = pageRequestDTO.keyword
+        val keyword = pageRequestDTO.keyword
 
-        var expression = qCoupon.couponId.gt(0L)
+        val expression = qCoupon.couponId.gt(0L)
 
         booleanBuilder.and(expression)
 
-        if(type == null || type.trim().isEmpty()){
+        if(type.trim().isEmpty()){
             return booleanBuilder
         }
 
-        var conditionBuilder = BooleanBuilder()
+        val conditionBuilder = BooleanBuilder()
 
         if(type.contains("couponName")){
             conditionBuilder.or(qCoupon.couponName.contains(keyword))
@@ -128,7 +146,7 @@ class CouponService(
 
     fun getMyCouponList(requestDTO: PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
         val pageable = requestDTO.getPageable(Sort.by("discountRate").descending())
-        var booleanBuilder = getMyCouponListSearch(requestDTO)
+        val booleanBuilder = getMyCouponListSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
             Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
@@ -140,11 +158,11 @@ class CouponService(
         val loginUserId = loginInfoService.getUserIdFromSession().userId
         val user = userRepository.findById(loginUserId).get() ?: null
 
-        var booleanBuilder = BooleanBuilder()
+        val booleanBuilder = BooleanBuilder()
 
-        var qCoupon = QCoupon.coupon
+        val qCoupon = QCoupon.coupon
 
-        var expression = qCoupon.user.eq(user)
+        val expression = qCoupon.user.eq(user)
         booleanBuilder.and(expression)
 
         return booleanBuilder
@@ -159,5 +177,7 @@ class CouponService(
             couponRepository.save(coupon)
         }
     }
+
+
 
 }

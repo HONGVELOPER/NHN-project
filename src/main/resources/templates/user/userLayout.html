@@ -20,7 +20,7 @@
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" th:href="@{/user}">Kulture</a>
+    <a class="navbar-brand ps-3" th:href="@{/products}">Kulture</a>
     <!-- Sidebar Toggle-->
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
@@ -33,7 +33,7 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" th:href="@{/api/users/myPageForm}" sec:authorize="isAuthenticated()">My Page</a></li>
                 <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()" /></li>
-                <li><a class="dropdown-item" href="#!" sec:authorize="isAuthenticated()">My Order</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/orders}" sec:authorize="isAuthenticated()">My Order</a></li>
                 <li><a class="dropdown-item" th:href="@{/api/delivers/users}" sec:authorize="isAuthenticated()">Deliver Address</a></li>
                 <li><a class="dropdown-item" th:href="@{/api/myCouponList}" sec:authorize="isAuthenticated()">My Coupon</a></li>
                 <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()"/></li>
@@ -160,6 +160,10 @@
                             <a class="nav-link" th:href="@{/categories/28}">Jewelry</a>
                         </nav>
                     </div>
+                    <a class="nav-link" th:href="@{/api/eventCoupon}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-ticket-simple"></i></div>
+                        Event Coupon
+                    </a>
 
 
                 </div>

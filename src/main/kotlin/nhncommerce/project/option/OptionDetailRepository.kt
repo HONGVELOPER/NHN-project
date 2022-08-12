@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.util.Optional
 
 interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
 
@@ -24,6 +25,8 @@ interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
     @Query(value = "delete from OptionDetail as d where d.product.productId=:productId")
     fun deleteOptionDetailsByProductId(@Param("productId") productId: Long)
 
+    fun findByOptionDetailId(optionDetailId: Long) : OptionDetail
 
+//    fun findByProduct(product: Product): OptionDetail
 
 }

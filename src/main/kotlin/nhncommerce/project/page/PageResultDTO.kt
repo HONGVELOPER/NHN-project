@@ -31,7 +31,7 @@ class PageResultDTO<DTO,EN> {
         this.page = pageable.pageNumber +1
         this.size = pageable.pageSize
 
-        var tempEnd = (Math.ceil(page/10.0)*10).toInt()
+        val tempEnd = (Math.ceil(page/10.0)*10).toInt()
 
         this.start = tempEnd - 9
         this.prev = start > 1

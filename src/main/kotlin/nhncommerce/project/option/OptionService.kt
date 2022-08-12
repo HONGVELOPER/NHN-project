@@ -54,7 +54,7 @@ class OptionService (
         for(i in 0 until parentOptionList.size)
             optionTypeList[i] = parentOptionList[i]
 
-        //옵션 상세명
+        //옵션 명
         for(i in 0..2){
             if (optionTypeList[i] != null){
                 var temp = optionRepository.findOptionsByParentOption(optionTypeList[i])
@@ -74,7 +74,7 @@ class OptionService (
         val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
         //옵션 종류
         val optionTypeList = mutableListOf<String?>(optionListDTO.option1, optionListDTO.option2, optionListDTO.option3)
-        //옵션 상세명
+        //옵션 명
         val optionNameList = mutableListOf(optionListDTO.option1List, optionListDTO.option2List, optionListDTO.option3List)
 
         //option 생성
@@ -123,5 +123,11 @@ class OptionService (
             return "옵션 없음"
         else
             return name
+    }
+
+    fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{
+        val optionDetail = optionDetailRepository.findByOptionDetailId(optionDetailId)
+        return optionDetail.toOptionDetailDTO();
+
     }
 }

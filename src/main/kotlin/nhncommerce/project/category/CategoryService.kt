@@ -95,7 +95,8 @@ class CategoryService (
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
         pageRequestDTO.size = 12
-        val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
+        val sort = categorySort(pageRequestDTO)
+        val pageable = pageRequestDTO.getPageable(sort)
         var booleanBuilder = BooleanBuilder()
         if (category.parentCategory == null){
             val childCategoryList = categoryRepository.findCategoriesByParentCategory(category).map { it.categoryId!! }
@@ -108,6 +109,21 @@ class CategoryService (
         val fn : Function<Product, ProductDTO> =
             Function<Product, ProductDTO> { entity: Product? -> entityToDto(entity!!) }
         return PageResultDTO<ProductDTO, Product>(result, fn)
+    }
+
+    fun categorySort(pageRequestDTO: PageRequestDTO) : Sort {
+        var sort : Sort = Sort.by("updatedAt").descending()
+
+        val type = pageRequestDTO.type
+
+        if(type.contains("price")){
+            sort = Sort.by("price").descending()
+        }
+        if(type.contains("star")){
+            sort = Sort.by("totalStar").descending()
+        }
+
+        return sort
     }
 
     //대 카테고리 조회 (페이징)
