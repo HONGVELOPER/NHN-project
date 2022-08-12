@@ -28,16 +28,16 @@ class ImageService {
     }
 
     fun uploadObject(containerName: String, objectName: String, inputStream: InputStream?) : String{
-        var url = getUrl(containerName, objectName)
-        var requestCallback = RequestCallback { request ->
+        val url = getUrl(containerName, objectName)
+        val requestCallback = RequestCallback { request ->
             request.headers.add("X-Auth-Token", tokenId)
             IOUtils.copy(inputStream, request.body)
         }
-        var requestFactory = SimpleClientHttpRequestFactory()
+        val requestFactory = SimpleClientHttpRequestFactory()
         requestFactory.setBufferRequestBody(false)
-        var restTemplate = RestTemplate(requestFactory)
+        val restTemplate = RestTemplate(requestFactory)
 
-        var responseExtractor = HttpMessageConverterExtractor(
+        val responseExtractor = HttpMessageConverterExtractor(
             String::class.java, restTemplate.messageConverters
         )
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor)
