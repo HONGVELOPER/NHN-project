@@ -7,6 +7,7 @@ import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
+import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -21,7 +22,7 @@ class ProductController(
     val productService: ProductService,
     val optionService: OptionService,
     val categoryService: CategoryService,
-
+    val storageTokenService: StorageTokenService
 ) {
 
     /**
@@ -41,7 +42,7 @@ class ProductController(
         val productOptionDTO = ProductOptionDTO()
         val categoryListDTO = categoryService.getCategoryList()
 
-        productService.generateToken()
+        storageTokenService.accessToken()
 
         model.addAttribute("categoryListDTO", categoryListDTO)
         model.addAttribute("productOptionDTO", productOptionDTO)
@@ -53,7 +54,6 @@ class ProductController(
      */
     @GetMapping("/admin/products")
     fun productListPage(model : Model, pageRequestDTO: PageRequestDTO):String{
-
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
         return "product/productList"
     }
@@ -63,7 +63,6 @@ class ProductController(
      */
     @GetMapping("/admin/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
-
         model.addAttribute("categoryListDTO", categoryService.getCategoryList())
         model.addAttribute("productDTO",productService.getProduct(productId))
         return "product/updateProduct"
