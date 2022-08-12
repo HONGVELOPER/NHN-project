@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <h1>쿠폰 발급</h1>
+                    <form th:action="@{/api/eventCoupon}"  th:method="post">
+                        <input type="hidden" th:value="${userId}" th:name="userId">
+                        <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발급</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </th:block>
+</th:block>
+</html>
