@@ -24,19 +24,16 @@
                         <h5 class="fw-bolder">상세 설명</h5>
                         <p class="lead" th:text="${productDTO.detailDescription}"></p>
                         <h5 class="fw-bolder">옵션</h5>
-                        <form th:action="@{/orderProducts}" th:method="post">
-                            <select name="optionDetailId" class="form-select">
-                                <div th:each="optionDetail : ${optionDetailList}">
-                                    <div th:if="${optionDetail.stock > 0}">
-                                        <option th:text="${optionDetail.name}" th:value="${optionDetail.optionDetailId}" name="optionDetailId"></option>
-                                    </div>
-                                    <div th:if="${optionDetail.stock <= 0}">
-                                        <option th:text="${optionDetail.name} + '(품절)'" disabled="disabled"></option>
-                                    </div>
+                        <select name="optionDetailId" class="form-select">
+                            <div th:each="optionDetail : ${optionDetailList}">
+                                <div th:if="${optionDetail.stock > 0}">
+                                    <option th:text="${optionDetail.name} + ' (+'+${optionDetail.extraCharge} + '원)'" th:value="${optionDetail.optionDetailId}" name="optionDetailId"></option>
                                 </div>
-                            </select>
-                            <button class="btn btn-outline-dark mt-auto" type="submit">상품 주문</button>
-                        </form>
+                                <div th:if="${optionDetail.stock <= 0}">
+                                    <option th:text="${optionDetail.name} + ' (+'+${optionDetail.extraCharge} + '원)' + ' (품절)'" disabled="disabled"></option>
+                                </div>
+                            </div>
+                        </select>
                         <br>
                     </div>
                 </div>
