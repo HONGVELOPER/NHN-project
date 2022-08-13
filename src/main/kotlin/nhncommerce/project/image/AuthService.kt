@@ -40,15 +40,15 @@ class AuthService {
     }
 
     fun requestToken(): String? {
-        var identityUrl = authUrl + "/tokens"
+        val identityUrl = authUrl + "/tokens"
 
         // 헤더 생성
-        var headers = org.springframework.http.HttpHeaders()
+        val headers = org.springframework.http.HttpHeaders()
         headers.add("Content-Type", "application/json")
-        var httpEntity: HttpEntity<TokenRequest> = HttpEntity<TokenRequest>(tokenRequest, headers)
+        val httpEntity: HttpEntity<TokenRequest> = HttpEntity<TokenRequest>(tokenRequest, headers)
 
         // 토큰 요청
-        var response = restTemplate.exchange(
+        val response = restTemplate.exchange(
             identityUrl, HttpMethod.POST, httpEntity,
             String::class.java
         )
@@ -56,8 +56,8 @@ class AuthService {
     }
 
     fun generateToken() : String?{
-        var authService = AuthService()
-        var token = authService.requestToken()
+        val authService = AuthService()
+        val token = authService.requestToken()
         println(token)
         return token
     }
@@ -65,14 +65,7 @@ class AuthService {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-//            var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-//            var tenantId = "507cc2a432bc43de8721f24810f3daa1"
-//            var username = "soonbum-jeong@nhn-commerce.com" //NHN Cloud Account
-//            var password = "1234"
-//            var authService = AuthService(authUrl, tenantId, username, password)
-//            var token = authService.requestToken()
-//            println(token)
-            var authService = AuthService()
+            val authService = AuthService()
             authService.generateToken()
         }
     }

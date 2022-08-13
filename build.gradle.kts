@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.ir.backend.js.compile
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 
 plugins {
 
@@ -69,9 +68,13 @@ dependencies {
     val querydslVersion = "5.0.0" //querydsl
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
     kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
-
+    
     //gson
     implementation("com.google.code.gson:gson:2.9.1")
+
+    //redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
 }
 
 tasks.withType<KotlinCompile> {
@@ -79,10 +82,6 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

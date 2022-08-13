@@ -7,28 +7,28 @@ import nhncommerce.project.image.ImageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
-import nhncommerce.project.product.domain.Product
-import nhncommerce.project.product.domain.ProductDTO
-import nhncommerce.project.product.domain.ProductOptionDTO
-import nhncommerce.project.product.domain.QProduct
+import nhncommerce.project.product.domain.*
 import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.InputStream
 import java.util.function.Function
 
 @Service
 class ProductService(
     val productRepository: ProductRepository,
+    val productImageRepository: ProductImageRepository,
     val categoryRepository: CategoryRepository,
     val imageService: ImageService,
     val storageTokenService: StorageTokenService
 ) {
 
     fun dtoTOEntity(productDTO: ProductDTO) : Product{
-        val product = Product(status = Status.ACTIVE, productName = productDTO.productName, price = productDTO.price,
-                briefDescription = productDTO.briefDescription, detailDescription = productDTO.detailDescription,
-                thumbnail = productDTO.thumbnail, viewCount = productDTO.viewCount, totalStar = productDTO.totalStar, category = productDTO.category)
+        val product = Product(null, Status.ACTIVE, productDTO.productName, productDTO.price,
+                productDTO.briefDescription, productDTO.detailDescription, productDTO.thumbnail, productDTO.viewCount,
+            productDTO.totalStar, productDTO.category)
+
         return product
     }
 
@@ -72,12 +72,24 @@ class ProductService(
      * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
      */
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream) : Product{
-        println("==========================$imageService.tokenId")
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
 
         val product = dtoTOEntity(productDTO)
+
         return productRepository.save(product)
+    }
+
+    /**
+     * 상품 이미지 등록
+     */
+    fun createProductImageList(fileList : List<MultipartFile>, product : Product){
+        //상품 이미지 목록 저장
+        for(file in fileList){
+            val imgUrl = imageService.uploadImage(file.inputStream)
+            val productImage = ProductImage(null, Status.ACTIVE, imgUrl, product)
+            productImageRepository.save(productImage)
+        }
     }
 
     /**
@@ -86,7 +98,7 @@ class ProductService(
     fun getProductList(pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO,Product>{
         pageRequestDTO.size=12
         val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
-        var booleanBuilder = getSearch(pageRequestDTO)
+        val booleanBuilder = getSearch(pageRequestDTO)
         val result = productRepository.findAll(booleanBuilder,pageable)
 
         val fn: Function<Product, ProductDTO> =
@@ -105,23 +117,23 @@ class ProductService(
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
-        var type = pageRequestDTO.type
+        val type = pageRequestDTO.type
 
-        var booleanBuilder = BooleanBuilder()
+        val booleanBuilder = BooleanBuilder()
 
-        var qProduct = QProduct.product
+        val qProduct = QProduct.product
 
-        var keyword = pageRequestDTO.keyword
+        val keyword = pageRequestDTO.keyword
 
-        var expression = qProduct.productId.gt(0L).and(qProduct.status.eq(Status.ACTIVE))
+        val expression = qProduct.productId.gt(0L).and(qProduct.status.eq(Status.ACTIVE))
 
         booleanBuilder.and(expression)
 
-        if(type == null || type.trim().isEmpty()){
+        if(type.trim().isEmpty()){
             return booleanBuilder
         }
 
-        var conditionBuilder = BooleanBuilder()
+        val conditionBuilder = BooleanBuilder()
 
         if(type.contains("productName")){
             conditionBuilder.or(qProduct.productName.contains(keyword))
@@ -144,7 +156,7 @@ class ProductService(
      */
     fun getThumbnailUUID(product : Product) : String{
         val thumbnail = productRepository.findById(product.productId!!).get().thumbnail
-        var thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
+        val thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
         return thumbnailUUID[6]
     }
 
@@ -152,8 +164,8 @@ class ProductService(
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
     fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream){
-        var product = productRepository.findById(productDTO.productId!!.toLong()).get()
-        var thumbnail = getThumbnailUUID(product)
+        val product = productRepository.findById(productDTO.productId!!.toLong()).get()
+        val thumbnail = getThumbnailUUID(product)
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
         imageService.deleteImage(thumbnail)
@@ -162,15 +174,19 @@ class ProductService(
     }
 
     fun deleteProduct(productId : String){
-        var product = productRepository.findById(productId.toLong())
+        val product = productRepository.findById(productId.toLong())
         product.get().status=Status.IN_ACTIVE
         productRepository.save(product.get())
     }
 
-    fun generateToken(){
-        when(storageTokenService.hasToken()){
-            true ->  storageTokenService.checkExpired()
-            false -> storageTokenService.generateToken()
+    /**
+     * 상품 이미지 dto 리스트 조회
+     */
+    fun getProductImageList(product: Product) : List<String>{
+        val imageList = mutableListOf<String>()
+        val list = productImageRepository.findByProduct(product)
+        for(productImage in list){
+            imageList.add(productImage.image)
         }
+        return imageList
     }
-}

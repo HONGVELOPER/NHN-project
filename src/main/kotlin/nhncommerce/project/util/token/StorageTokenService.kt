@@ -80,4 +80,13 @@ class StorageTokenService(
         return storageTokenRepository.findAll().get(0).tokenId
     }
 
+    fun accessToken(){
+        when(hasToken()){
+            true ->  checkExpired()
+            false -> generateToken()
+        }
+    }
+
+
+
 }

@@ -14,8 +14,6 @@ interface CouponRepository : JpaRepository<Coupon, Long>, QuerydslPredicateExecu
     @Query("select c from Coupon as c where c.expired < :expired and c.user = :user order by c.status")
     fun findCouponsByUser(@Param("user")user : User,@Param("expired") expired : LocalDate) : List<Coupon>
 
-    fun findByCouponId(couponId: Long): Coupon
-
     fun findByUser(user: User): List<Coupon>
 
 }

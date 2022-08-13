@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-정<th:block th:replace="~{/user/userLayout :: setContent(~{this::content})}">
+<th:block th:replace="~{/user/userLayout :: setContent(~{this::content})}">
     <th:block th:fragment="content">
 
         <head>
@@ -27,6 +27,18 @@
                             <div th:each="childCategory : ${childCategoryList}">
                                 <a th:href="@{/categories/{categoryId}(categoryId = ${childCategory.categoryId})}" class="list-group-item list-group-item-action" th:text="${childCategory.name}"></a>
                             </div>
+
+                            <form th:action="'/categories/' + ${categoryId}">
+                                <div class=" input-group">
+                                    <select class="custom-select float-end" name="type" >
+                                        <option value="day" th:selected="${pageRequestDTO.type=='day'}">최신순</option>
+                                        <option value="price" th:selected="${pageRequestDTO.type=='price'}">가격</option>
+                                        <option value="star" th:selected="${pageRequestDTO.type=='star'}">별점순</option>
+                                    </select>
+                                    <input type="submit" class="float-end btn btn-outline-secondary btn-search" value="검색">
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                     <div class="col-10">
@@ -69,15 +81,18 @@
         </section>
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${products.prev}">
-                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.start-1}, categoryId=${categoryId})}" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.start-1},type=${type}, categoryId=${categoryId})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item ' + ${products.page==page?'active':''}" th:each="page : ${products.pageList}">
-                <a class="page-link" th:href="@{/categories/{categoryId}(page=${page}, categoryId=${categoryId})}">
+<!--                <a class="page-link" th:href="@{/categories/{categoryId}(page=${page}, categoryId=${categoryId})}">-->
+<!--                    [[${page}]]-->
+<!--                </a>-->
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${page},type=${type}, categoryId=${categoryId})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${products.next}">
-                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.end+1}, categoryId=${categoryId})}">Next</a>
+                <a class="page-link" th:href="@{/categories/{categoryId}(page=${products.end+1},type=${type}, categoryId=${categoryId})}">Next</a>
             </li>
         </ul>
 

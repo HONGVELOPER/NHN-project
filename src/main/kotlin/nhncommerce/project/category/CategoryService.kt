@@ -95,7 +95,8 @@ class CategoryService (
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
         pageRequestDTO.size = 12
-        val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
+        val sort = categorySort(pageRequestDTO)
+        val pageable = pageRequestDTO.getPageable(sort)
         var booleanBuilder = BooleanBuilder()
         if (category.parentCategory == null){
             val childCategoryList = categoryRepository.findCategoriesByParentCategory(category).map { it.categoryId!! }
@@ -110,12 +111,27 @@ class CategoryService (
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
 
+    fun categorySort(pageRequestDTO: PageRequestDTO) : Sort {
+        var sort : Sort = Sort.by("updatedAt").descending()
+
+        val type = pageRequestDTO.type
+
+        if(type.contains("price")){
+            sort = Sort.by("price").descending()
+        }
+        if(type.contains("star")){
+            sort = Sort.by("totalStar").descending()
+        }
+
+        return sort
+    }
+
     //대 카테고리 조회 (페이징)
     fun getParentCategorySearch(pageRequestDTO: PageRequestDTO, categoryIdList : List<Long>) : BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qProduct = QProduct.product
-        var keyword = pageRequestDTO.keyword
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qProduct = QProduct.product
+        val keyword = pageRequestDTO.keyword
         //자식 categoryId에 해당하는 product 검색
         for (categoryId in categoryIdList){
             booleanBuilder.or(qProduct.category.categoryId.eq(categoryId))
@@ -126,11 +142,11 @@ class CategoryService (
 
     //소 카테고리 조회 (패이징)
     fun getChildCategorySearch(pageRequestDTO: PageRequestDTO, category: Category) : BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qProduct = QProduct.product
-        var keyword = pageRequestDTO.keyword
-        var expression = qProduct.category.eq(category).and(qProduct.status.eq(Status.ACTIVE))
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qProduct = QProduct.product
+        val keyword = pageRequestDTO.keyword
+        val expression = qProduct.category.eq(category).and(qProduct.status.eq(Status.ACTIVE))
 
         booleanBuilder.and(expression)
 
