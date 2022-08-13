@@ -54,9 +54,8 @@ class ImageService {
 
     fun uploadImage(inputStream: InputStream?) : String{
         try {
-            var uuid = UUID.randomUUID().toString()
-            val url = uploadObject(containerName, uuid, inputStream)
-            return url
+            val uuid = UUID.randomUUID().toString()
+            return uploadObject(containerName, uuid, inputStream)
         } catch (e: Exception) {
             e.printStackTrace()
         }
