@@ -1,6 +1,6 @@
 package nhncommerce.project.redis
 
-import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.domain.CouponCount
 import nhncommerce.project.redis.domain.TimeCoupon
 import org.slf4j.LoggerFactory

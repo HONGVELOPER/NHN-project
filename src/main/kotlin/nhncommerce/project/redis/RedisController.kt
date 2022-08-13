@@ -1,7 +1,7 @@
 package nhncommerce.project.redis
 
 import nhncommerce.project.coupon.CouponService
-import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.RedisService.Companion.couponCount
 import nhncommerce.project.redis.config.SchedulerConfiguration
 import nhncommerce.project.redis.domain.EventCheckDTO
