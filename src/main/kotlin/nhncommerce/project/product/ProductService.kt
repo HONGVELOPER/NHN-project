@@ -7,19 +7,18 @@ import nhncommerce.project.image.ImageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
-import nhncommerce.project.product.domain.Product
-import nhncommerce.project.product.domain.ProductDTO
-import nhncommerce.project.product.domain.ProductOptionDTO
-import nhncommerce.project.product.domain.QProduct
+import nhncommerce.project.product.domain.*
 import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.InputStream
 import java.util.function.Function
 
 @Service
 class ProductService(
     val productRepository: ProductRepository,
+    val productImageRepository: ProductImageRepository,
     val categoryRepository: CategoryRepository,
     val imageService: ImageService,
     val storageTokenService: StorageTokenService
@@ -77,7 +76,20 @@ class ProductService(
         productDTO.thumbnail=url
 
         val product = dtoTOEntity(productDTO)
+
         return productRepository.save(product)
+    }
+
+    /**
+     * 상품 이미지 등록
+     */
+    fun createProductImageList(fileList : List<MultipartFile>, product : Product){
+        //상품 이미지 목록 저장
+        for(file in fileList){
+            val imgUrl = imageService.uploadImage(file.inputStream)
+            val productImage = ProductImage(null, Status.ACTIVE, imgUrl, product)
+            productImageRepository.save(productImage)
+        }
     }
 
     /**
@@ -166,4 +178,15 @@ class ProductService(
         product.get().status=Status.IN_ACTIVE
         productRepository.save(product.get())
     }
-}
+
+    /**
+     * 상품 이미지 dto 리스트 조회
+     */
+    fun getProductImageList(product: Product) : List<String>{
+        val imageList = mutableListOf<String>()
+        val list = productImageRepository.findByProduct(product)
+        for(productImage in list){
+            imageList.add(productImage.image)
+        }
+        return imageList
+    }
