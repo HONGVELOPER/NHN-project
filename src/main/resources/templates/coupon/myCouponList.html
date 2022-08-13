@@ -38,7 +38,7 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${myCoupon.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/api/myCouponList(page=${myCoupon.start-1})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${myCoupon.page == page? 'active':''}"th:each="page : ${myCoupon.pageList}">
                 <a class="page-link" th:href="@{/api/myCouponList(page=${page})}">
@@ -46,7 +46,7 @@
                 </a>
             </li>
             <li class="page-item" th:if="${myCoupon.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/api/myCouponList(page=${myCoupon.end+1})}">Next</a>
             </li>
         </ul>
     </th:block>

@@ -7,11 +7,11 @@ import nhncommerce.project.product.ProductService
 import nhncommerce.project.review.domain.Review
 import nhncommerce.project.review.domain.ReviewDTO
 import nhncommerce.project.review.domain.ReviewListDTO
+
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import nhncommerce.project.util.token.StorageTokenService
-import nhncommerce.project.util.token.domain.StorageToken
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -91,7 +91,7 @@ class ReviewController(
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         var reviewImageUrl: String = ""
         if (!file.isEmpty) {
-            storageTokenService.accessToken() // storage service 로 옮기는게 좋을것같습니다
+            storageTokenService.accessToken()
             reviewImageUrl = imageService.uploadImage(file.inputStream)
             reviewDTO.reviewImage = reviewImageUrl
         }
