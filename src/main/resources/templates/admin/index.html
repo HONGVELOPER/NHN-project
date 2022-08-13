@@ -3,13 +3,98 @@
     <th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
         <th:block th:fragment="content">
 
-            <head>
-                <meta charset="UTF-8">
-                <title>Title</title>
-            </head>
-            <body>
-            메인페이지
-            </body>
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Dashboard</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                DataTable Example
+                            </div>
+                            <div class=" input-group">
+                                <input type="date" name="sDate" id="sDate" title="시작일" maxlength="10">
+                                <input type="date" name="eDate" id="eDate" title="종료일" maxlength="10">
+                                <button class="btn btn-outline-dark mt-auto" id="btn" onclick="input()" type="submit">검색</button>
+                            </div>
+
+                            <div class="container px-4 px-lg-5 my-5">
+                                <div class="row gx-4 gx-lg-5 align-items-center">
+
+                                    <div id="container"></div>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+                                            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+                                            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+                                            integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+                                            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                    <link rel="stylesheet"
+                                          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+                                          integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+                                          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+                                    <script src="https://code.highcharts.com/highcharts.js"></script>
+                                    <script src="/js/chart.js"></script>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                DataTable Example
+                            </div>
+
+                            <form th:action="@{/admin}">
+                                <div class=" input-group">
+                                    <select class="custom-select float-end" name="type" >
+                                        <option value="date" th:selected="${pageRequestDTO.type=='date'}">날짜</option>
+                                        <option value="quantity" th:selected="${pageRequestDTO.type=='quantity'}">매출</option>
+                                        <option value="totalAmount" th:selected="${pageRequestDTO.type=='totalAmount'}">판매량</option>
+                                    </select>
+                                    <input type="submit" class="float-end btn btn-outline-secondary btn-search" value="검색">
+                                </div>
+                            </form>
+
+                            <div class="card-body">
+
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">매출</th>
+                                        <th scope="col">판매량</th>
+                                        <th scope="col">날짜</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="total : ${total.dtoList}">
+                                        <td>[[${total.quantity}]]</td>
+                                        <td>[[${total.totalAmount}]]</td>
+                                        <td>[[${total.date}]]</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                <ul class="pagination  justify-content-center align-items-center">
+                                    <li class="page-item" th:if="${total.prev}">
+                                        <a class="page-link" th:href="@{/admin(page=${total.start-1},type=${type} )}" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li th:class="'page-item ' + ${total.page == page? 'active':''}"th:each="page : ${total.pageList}">
+                                        <a class="page-link" th:href="@{/admin/(page=${page},type=${type})}">
+                                            [[${page}]]
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:if="${total.next}">
+                                        <a class="page-link" th:href="@{/admin/(page=${total.end+1},type=${type} )}">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </main>
 
         </th:block>
     </th:block>
