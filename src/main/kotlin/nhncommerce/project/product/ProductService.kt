@@ -25,9 +25,10 @@ class ProductService(
 ) {
 
     fun dtoTOEntity(productDTO: ProductDTO) : Product{
-        val product = Product(status = Status.ACTIVE, productName = productDTO.productName, price = productDTO.price,
-                briefDescription = productDTO.briefDescription, detailDescription = productDTO.detailDescription,
-                thumbnail = productDTO.thumbnail, viewCount = productDTO.viewCount, totalStar = productDTO.totalStar, category = productDTO.category)
+        val product = Product(null, Status.ACTIVE, productDTO.productName, productDTO.price,
+                productDTO.briefDescription, productDTO.detailDescription, productDTO.thumbnail, productDTO.viewCount,
+            productDTO.totalStar, productDTO.category)
+
         return product
     }
 
@@ -71,7 +72,6 @@ class ProductService(
      * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
      */
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream) : Product{
-        println("==========================$imageService.tokenId")
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
 
@@ -98,7 +98,7 @@ class ProductService(
     fun getProductList(pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO,Product>{
         pageRequestDTO.size=12
         val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
-        var booleanBuilder = getSearch(pageRequestDTO)
+        val booleanBuilder = getSearch(pageRequestDTO)
         val result = productRepository.findAll(booleanBuilder,pageable)
 
         val fn: Function<Product, ProductDTO> =
@@ -117,23 +117,23 @@ class ProductService(
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
-        var type = pageRequestDTO.type
+        val type = pageRequestDTO.type
 
-        var booleanBuilder = BooleanBuilder()
+        val booleanBuilder = BooleanBuilder()
 
-        var qProduct = QProduct.product
+        val qProduct = QProduct.product
 
-        var keyword = pageRequestDTO.keyword
+        val keyword = pageRequestDTO.keyword
 
-        var expression = qProduct.productId.gt(0L).and(qProduct.status.eq(Status.ACTIVE))
+        val expression = qProduct.productId.gt(0L).and(qProduct.status.eq(Status.ACTIVE))
 
         booleanBuilder.and(expression)
 
-        if(type == null || type.trim().isEmpty()){
+        if(type.trim().isEmpty()){
             return booleanBuilder
         }
 
-        var conditionBuilder = BooleanBuilder()
+        val conditionBuilder = BooleanBuilder()
 
         if(type.contains("productName")){
             conditionBuilder.or(qProduct.productName.contains(keyword))
@@ -156,7 +156,7 @@ class ProductService(
      */
     fun getThumbnailUUID(product : Product) : String{
         val thumbnail = productRepository.findById(product.productId!!).get().thumbnail
-        var thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
+        val thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
         return thumbnailUUID[6]
     }
 
@@ -164,8 +164,8 @@ class ProductService(
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
     fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream){
-        var product = productRepository.findById(productDTO.productId!!.toLong()).get()
-        var thumbnail = getThumbnailUUID(product)
+        val product = productRepository.findById(productDTO.productId!!.toLong()).get()
+        val thumbnail = getThumbnailUUID(product)
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail=url
         imageService.deleteImage(thumbnail)
@@ -174,16 +174,9 @@ class ProductService(
     }
 
     fun deleteProduct(productId : String){
-        var product = productRepository.findById(productId.toLong())
+        val product = productRepository.findById(productId.toLong())
         product.get().status=Status.IN_ACTIVE
         productRepository.save(product.get())
-    }
-
-    fun generateToken(){
-        when(storageTokenService.hasToken()){
-            true ->  storageTokenService.checkExpired()
-            false -> storageTokenService.generateToken()
-        }
     }
 
     /**
@@ -197,4 +190,3 @@ class ProductService(
         }
         return imageList
     }
-}

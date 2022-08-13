@@ -15,6 +15,7 @@ spring:
     properties:
       hibernate.enable_lazy_load_no_trans: true
       hibernate.format_sql: true
+    defer-datasource-initialization: true
   security:
     oauth2:
       client:
@@ -27,6 +28,10 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  sql:
+    init:
+      schema-locations: classpath:sql/category-insert.sql
+      mode: always
 
 server:
   servlet:

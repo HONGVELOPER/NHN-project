@@ -1,6 +1,7 @@
 package nhncommerce.project.review.domain
 
 import nhncommerce.project.baseentity.BaseEntity
+import nhncommerce.project.baseentity.Status
 import nhncommerce.project.order.domain.Order
 import nhncommerce.project.user.domain.User
 import javax.persistence.*
@@ -12,27 +13,35 @@ class Review (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    var reviewId: Long? =null,
+    val reviewId: Long? =null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var status: Status,
 
     @Column(nullable = false)
-    var review: String,
+    var content: String,
 
     @Column(nullable = false)
-    var star: Float=0f,
+    var star: Int = 0,
 
     @Column(nullable = true)
-    var reviewImageId: String,
+    var reviewImage: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
-    var user: User,
+    val user: User,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="order_id")
-    var order: Order,
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="order_id")
+//    var order: Order,
 
-//    @Column(nullable = false)
-//    var status: Status = Status.ACTIVE
-
-
-): BaseEntity()
+): BaseEntity() {
+    fun update(reviewDTO: ReviewDTO) {
+        content = reviewDTO.content
+        star = reviewDTO.star
+        reviewDTO.reviewImage?.let {
+            reviewImage = it
+        }
+    }
+}
