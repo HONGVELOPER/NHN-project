@@ -71,10 +71,30 @@ class ProductController(
     /**
      * 상품 등록
      */
+//    @PostMapping("/admin/products")
+//    fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
+//                      response: HttpServletResponse, session : HttpSession,
+//                      @RequestPart file : MultipartFile) : String{
+//        if(bindingResult.hasErrors()){
+//            session.setAttribute("productName",productOptionDTO.productName)
+//            session.setAttribute("price",productOptionDTO.price)
+//            session.setAttribute("briefDescription",productOptionDTO.briefDescription)
+//            session.setAttribute("detailDescription",productOptionDTO.detailDescription)
+//            // 카테고리 리스트를 위한 session
+//            session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
+//            return "product/addProduct"
+//        }
+//        val separate = productService.separate(productOptionDTO)
+//        val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
+//        val optionListDTO = separate.get(1) as OptionListDTO
+//        optionListDTO.productDTO = createProduct.toProductDTO()
+//        optionService.createOptionDetail(optionListDTO)
+//        return "redirect:/admin/products"
+//    }
     @PostMapping("/admin/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession,
-                        @RequestPart file : MultipartFile) : String{
+                        @RequestPart file : MultipartFile,  @RequestPart(value="fileList", required=false) fileList : List<MultipartFile>) : String{
         if(bindingResult.hasErrors()){
             session.setAttribute("productName",productOptionDTO.productName)
             session.setAttribute("price",productOptionDTO.price)
@@ -84,9 +104,9 @@ class ProductController(
             session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
             return "product/addProduct"
         }
-        println(productOptionDTO.categoryId)
         val separate = productService.separate(productOptionDTO)
         val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
+        productService.createProductImageList(fileList , createProduct) //이미지 저장
         val optionListDTO = separate.get(1) as OptionListDTO
         optionListDTO.productDTO = createProduct.toProductDTO()
         optionService.createOptionDetail(optionListDTO)
@@ -133,7 +153,9 @@ class ProductController(
     fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
         val productDTO = productService.getProductDTO(productId)
         val optionDetailDTOList = optionService.getProductOptionDetails(productId)
+        val imageList = productService.getProductImageList(productDTO.toEntity())
 
+        model.addAttribute("productImageList", imageList)
         model.addAttribute("optionDetailList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
         return "product/productDetail"
