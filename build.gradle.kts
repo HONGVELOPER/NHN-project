@@ -69,6 +69,9 @@ dependencies {
     val querydslVersion = "5.0.0" //querydsl
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
     kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
+
+    //gson
+    implementation("com.google.code.gson:gson:2.9.1")
 }
 
 tasks.withType<KotlinCompile> {
