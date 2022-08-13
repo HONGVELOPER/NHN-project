@@ -17,10 +17,9 @@
                         <img id = "thumbnail" src="" height="200" >
                         <br>
                         상품 사진 목록 <br>
-                        <input type="file" name="fileList" id="fileList" accept="image/*" onchange="setThumbnail(event)" multiple><br>
+                        <input type="file" name="fileList" id="fileList" accept="image/*" onchange="setImageList(event)" multiple><br>
                         <div id="multiple-container" class="col mb-5">
                         </div>
-
                     </div>
                         <div th:if="${session.productName != null}">
                             제품 이름
@@ -129,7 +128,7 @@
                             }
                         }
 
-                        function setThumbnail(event) {
+                        function setImageList(event) {
                             if( document.getElementById("fileList").files.length > 5 ){
                                 alert("최대 5개까지만 가능");
                                 document.getElementById("fileList").value = ""

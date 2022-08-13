@@ -13,6 +13,7 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
@@ -63,8 +64,10 @@ class ProductController(
      */
     @GetMapping("/admin/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
+        val productDTO = productService.getProduct(productId)
+        model.addAttribute("productImageDTOList", productService.getProductImageDTOList(productDTO.toEntity()))
         model.addAttribute("categoryListDTO", categoryService.getCategoryList())
-        model.addAttribute("productDTO",productService.getProduct(productId))
+        model.addAttribute("productDTO", productDTO)
         return "product/updateProduct"
     }
 
@@ -100,7 +103,7 @@ class ProductController(
     fun updateProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult,
                       categoryId : String, @PathVariable("productId")productId : String,
                       response: HttpServletResponse, session : HttpSession,
-                      @RequestPart file : MultipartFile) : String{
+                      @RequestPart file : MultipartFile, @RequestPart(value="fileList", required=false) fileList : List<MultipartFile>) : String{
         if(bindingResult.hasErrors()){
             session.setAttribute("thumbnail", productDTO.thumbnail)
             session.setAttribute("productName",productDTO.productName)
@@ -112,10 +115,31 @@ class ProductController(
             session.setAttribute("categoryList" , categoryService.getCategoryList())
             return "product/updateProduct"
         }
+        productService.createProductImageList(fileList , productDTO.toEntity()) //이미지 저장
         productDTO.category = categoryService.getCategoryById(categoryId.toLong())
         productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/admin/products"
     }
+    //    @PutMapping("/admin/products/{productId}")
+//    fun updateProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult,
+//                      categoryId : String, @PathVariable("productId")productId : String,
+//                      response: HttpServletResponse, session : HttpSession,
+//                      @RequestPart file : MultipartFile) : String{
+//        if(bindingResult.hasErrors()){
+//            session.setAttribute("thumbnail", productDTO.thumbnail)
+//            session.setAttribute("productName",productDTO.productName)
+//            session.setAttribute("price",productDTO.price)
+//            session.setAttribute("briefDescription",productDTO.briefDescription)
+//            session.setAttribute("detailDescription",productDTO.detailDescription)
+//            session.setAttribute("category", categoryService.getCategoryById(categoryId.toLong()))
+//            // 카테고리 리스트를 위한 session
+//            session.setAttribute("categoryList" , categoryService.getCategoryList())
+//            return "product/updateProduct"
+//        }
+//        productDTO.category = categoryService.getCategoryById(categoryId.toLong())
+//        productService.updateProduct(productDTO,file.inputStream)
+//        return "redirect:/admin/products"
+//    }
 
     /**
      * 상품 삭제
@@ -129,16 +153,27 @@ class ProductController(
     /**
      * 상품 상세
      */
-    @GetMapping("products/{productId}")
+    @GetMapping("/products/{productId}")
     fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
         val productDTO = productService.getProductDTO(productId)
         val optionDetailDTOList = optionService.getProductOptionDetails(productId)
-        val imageList = productService.getProductImageList(productDTO.toEntity())
+        val imageDTOList = productService.getProductImageDTOList(productDTO.toEntity())
 
-        model.addAttribute("productImageList", imageList)
+        model.addAttribute("productImageDTOList", imageDTOList)
         model.addAttribute("optionDetailList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
         return "product/productDetail"
+    }
+
+    /**
+     * 상품 이미지 삭제
+     */
+    @DeleteMapping("/admin/products/{productId}/{imageId}")
+    fun deleteProductImage(@PathVariable("imageId") imageId : Long, @PathVariable("productId") productId : Long ,redirect : RedirectAttributes) : String {
+        productService.deleteProductImage(imageId)
+
+        redirect.addAttribute("productId", productId )
+        return "redirect:/admin/updateProductPage/{productId}"
     }
 
 }
