@@ -71,26 +71,6 @@ class ProductController(
     /**
      * 상품 등록
      */
-//    @PostMapping("/admin/products")
-//    fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
-//                      response: HttpServletResponse, session : HttpSession,
-//                      @RequestPart file : MultipartFile) : String{
-//        if(bindingResult.hasErrors()){
-//            session.setAttribute("productName",productOptionDTO.productName)
-//            session.setAttribute("price",productOptionDTO.price)
-//            session.setAttribute("briefDescription",productOptionDTO.briefDescription)
-//            session.setAttribute("detailDescription",productOptionDTO.detailDescription)
-//            // 카테고리 리스트를 위한 session
-//            session.setAttribute("categoryListDTO" , categoryService.getCategoryList())
-//            return "product/addProduct"
-//        }
-//        val separate = productService.separate(productOptionDTO)
-//        val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
-//        val optionListDTO = separate.get(1) as OptionListDTO
-//        optionListDTO.productDTO = createProduct.toProductDTO()
-//        optionService.createOptionDetail(optionListDTO)
-//        return "redirect:/admin/products"
-//    }
     @PostMapping("/admin/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
                       response: HttpServletResponse, session : HttpSession,

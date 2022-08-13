@@ -1,6 +1,6 @@
 package nhncommerce.project.redis.config
 
-import nhncommerce.project.redis.Constant.EventCoupon
+import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.RedisService
 import nhncommerce.project.redis.RedisService.Companion.couponCount
 import org.slf4j.LoggerFactory
