@@ -27,24 +27,24 @@ class OptionDetail (
     @Column(nullable = false)
     var name : String? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
     var product : Product? = null,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id1")
     var option1 : Option? = null,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id2")
     var option2 : Option? = null,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id3")
     var option3 : Option? = null
 
     ): BaseEntity() {
-        fun toOptionDetailDTO() : OptionDetailDTO {
+        fun entityToDto() : OptionDetailDTO {
             return OptionDetailDTO(
                 optionDetailId = optionDetailId,
                 status = status,
