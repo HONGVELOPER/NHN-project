@@ -14,7 +14,7 @@
                     <div class="col-md-6">
                         썸네일 <br>
                         <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()" required><br>
-                        <img id = "thumbnail" src="" height="200" alt="Image preview">
+                        <img id = "thumbnail" src="" height="200" >
                         <br>
                         상품 사진 목록 <br>
                         <input type="file" name="fileList" id="fileList" accept="image/*" onchange="setThumbnail(event)" multiple><br>
@@ -129,13 +129,6 @@
                             }
                         }
 
-                        function checkSize(){
-                            if( document.getElementById("fileList").files.length > 5 ){
-                                alert("최대 5개까지만 가능");
-                                document.getElementById("fileList").value = ""
-                            }
-                        }
-
                         function setThumbnail(event) {
                             if( document.getElementById("fileList").files.length > 5 ){
                                 alert("최대 5개까지만 가능");
@@ -155,6 +148,10 @@
                                 console.log(image);
                                 reader.readAsDataURL(image);
                             }
+                        }
+
+                        function fileCheck(){
+                            console.log(document.getElementById("fileList").innerHTML);
                         }
 
                     </script>

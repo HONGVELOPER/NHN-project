@@ -88,9 +88,11 @@ class ProductService(
      * 상품 이미지 등록
      */
     fun createProductImageList(fileList: List<MultipartFile>, product: Product) {
+        if (fileList.get(0).originalFilename.equals(""))
+            return
         //상품 이미지 목록 저장
         for (file in fileList) {
-            val imgUrl = imageService.uploadImage(file.inputStream)
+            val imgUrl = imageService.uploadImage(file?.inputStream)
             val productImage = ProductImage(null, Status.ACTIVE, imgUrl, product)
             productImageRepository.save(productImage)
         }
@@ -186,9 +188,9 @@ class ProductService(
     /**
      * 상품 이미지 dto 리스트 조회
      */
-    fun getProductImageList(product: Product): List<String> {
+    fun getProductImageList(product: Product): List<String>? {
         val imageList = mutableListOf<String>()
-        val list = productImageRepository.findByProduct(product)
+        val list = productImageRepository.findByProduct(product)?: return null
         for (productImage in list) {
             imageList.add(productImage.image)
         }
