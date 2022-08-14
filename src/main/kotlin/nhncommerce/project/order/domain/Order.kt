@@ -23,9 +23,12 @@ class Order (
     @Column(nullable = false)
     var phone: String? = null,
 
+    @Column(nullable = false)
+    var reviewStatus: Boolean = false,
+
     @ManyToOne
     @JoinColumn(name="user_id")
-    var user: User? = null,
+    val user: User,
 
     @OneToOne
     @JoinColumn(name="coupon_id")

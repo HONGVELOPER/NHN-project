@@ -30,7 +30,7 @@ class Deliver(
     @Column(length = 13)
     var phone: String? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User
 
