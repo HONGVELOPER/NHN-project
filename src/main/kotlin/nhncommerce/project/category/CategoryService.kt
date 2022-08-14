@@ -85,12 +85,6 @@ class CategoryService (
         }
     }
 
-    fun entityToDto(product: Product) : ProductDTO{
-        val productDTO = ProductDTO(product.productId,product.status, product.productName, product.price, product.briefDescription,
-            product.briefDescription, product.thumbnail, product.viewCount, product.totalStar)
-        return productDTO
-    }
-
     //카테고리 조회 및 페이징 처리
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
@@ -107,7 +101,7 @@ class CategoryService (
         val result = productRepository.findAll(booleanBuilder, pageable)
 
         val fn : Function<Product, ProductDTO> =
-            Function<Product, ProductDTO> { entity: Product? -> entityToDto(entity!!) }
+            Function<Product, ProductDTO> { entity: Product? -> entity?.entityToDto() }
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
 
