@@ -9,7 +9,7 @@
         <p>배송지 수정</p>
         <div class="container">
 
-            <form th:action="@{/api/delivers/{deliverId}(deliverId = ${deliverId})}" th:method="put" th:object="${deliverDTO}" >
+            <form th:action="@{/api/delivers/{deliverId}/update(deliverId = ${deliverId})}" th:method="put" th:object="${deliverDTO}" >
                 <div>
                     <label for="addressName">배송지 이름</label>
                     <input type="text" id="addressName" th:field="*{addressName}" class="form-control" placeholder="배송지 이름을 입력하세요.">

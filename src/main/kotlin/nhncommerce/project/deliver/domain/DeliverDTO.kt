@@ -7,19 +7,19 @@ import javax.validation.constraints.NotBlank
 data class DeliverDTO(
 
     @field:NotBlank(message = "이름을 입력해주세요.")
-    var name: String = "",
+    val name: String = "",
 
     @field:NotBlank(message = "배송지 이름을 입력해주세요.")
-    var addressName: String = "",
+    val addressName: String = "",
 
     @field:NotBlank(message = "주소를 입력해주세요.")
-    var address: String = "",
+    val address: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
-    var phone: String = "",
+    val phone: String = "",
 ) {
 
-    fun toEntity(user: User): Deliver {
+    fun dtoToEntity(user: User): Deliver {
         return Deliver(
             name = name,
             addressName = addressName,
@@ -30,16 +30,16 @@ data class DeliverDTO(
         )
     }
 
-    companion object{
-        fun fromEntity(deliver: Deliver): DeliverDTO {
-            return deliver.run {
-                DeliverDTO(
-                    addressName = addressName,
-                    name = name,
-                    address = address,
-                    phone = phone ?: "",
-                )
-            }
-        }
-    }
+//    companion object{
+//        fun fromEntity(deliver: Deliver): DeliverDTO {
+//            return deliver.run {
+//                DeliverDTO(
+//                    addressName = addressName,
+//                    name = name,
+//                    address = address,
+//                    phone = phone ?: "",
+//                )
+//            }
+//        }
+//    }
 }

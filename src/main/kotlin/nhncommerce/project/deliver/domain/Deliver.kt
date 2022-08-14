@@ -36,6 +36,26 @@ class Deliver(
 
 ): BaseEntity() {
 
+    fun entityToDeliverDto(): DeliverDTO {
+        return DeliverDTO(
+            addressName = addressName,
+            name = name,
+            address = address,
+            phone = phone ?: "",
+        )
+    }
+
+    fun entityToDeliverListDto(): DeliverListDTO {
+        return DeliverListDTO(
+            deliverId = deliverId,
+            addressName = addressName,
+            address = address,
+            name = name,
+            phone = phone ?: "",
+            createdAt = createdAt,
+        )
+    }
+
     fun update(deliverDTO: DeliverDTO) {
         name = deliverDTO.name
         addressName = deliverDTO.addressName
