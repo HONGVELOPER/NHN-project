@@ -2,7 +2,6 @@ package nhncommerce.project.redis
 
 import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.domain.CouponCount
-import nhncommerce.project.redis.domain.TimeCoupon
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -13,8 +12,6 @@ import java.time.LocalDate
 
 @Service
 class RedisService (
-    val stringRedisTemplate: StringRedisTemplate,
-    val userRepository: RedisRepository,
     val redisTemplate: RedisTemplate<Any, Any>
 
 ) {
@@ -23,36 +20,6 @@ class RedisService (
         var couponCount  = CouponCount(null, null, null, null, false)
     }
 
-
-    //create
-    fun setRedisValue(key : String, value : String){
-        println("진입")
-        var stringValueOperations = stringRedisTemplate.opsForValue()
-        stringValueOperations.set(key, value)
-        //stringValueOperations.set(key, value, LIMIT_TIME)
-    }
-
-    //read
-    fun getRedisValue(key : String) : String{
-        val stringValueOperations = stringRedisTemplate.opsForValue()
-        val value = stringValueOperations.get(key)
-        if (value == null)
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        return value
-    }
-
-    //update
-    fun updateRedisValue(key : String, value : String) {
-        val stringValueOperations = stringRedisTemplate.opsForValue()
-        stringValueOperations.getAndSet(key, value)
-    }
-
-    //delete
-    fun deleteRedisValue(key :String){
-        stringRedisTemplate.delete(key)
-    }
-    //=======================================
-    //
     fun setCouponCount(eventCoupon: EventCoupon, discount : Int , queue: Int, expired : LocalDate) {
         couponCount = CouponCount(eventCoupon, discount , queue, expired, false)
     }
@@ -69,8 +36,7 @@ class RedisService (
         val end = 9L //대기열 마지막
         val queue = redisTemplate!!.opsForZSet().range(eventCoupon.value + "Queue", start, end)
         for (people in queue!!) {
-            val timeCoupon = TimeCoupon(eventCoupon)
-            log.info("'{}'님의 {} 쿠폰이 발급되었습니다 ({})", people, timeCoupon.eventCoupon.value, timeCoupon.code)
+            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", people, eventCoupon.value)
             redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
             redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
             couponCount.decrease()
@@ -83,7 +49,7 @@ class RedisService (
         val end = -1L
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
         for (people in queue!!) {
-            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people!!)
+            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
             log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", people, rank)
         }
     }

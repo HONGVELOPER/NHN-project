@@ -14,7 +14,7 @@ class Category (
     @Column(nullable = false)
     var name : String? = null,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parent_id")
     var parentCategory : Category? = null,
 
@@ -23,7 +23,7 @@ class Category (
     @Enumerated(EnumType.STRING)
     var status : Status? = Status.ACTIVE
 ): BaseEntity() {
-    fun toCategoryDTO() : CategoryDTO {
+    fun entityToDto() : CategoryDTO {
         return CategoryDTO(
             categoryId = categoryId,
             name = name,

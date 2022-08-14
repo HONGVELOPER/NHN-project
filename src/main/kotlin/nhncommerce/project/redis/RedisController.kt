@@ -5,7 +5,6 @@ import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.RedisService.Companion.couponCount
 import nhncommerce.project.redis.config.SchedulerConfiguration
 import nhncommerce.project.redis.domain.EventCheckDTO
-import nhncommerce.project.redis.domain.RedisReqDTO
 import nhncommerce.project.user.UserService
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
@@ -27,32 +26,6 @@ class RedisController(
     val postProcessor : ScheduledAnnotationBeanPostProcessor,
     val schedulerConfiguration : SchedulerConfiguration
 ) {
-    @PostMapping("/redis")
-    fun create(@RequestBody reqDTO : RedisReqDTO): String {
-        println("post 진입")
-        redisService.setRedisValue(reqDTO.key, reqDTO.value)
-        return "true"
-    }
-
-    @GetMapping("/redis")
-    fun read(@RequestParam key : String) : String {
-        println("hi")
-        return redisService.getRedisValue(key)
-    }
-
-    @PutMapping("/redis")
-    fun update(@RequestBody reqDTO: RedisReqDTO) : Boolean {
-        redisService.updateRedisValue(reqDTO.key, reqDTO.value)
-        return true
-    }
-
-    @DeleteMapping("/redis")
-    fun delete(@RequestBody reqDTO: RedisReqDTO) : Boolean {
-        redisService.deleteRedisValue(reqDTO.key)
-        return true
-    }
-    // ================================
-
     //쿠폰 발급 페이지
     @GetMapping("/api/eventCoupon")
     fun reqCouponPage(model: Model) : String{
@@ -72,12 +45,13 @@ class RedisController(
         return "redirect:/api/checkEvent"
     }
 
-    //쿠폰 이벤트 설정
+    //쿠폰 이벤트 설정 페이지
     @GetMapping("/admin/redis/eventSet")
     fun eventCouponSetPage() : String{
         return "redis/setEvent"
     }
 
+    //쿠폰 이벤트 설정
     @PostMapping("/admin/redis/eventSet")
     fun eventCouponSet(@RequestParam eventCouponNum : Int, discount : Int, model: Model,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) expired : LocalDate) : String {
@@ -86,13 +60,8 @@ class RedisController(
         model.addAttribute("progress",  if (couponCount.progress!!) "Yes" else "No")
         return "redis/manageEvent"
     }
+
     //쿠폰 이벤트 시작
-//    @GetMapping("/admin/event/start")
-//    fun eventStart() : String {
-//        redisService.refreshSet(EventCoupon.COUPON)
-//        postProcessor.postProcessAfterInitialization(schedulerConfiguration, "scheduledTasks")
-//        return "redis/manageEvent"
-//    }
     @GetMapping("/admin/event/start")
     fun eventStart(mav : ModelAndView) : ModelAndView {
         if (couponCount.eventCoupon == null){
