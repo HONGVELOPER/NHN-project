@@ -9,25 +9,30 @@ import org.springframework.stereotype.Service
 class LoginInfoService {
 
     fun getUserIdFromSession(): LoginInfoDTO {
-        val loginInfo = LoginInfoDTO()
-        val auth = SecurityContextHolder.getContext().authentication.principal
-        if (auth == "anonymousUser") {
-            loginInfo.isLogin = false
-            return loginInfo
+        val authentication = SecurityContextHolder.getContext().authentication
+        return if (authentication.principal == ANONYMOUS_USER) {
+            LoginInfoDTO(isLogin = false)
         } else {
-            loginInfo.isLogin = true
-            if (SecurityContextHolder.getContext().authentication.authorities.toList()[0].toString() == "ROLE_ADMIN") {
-                loginInfo.isAdmin = true
-            }
-            val loginStatus = auth.javaClass.toString().split(".")[4]
-            if (loginStatus == "FormLoginUserDetails") {
-                val formLoginUserDetails: FormLoginUserDetails = auth as FormLoginUserDetails
-                loginInfo.userId = formLoginUserDetails.getId()
+            val isAdmin = authentication.authorities.toList().first().toString() == "ROLE_ADMIN"
+            val loginStatus = authentication.principal.javaClass.toString().split(".")[INDEX_OF_LOGIN_STATUS]
+
+            val userId = if (loginStatus == FORM_LOGIN_USER) {
+                (authentication.principal as FormLoginUserDetails).getId()
             } else {
-                val oAuth2LoginUserDetails: Oauth2LoginUserDetails = auth as Oauth2LoginUserDetails
-                loginInfo.userId = oAuth2LoginUserDetails.getId()
+                (authentication.principal as Oauth2LoginUserDetails).getId()
             }
-            return loginInfo
+
+            LoginInfoDTO(
+                isLogin = true,
+                userId = userId,
+                isAdmin = isAdmin
+            )
         }
+    }
+
+    companion object {
+        private const val INDEX_OF_LOGIN_STATUS = 4
+        private const val ANONYMOUS_USER = "anonymousUser"
+        private const val FORM_LOGIN_USER = "FormLoginUserDetails"
     }
 }
