@@ -120,26 +120,6 @@ class ProductController(
         productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/admin/products"
     }
-    //    @PutMapping("/admin/products/{productId}")
-//    fun updateProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult,
-//                      categoryId : String, @PathVariable("productId")productId : String,
-//                      response: HttpServletResponse, session : HttpSession,
-//                      @RequestPart file : MultipartFile) : String{
-//        if(bindingResult.hasErrors()){
-//            session.setAttribute("thumbnail", productDTO.thumbnail)
-//            session.setAttribute("productName",productDTO.productName)
-//            session.setAttribute("price",productDTO.price)
-//            session.setAttribute("briefDescription",productDTO.briefDescription)
-//            session.setAttribute("detailDescription",productDTO.detailDescription)
-//            session.setAttribute("category", categoryService.getCategoryById(categoryId.toLong()))
-//            // 카테고리 리스트를 위한 session
-//            session.setAttribute("categoryList" , categoryService.getCategoryList())
-//            return "product/updateProduct"
-//        }
-//        productDTO.category = categoryService.getCategoryById(categoryId.toLong())
-//        productService.updateProduct(productDTO,file.inputStream)
-//        return "redirect:/admin/products"
-//    }
 
     /**
      * 상품 삭제
