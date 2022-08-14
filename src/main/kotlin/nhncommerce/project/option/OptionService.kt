@@ -17,7 +17,7 @@ class OptionService (
     fun getProductOptionDetails(productId : Long) : List<OptionDetailDTO> {
         val product = productRepository.findById(productId).get()
         val optionDetailList = optionDetailRepository.findOptionDetailsByProduct(product)
-        return optionDetailList.map { it.toOptionDetailDTO() };
+        return optionDetailList.map { it.entityToDto() };
     }
 
 
@@ -127,7 +127,7 @@ class OptionService (
 
     fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{
         val optionDetail = optionDetailRepository.findByOptionDetailId(optionDetailId)
-        return optionDetail.toOptionDetailDTO();
+        return optionDetail.entityToDto();
 
     }
 }
