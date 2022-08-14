@@ -24,7 +24,7 @@ class DeliverService (
 ) {
     fun createDeliver(deliverDTO: DeliverDTO, userId: Long) {
         val user: User = userRepository.findById(userId).get()
-        val deliver: Deliver = deliverDTO.toEntity(user)
+        val deliver: Deliver = deliverDTO.dtoToEntity(user)
         if (deliver.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
@@ -36,36 +36,23 @@ class DeliverService (
         if (deliver.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
-        return DeliverDTO.fromEntity(deliver)
+        return deliver.entityToDeliverDto()
     }
 
     fun findDeliverListByUser(userId: Long, pageRequestDTO: PageRequestDTO): PageResultDTO<DeliverListDTO, Deliver> {
         val user: User = userRepository.findById(userId).get()
-        val booleanBuilder = getSearch(pageRequestDTO, user)
+        val deliverListBuilder = deliverListBuilder(pageRequestDTO, user)
         val pageable = pageRequestDTO.getPageable(Sort.by("deliverId").descending())
-        val result = deliverRepository.findAll(booleanBuilder, pageable)
+        val result = deliverRepository.findAll(deliverListBuilder, pageable)
         val fn: Function<Deliver, DeliverListDTO> =
-            Function<Deliver, DeliverListDTO> { entity: Deliver? -> entityToDto(entity!!) }
+            Function<Deliver, DeliverListDTO> { entity: Deliver? -> entity?.entityToDeliverListDto() }
         return PageResultDTO<DeliverListDTO, Deliver>(result, fn)
     }
 
-    fun entityToDto(deliver: Deliver): DeliverListDTO {
-        return DeliverListDTO(
-            deliver.deliverId,
-            deliver.addressName,
-            deliver.address,
-            deliver.name,
-            deliver.phone,
-            deliver.createdAt
-        )
-    }
-
-    fun getSearch(pageRequestDTO: PageRequestDTO, user: User): BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qDeliver = QDeliver.deliver
-        var keyword = pageRequestDTO.keyword
-        var expression = qDeliver.user.eq(user).and(qDeliver.status.eq(Status.ACTIVE))
+    fun deliverListBuilder(pageRequestDTO: PageRequestDTO, user: User): BooleanBuilder {
+        val booleanBuilder = BooleanBuilder()
+        val qDeliver = QDeliver.deliver
+        val expression = qDeliver.user.eq(user).and(qDeliver.status.eq(Status.ACTIVE))
         booleanBuilder.and(expression)
         return booleanBuilder
     }
@@ -103,6 +90,7 @@ class DeliverService (
         if (deliver.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
-        deliverRepository.deleteById(deliverId)
+        deliver.status = Status.IN_ACTIVE
+        deliverRepository.save(deliver)
     }
 }
