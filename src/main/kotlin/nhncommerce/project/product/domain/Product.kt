@@ -52,7 +52,7 @@ class Product(
         category = productDTO.category
     }
     
-    fun toProductDTO() : ProductDTO {
+    fun entityToDto() : ProductDTO {
         return ProductDTO(
             productId = productId,
             status = status,

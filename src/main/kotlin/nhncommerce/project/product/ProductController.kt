@@ -65,7 +65,7 @@ class ProductController(
     @GetMapping("/admin/updateProductPage/{productId}")
     fun updateProduct(@PathVariable("productId")productId :String, productDTO: ProductDTO,model: Model) : String{
         val productDTO = productService.getProduct(productId)
-        model.addAttribute("productImageDTOList", productService.getProductImageDTOList(productDTO.toEntity()))
+        model.addAttribute("productImageDTOList", productService.getProductImageDTOList(productDTO.dtoToEntity()))
         model.addAttribute("categoryListDTO", categoryService.getCategoryList())
         model.addAttribute("productDTO", productDTO)
         return "product/updateProduct"
@@ -91,7 +91,7 @@ class ProductController(
         val createProduct = productService.createProduct(separate.get(0) as ProductDTO,file.inputStream)
         productService.createProductImageList(fileList , createProduct) //이미지 저장
         val optionListDTO = separate.get(1) as OptionListDTO
-        optionListDTO.productDTO = createProduct.toProductDTO()
+        optionListDTO.productDTO = createProduct.entityToDto()
         optionService.createOptionDetail(optionListDTO)
         return "redirect:/admin/products"
     }
@@ -115,7 +115,7 @@ class ProductController(
             session.setAttribute("categoryList" , categoryService.getCategoryList())
             return "product/updateProduct"
         }
-        productService.createProductImageList(fileList , productDTO.toEntity()) //이미지 저장
+        productService.createProductImageList(fileList , productDTO.dtoToEntity()) //이미지 저장
         productDTO.category = categoryService.getCategoryById(categoryId.toLong())
         productService.updateProduct(productDTO,file.inputStream)
         return "redirect:/admin/products"
@@ -137,7 +137,7 @@ class ProductController(
     fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
         val productDTO = productService.getProductDTO(productId)
         val optionDetailDTOList = optionService.getProductOptionDetails(productId)
-        val imageDTOList = productService.getProductImageDTOList(productDTO.toEntity())
+        val imageDTOList = productService.getProductImageDTOList(productDTO.dtoToEntity())
 
         model.addAttribute("productImageDTOList", imageDTOList)
         model.addAttribute("optionDetailList", optionDetailDTOList)

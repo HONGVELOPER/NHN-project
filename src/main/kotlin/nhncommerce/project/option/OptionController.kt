@@ -33,7 +33,7 @@ class OptionController (
         optionService.deleteOptions(productId)
 
         val optionListDTO = OptionListDTO()
-        optionListDTO.productDTO = productService.getProduct(productId).toProductDTO()
+        optionListDTO.productDTO = productService.getProduct(productId).entityToDto()
 
         model.addAttribute("optionList", optionListDTO)
         return "option/recreateOption"

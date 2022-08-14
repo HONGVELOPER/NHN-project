@@ -57,20 +57,20 @@ class OptionService (
         //옵션 명
         for(i in 0..2){
             if (optionTypeList[i] != null){
-                var temp = optionRepository.findOptionsByParentOption(optionTypeList[i])
+                val temp = optionRepository.findOptionsByParentOption(optionTypeList[i])
                 optionNameList.add(temp)
             } else {
                 optionNameList.add(null)
             }
         }
 
-        return UpdateOptionDTO(product.toProductDTO(), optionTypeList, optionNameList)
+        return UpdateOptionDTO(product.entityToDto(), optionTypeList, optionNameList)
     }
 
 
     //옵션 상세 생성
     fun createOptionDetail(optionListDTO: OptionListDTO) {
-        val product = optionListDTO.productDTO!!.toEntity()
+        val product = optionListDTO.productDTO!!.dtoToEntity()
         val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
         //옵션 종류
         val optionTypeList = mutableListOf<String?>(optionListDTO.option1, optionListDTO.option2, optionListDTO.option3)

@@ -124,7 +124,7 @@ class ProductService(
     }
 
     fun getProductDTO(productId: Long): ProductDTO {
-        return productRepository.findById(productId).get().toProductDTO()
+        return productRepository.findById(productId).get().entityToDto()
     }
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
