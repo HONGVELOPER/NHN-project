@@ -47,9 +47,9 @@ class OptionService (
     // 상품 , 옵션 리스트 가져오기
     fun getProductOptionList(productId : Long) : UpdateOptionDTO{
         val product = productRepository.findById(productId).get()
-        var parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
-        var optionTypeList = mutableListOf<Option?>(null, null, null)
-        var optionNameList = ArrayList<MutableList<Option>?>()
+        val parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
+        val optionTypeList = mutableListOf<Option?>(null, null, null)
+        val optionNameList = ArrayList<MutableList<Option>?>()
         //옵션 타입
         for(i in 0 until parentOptionList.size)
             optionTypeList[i] = parentOptionList[i]

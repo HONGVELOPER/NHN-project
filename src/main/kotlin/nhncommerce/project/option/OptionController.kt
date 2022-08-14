@@ -10,7 +10,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 @Controller
 @RequestMapping("/admin/options")
-class OptionController (private val optionService: OptionService, private val productService: ProductService) {
+class OptionController (
+    private val optionService: OptionService,
+    private val productService: ProductService)
+{
 
     /**
      * 옵션 수정 페이지
@@ -30,7 +33,7 @@ class OptionController (private val optionService: OptionService, private val pr
     fun deleteProductOption(@PathVariable(name = "productId") productId: Long, model: Model) : String{
         optionService.deleteOptions(productId)
 
-        var optionListDTO = OptionListDTO()
+        val optionListDTO = OptionListDTO()
         optionListDTO.productDTO = productService.getProduct(productId).toProductDTO()
 
         model.addAttribute("optionList", optionListDTO)
