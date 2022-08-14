@@ -24,24 +24,6 @@ class ProductService(
     val storageTokenService: StorageTokenService
 ) {
 
-    fun dtoTOEntity(productDTO: ProductDTO): Product {
-        val product = Product(
-            null, Status.ACTIVE, productDTO.productName, productDTO.price,
-            productDTO.briefDescription, productDTO.detailDescription, productDTO.thumbnail, productDTO.viewCount,
-            productDTO.totalStar, productDTO.category
-        )
-
-        return product
-    }
-
-    fun entityToDto(product: Product): ProductDTO {
-        val productDTO = ProductDTO(
-            product.productId, product.status, product.productName, product.price, product.briefDescription,
-            product.briefDescription, product.thumbnail, product.viewCount, product.totalStar, product.category
-        )
-        return productDTO
-    }
-
     fun separate(productOptionDTO: ProductOptionDTO): MutableList<Any> {
         val category = categoryRepository.findById(productOptionDTO.categoryId!!.toLong()).get()
         val productDTO = ProductDTO(
@@ -82,9 +64,7 @@ class ProductService(
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail = url
 
-        val product = dtoTOEntity(productDTO)
-
-        return productRepository.save(product)
+        return productRepository.save(productDTO.dtoToEntity())
     }
 
     /**
@@ -114,7 +94,7 @@ class ProductService(
         val result = productRepository.findAll(booleanBuilder, pageable)
 
         val fn: Function<Product, ProductDTO> =
-            Function<Product, ProductDTO> { entity: Product? -> entityToDto(entity!!) }
+            Function<Product, ProductDTO> { entity: Product? -> entity?.entityToDto() }
 
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
@@ -160,7 +140,7 @@ class ProductService(
 
     fun getProduct(productId: String): ProductDTO {
         val product = productRepository.findById(productId.toLong()).get()
-        return entityToDto(product)
+        return product.entityToDto()
     }
 
     /**
