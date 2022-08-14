@@ -32,13 +32,12 @@
                                 <br>
                                 썸네일 <br>
                                 <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()"><br>
-                                <div th:if="${session.thumbnail !=''}">
-                                    <img id="thumbnail"  height="200" th:src="${productDTO.thumbnail}"/>
-                                </div>
-                                <div th:if="${session.thumbnail == ''}">
-                                    <img id = "thumbnail" th:src="${session.thumbnail}" >
-                                </div>
-                            </div>
+                                기존 이미지 <br>
+                                <img id = "originThumbnail" height="200" th:src="${thumbnail}" >
+                                <br>
+                                새로운 이미지 <br>
+                                <img id = "thumbnail" src="" height="200" >
+
 
                             <div th:if="${session.productName != null}">
                                 제품 이름
@@ -86,12 +85,12 @@
 
                             <div th:if="${session.detailDescription != null}">
                                 제품 상세 설명
-                                <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
+                                <textarea type="text" class="form-control"  th:field="*{detailDescription}"/><br>
                                 <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
                             </div>
                             <div th:if="${session.detailDescription == null}">
                                 제품 상세 설명<br>
-                                <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
+                                <textarea  type="text" class="form-control"  th:field="*{detailDescription}"/><br>
                             </div>
 
                             <div>
@@ -131,7 +130,8 @@
 
                 function previewFile() {
                     const preview = document.getElementById('thumbnail');
-                    const file = document.querySelector('input[type=file]').files[0];
+                    // const file = document.querySelector('input[type=file]').files[0];
+                    const file = document.getElementById('file').files[0]
                     const reader = new FileReader();
 
                     reader.addEventListener("load", () => {
