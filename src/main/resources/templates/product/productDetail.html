@@ -37,8 +37,8 @@
                                      th:src="${productDTO.thumbnail}"
                                      alt="First slide">
                             </div>
-                            <div th:if="${productImageList.size() > 0}" th:each="productImage : ${productImageList}" class="carousel-item">
-                                <img class="d-block w-100" th:src="${productImage}">
+                            <div th:if="${productImageDTOList.size() > 0}" th:each="productImage : ${productImageDTOList}" class="carousel-item">
+                                <img class="d-block w-100" th:src="${productImage.imageUrl}">
                             </div>
                             <!-- / 슬라이드 쇼 끝 -->
 
