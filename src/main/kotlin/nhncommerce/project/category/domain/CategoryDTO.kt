@@ -8,7 +8,7 @@ data class CategoryDTO (
     var status : Status? = Status.ACTIVE,
     var parentCategory : Category? = null
     ) {
-    fun toEntity() : Category {
+    fun dtoToEntity() : Category {
         return Category(
             categoryId = categoryId,
             name = name,
