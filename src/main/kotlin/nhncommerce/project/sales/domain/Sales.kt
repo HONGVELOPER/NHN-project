@@ -11,4 +11,12 @@ class Sales(
     val date: LocalDate,
     val quantity: Int,
     val totalAmount: Long
-)
+){
+    fun entityToDTO() : SalesDTO {
+        return SalesDTO(
+            date = date,
+            totalAmount = totalAmount,
+            quantity = quantity
+        )
+    }
+}
