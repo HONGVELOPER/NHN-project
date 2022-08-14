@@ -68,6 +68,7 @@ class ProductController(
         model.addAttribute("productImageDTOList", productService.getProductImageDTOList(productDTO.dtoToEntity()))
         model.addAttribute("categoryListDTO", categoryService.getCategoryList())
         model.addAttribute("productDTO", productDTO)
+        model.addAttribute("thumbnail", productService.getThumbnail(productId))
         return "product/updateProduct"
     }
 
@@ -117,7 +118,7 @@ class ProductController(
         }
         productService.createProductImageList(fileList , productDTO.dtoToEntity()) //이미지 저장
         productDTO.category = categoryService.getCategoryById(categoryId.toLong())
-        productService.updateProduct(productDTO,file.inputStream)
+        productService.updateProduct(productDTO,file)
         return "redirect:/admin/products"
     }
 
