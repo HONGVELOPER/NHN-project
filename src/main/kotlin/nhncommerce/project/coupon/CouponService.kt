@@ -26,21 +26,9 @@ class CouponService(
     val loginInfoService: LoginInfoService
 ) {
 
-    fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
-        val coupon = Coupon(null,user,couponDTO.status,couponDTO.couponName,couponDTO.discountRate,expired)
-        return coupon
-    }
-
-    fun entityToDto(coupon : Coupon): CouponListDTO{
-        val couponListDTO = CouponListDTO(null,coupon.user.email,coupon.status,coupon.couponName,
-            coupon.discountRate,coupon.expired,coupon.createdAt, coupon.updatedAt)
-        return couponListDTO
-    }
-
-
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
         val user = session.getAttribute("user")
-        val coupon = dtoToEntity(couponDTO, user as User,expired)
+        val coupon = couponDTO.dtoToEntity(couponDTO, user as User,expired)
         couponRepository.save(coupon)
     }
 
@@ -70,7 +58,7 @@ class CouponService(
         val booleanBuilder = getSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
-            Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity!!.entityToDto(entity) }
 
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
@@ -149,7 +137,7 @@ class CouponService(
         val booleanBuilder = getMyCouponListSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
-            Function<Coupon, CouponListDTO> { entity: Coupon? -> entityToDto(entity!!) }
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity!!.entityToDto(entity) }
 
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
