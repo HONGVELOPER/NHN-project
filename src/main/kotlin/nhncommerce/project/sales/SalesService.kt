@@ -25,17 +25,12 @@ class SalesService(
         return list.toList()
     }
 
-    fun entityToDTO(sales: Sales) : SalesDTO {
-        val salesDTO = SalesDTO(sales.date, sales.totalAmount, sales.quantity)
-        return salesDTO
-    }
-
     fun getSalesList(requestDTO : PageRequestDTO) : PageResultDTO<SalesDTO, Sales> {
         var sort = getSort(requestDTO)
         val pageable = requestDTO.getPageable(sort)
         val result = salesRepository.findAll(pageable)
         val fn: Function<Sales, SalesDTO> =
-            Function<Sales, SalesDTO> { entity: Sales? -> entityToDTO(entity!!) }
+            Function<Sales, SalesDTO> { entity: Sales? -> entity!!.entityToDTO() }
 
         return PageResultDTO<SalesDTO,Sales>(result,fn)
     }
