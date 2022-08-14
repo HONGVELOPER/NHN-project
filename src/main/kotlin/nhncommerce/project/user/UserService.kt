@@ -35,17 +35,17 @@ class UserService(
 
     fun findUserById(userId: Long): UserDTO {
         val user: User = userRepository.findById(userId).get()
-        return UserDTO.fromEntity(user)
+        return user.entityToUserDto()
     }
 
     fun findUserProfileById(userId: Long): ProfileDTO {
         val user: User = userRepository.findById(userId).get()
-        return ProfileDTO.fromEntity(user)
+        return user.entityToProfileDto()
     }
 
     fun findUserProfileByAdmin(userId: Long): AdminProfileDTO {
         val user: User = userRepository.findById(userId).get()
-        return AdminProfileDTO.fromEntity(user)
+        return user.entityToAdminProfileDto()
     }
 
     fun updateUserProfileById(userId: Long, profileDTO: ProfileDTO) {
@@ -85,21 +85,10 @@ class UserService(
         val pageable = pageRequestDTO.getPageable(Sort.by("userId").descending())
         val result = userRepository.findAll(booleanBuilder, pageable)
         val fn: Function<User, UserListDTO> =
-            Function<User, UserListDTO> { entity: User? -> entityToDto(entity!!) }
+            Function<User, UserListDTO> { entity: User? -> entity?.entityToUserListDto()}
         return PageResultDTO<UserListDTO, User>(result, fn)
     }
 
-    fun entityToDto(user: User): UserListDTO {
-        return UserListDTO(
-            user.userId,
-            user.role.name.split('_')[1],
-            user.email,
-            user.gender.name,
-            user.name,
-            user.phone,
-            user.createdAt
-        )
-    }
 
     fun userListBuilder(pageRequestDTO: PageRequestDTO): BooleanBuilder {
         val type = pageRequestDTO.type

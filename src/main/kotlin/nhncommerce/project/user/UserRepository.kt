@@ -7,7 +7,4 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor
 interface UserRepository : JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
     fun findByEmail(email: String) : User?
 
-
-
-
 }

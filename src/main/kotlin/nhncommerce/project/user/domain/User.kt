@@ -4,9 +4,6 @@ import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Gender
 import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Table(name = "user")
@@ -22,15 +19,15 @@ class User (
     @Enumerated(EnumType.STRING)
     var status: Status,
 
-    @Column()
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var gender: Gender,
+    val gender: Gender,
 
     @Column(nullable = false)
     var name: String,
 
     @Column(nullable = false, unique = true)
-    var email: String,
+    val email: String,
 
     @Column() // oauth 로그인은 비밀번호가 없음 null 허용
     var password: String? = null,
@@ -38,15 +35,15 @@ class User (
     @Column(nullable = false, length = 13)
     var phone: String,
 
-    @Column()
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var role: ROLE = ROLE.ROLE_USER,
+    var role: ROLE,
 
     @Column()
-    var provider: String? = null, // 어디 social login 인지
+    val provider: String? = null, // 어디 social login 인지
 
     @Column()
-    var oauthId: String? = null,
+    val oauthId: String? = null,
 
 ): BaseEntity() {
 
@@ -58,15 +55,54 @@ class User (
     fun updateProfileByAdmin(adminProfileDTO: AdminProfileDTO) {
         name = adminProfileDTO.name
         phone = adminProfileDTO.phone
-        if (adminProfileDTO.role == "ROLE_ADMIN") {
-            role = ROLE.ROLE_ADMIN
+        role = if (adminProfileDTO.role == "ROLE_ADMIN") {
+            ROLE.ROLE_ADMIN
         } else {
-            role = ROLE.ROLE_USER
+            ROLE.ROLE_USER
         }
     }
 
     fun updatePassword(newPassword: String) {
         password = newPassword
     }
+
+    fun entityToUserDto(): UserDTO {
+        return UserDTO(
+            email = email,
+            gender = gender.name,
+            name = name,
+            password = password ?: "",
+            phone = phone,
+            provider = provider ?: "",
+        )
+    }
+
+    fun entityToProfileDto(): ProfileDTO {
+        return ProfileDTO(
+            name = name,
+            phone = phone,
+        )
+    }
+
+    fun entityToAdminProfileDto(): AdminProfileDTO {
+        return AdminProfileDTO(
+            name = name,
+            phone = phone,
+            role = role.name,
+        )
+    }
+
+    fun entityToUserListDto(): UserListDTO {
+        return UserListDTO(
+            userId = userId,
+            role = role.name.split('_')[1],
+            email = email,
+            gender = gender.name,
+            name = name,
+            phone = phone,
+            createdAt = createdAt
+        )
+    }
+
 }
 
