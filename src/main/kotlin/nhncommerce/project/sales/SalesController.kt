@@ -2,10 +2,12 @@ package nhncommerce.project.sales
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.sales.domain.Sales
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -17,9 +19,14 @@ class SalesController(
 
 ) {
 
-    @GetMapping("/dailySales")
-    fun showCharts(): String {
-        return "sales/sales"
+    /**
+     * 관리자 메인 페이지
+     */
+    @GetMapping("/admin")
+    fun adminPage(model: Model, pageRequestDTO: PageRequestDTO):String{
+        model.addAttribute("type",pageRequestDTO.type)
+        model.addAttribute("total",salesService.getSalesList(pageRequestDTO))
+        return "admin/index"
     }
 
     @GetMapping("/admin/dailyChartData")
@@ -45,7 +52,5 @@ class SalesController(
         json.add("quantity", jsonQuantity)
         json.add("totalAmount", jsonTotalAmount)
         return json.toString()
-
-
     }
 }

@@ -23,14 +23,6 @@ class CouponController(
     }
 
     /**
-     * 관리자 메인 페이지
-     */
-    @GetMapping("/admin")
-    fun adminPage():String{
-        return "admin/index"
-    }
-
-    /**
      * 나의 쿠폰 리스트
      */
     @GetMapping("/api/myCouponList")
