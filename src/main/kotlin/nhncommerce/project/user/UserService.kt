@@ -28,7 +28,7 @@ class UserService(
         } else if (userDTO.password != userDTO.passwordVerify) {
             throw RedirectException(alertDTO("비밀번호가 일치하지 않습니다.", "/users/joinForm"))
         }
-        val user: User = userDTO.toEntity()
+        val user: User = userDTO.dtoToEntity()
         user.password = passwordEncoder.encode(user.password)
         userRepository.save(user)
     }

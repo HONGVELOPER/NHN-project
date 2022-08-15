@@ -17,8 +17,10 @@ import nhncommerce.project.review.domain.ReviewListDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.util.function.Function
 
 
@@ -29,8 +31,12 @@ class ReviewService(
     val orderRepository: OrderRepository,
     val productRepository: ProductRepository,
     val imageService: ImageService,
+    val storageTokenService: StorageTokenService
 ) {
 
+    /*
+    * 리뷰 상태 확인 (이미 작성한 리뷰인지)
+    * */
     fun findReviewStatus(userId: Long, orderId: Long) {
         val order: Order = orderRepository.findById(orderId).get()
         if (order.user.userId != userId) {
@@ -40,13 +46,22 @@ class ReviewService(
         }
     }
 
-    fun createReview(userId: Long, orderId: Long, reviewDTO: ReviewDTO) {
+    /*
+    * 리뷰 생성
+    * */
+    fun createReview(userId: Long, orderId: Long, reviewDTO: ReviewDTO, file: MultipartFile) {
         val order: Order = orderRepository.findById(orderId).get()
         if (order.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
-        val review: Review = reviewDTO.toEntity(order)
 
+        if (!file.isEmpty) {
+            generateToken()
+            val reviewImageUrl = imageService.uploadImage(file.inputStream)
+            reviewDTO.reviewImage = reviewImageUrl
+        }
+
+        val review: Review = reviewDTO.toEntity(order)
         order.reviewStatus = true
 
         val reviewProduct: Product = review.product
@@ -59,15 +74,22 @@ class ReviewService(
         reviewRepository.save(review)
     }
 
+
+    /*
+    * 리뷰 단일 조회
+    * */
     fun findReviewById(userId: Long, reviewId: Long): ReviewDTO {
         val review: Review = reviewRepository.findById(reviewId).get()
         if (review.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
 //        val product: Product = review.order.optionDetail?.product!!
-        return ReviewDTO.fromEntity(review)
+        return review.entityToReviewDto()
     }
 
+    /*
+    * 리뷰 목록 조회 - 유저 기준
+    * */
     fun findReviewListByUser(
         userId: Long,
         pageRequestDTO: PageRequestDTO
@@ -77,10 +99,13 @@ class ReviewService(
         val pageable = pageRequestDTO.getPageable(Sort.by("reviewId").descending())
         val result = reviewRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Review, ReviewListDTO> =
-            Function<Review, ReviewListDTO> { entity: Review? -> entityToDto(entity!!) }
+            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto() }
         return PageResultDTO<ReviewListDTO, Review>(result, fn)
     }
 
+    /*
+    * 리쥬 목록 조회 - 상품 기준
+    * */
     fun findReviewListByProduct(
         productId: Long,
         pageRequestDTO: PageRequestDTO
@@ -90,20 +115,30 @@ class ReviewService(
         val pageable = pageRequestDTO.getPageable(Sort.by("reviewId").descending())
         val result = reviewRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Review, ReviewListDTO> =
-            Function<Review, ReviewListDTO> { entity: Review? -> entityToDto(entity!!) }
+            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto() }
         return PageResultDTO<ReviewListDTO, Review>(result, fn)
     }
 
-    fun updateReview(userId: Long, reviewId: Long, reviewDTO: ReviewDTO) {
+    /*
+    * 리뷰 수정
+    * */
+    fun updateReview(userId: Long, reviewId: Long, reviewDTO: ReviewDTO, file: MultipartFile) {
         val review: Review = reviewRepository.findById(reviewId).get()
-        val originStar = review.star
         if (review.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
         }
-        val deleteImageUrl = review.reviewImage.split("/").toList().last()
-        if (review.reviewImage != "") {
-            imageService.deleteImage(deleteImageUrl)
+
+        if (!file.isEmpty) {
+            generateToken()
+            review.reviewImage?.let {
+                val deleteImageUrl = it.split("/").toList().last()
+                imageService.deleteImage(deleteImageUrl)
+            }
+            val reviewImageUrl = imageService.uploadImage(file.inputStream)
+            reviewDTO.reviewImage = reviewImageUrl
         }
+
+        val originStar = review.star
         review.update(reviewDTO)
 
         val reviewProduct: Product = review.product
@@ -115,6 +150,9 @@ class ReviewService(
         reviewRepository.save(review)
     }
 
+    /*
+    * 리뷰 삭제
+    * */
     fun deleteReview(userId: Long, reviewId: Long) {
         val review: Review = reviewRepository.findById(reviewId).get()
         if (review.user.userId != userId) {
@@ -138,15 +176,9 @@ class ReviewService(
         orderRepository.save(review.order)
     }
 
-    fun entityToDto(review: Review): ReviewListDTO {
-        return ReviewListDTO(
-            review.reviewId,
-            review.content,
-            review.star,
-            review.createdAt
-        )
-    }
-
+    /*
+    * 리뷰 목록 조회 조건 - 유저 기준
+    * */
     fun reviewListBuilderByUser(pageRequestDTO: PageRequestDTO, user: User): BooleanBuilder {
         val booleanBuilder: BooleanBuilder = BooleanBuilder()
         val qReview = QReview.review
@@ -155,6 +187,9 @@ class ReviewService(
         return booleanBuilder
     }
 
+    /*
+    * 리뷰 목록 조회 조건 - 상품 기준
+    * */
     fun reviewListBuilderByProduct(pageRequestDTO: PageRequestDTO, product: Product): BooleanBuilder {
         val booleanBuilder: BooleanBuilder = BooleanBuilder()
         val qReview = QReview.review
@@ -162,4 +197,27 @@ class ReviewService(
         booleanBuilder.and(expression)
         return booleanBuilder
     }
+
+    /*
+    * 리뷰 이미지 삭제 - 업데이트 과정
+    * */
+    fun deleteReviewImage(userId: Long,reviewId: Long){
+        val review: Review = reviewRepository.findById(reviewId).get()
+        if (review.user.userId != userId) {
+            throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
+        }
+        review.reviewImage?.let {
+            generateToken()
+            val deleteImageUrl = it.split("/").toList().last()
+            imageService.deleteImage(deleteImageUrl)
+            review.reviewImage = null
+            reviewRepository.save(review)
+        }
+    }
+
+    fun generateToken() {
+        val getToken = storageTokenService.getTokenId()
+        imageService.insertTokenId(getToken)
+    }
+
 }
