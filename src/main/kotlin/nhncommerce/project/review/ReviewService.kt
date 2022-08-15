@@ -41,6 +41,8 @@ class ReviewService(
         val order: Order = orderRepository.findById(orderId).get()
         if (order.user.userId != userId) {
             throw RedirectException(alertDTO("잘못된 접근입니다.", "/user"))
+        } else if (order.status == Status.IN_ACTIVE) {
+            throw RedirectException(alertDTO("취소된 주문입니다.", "/user"))
         } else if (order.reviewStatus) {
             throw RedirectException(alertDTO("이미 리뷰를 작성한 주문입니다.", "/user"))
         }
