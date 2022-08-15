@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank
 data class OrderRequestDTO(
     var status: Status=Status.ACTIVE,
     var price: Int,
-    var phone: String,
+    var phone: String?=null,
     var userId: Long,
     var couponId: Long?=null,
     var optionDetailId: Long,

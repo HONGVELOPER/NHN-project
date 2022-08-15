@@ -6,11 +6,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
     username: root
-    password: '0000'
+    password: rud680625!
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate.enable_lazy_load_no_trans: true
@@ -31,12 +31,12 @@ spring:
   sql:
     init:
       schema-locations: classpath:sql/category-insert.sql
-      mode: always
+      mode: never
 
 server:
   servlet:
     session:
-      timeout: 60
+      timeout: 1000
 
 logging:
   level:
