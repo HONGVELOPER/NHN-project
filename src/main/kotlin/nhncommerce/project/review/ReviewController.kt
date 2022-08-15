@@ -16,18 +16,17 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.validation.Valid
 
 @Controller
 class ReviewController(
     val reviewService: ReviewService,
     val loginInfoService: LoginInfoService,
-    val storageTokenService: StorageTokenService,
-    val imageService: ImageService,
 ) {
 
     /*
-    * 리뷰 작성 페이지 + 주문 완성되면 어떤 주문에 대하여 리뷰 작성할건지 파라미터 넘기고 리뷰 작성 유무 판별헤야함.
+    * 리뷰 작성 페이지
     * */
     @GetMapping("/api/reviews/orders/{orderId}/createForm")
     fun reviewCreateForm(
@@ -59,14 +58,14 @@ class ReviewController(
     }
 
     /*
-    * 리뷰 페이지 - 상품 기준
+    * 리뷰 목록 페이지 - 상품 기준
     * */
     @GetMapping("/reviews/products/{productId}")
     fun reviewListByProductId(
         @PathVariable("productId") productId: Long,
             pageRequestDTO: PageRequestDTO,
             mav:ModelAndView
-    ):ModelAndView {
+    ): ModelAndView {
         val result: PageResultDTO<ReviewListDTO, Review> =
             reviewService.findReviewListByProduct(productId, pageRequestDTO)
         mav.addObject("reviews", result)
@@ -75,7 +74,7 @@ class ReviewController(
     }
 
     /*
-    * 리뷰 페이지 - 유저 기준
+    * 리뷰 목록 페이지 - 유저 기준
     * */
     @GetMapping("/api/reviews/users")
     fun findReviewByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
@@ -90,7 +89,6 @@ class ReviewController(
     /*
     * 리뷰 작성
     * */
-//    @GetMapping("/users/review/list")
     @PostMapping("/api/reviews/orders/{orderId}")
     fun createReview(
         @PathVariable("orderId") orderId: Long,
@@ -104,18 +102,15 @@ class ReviewController(
             return mav
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        if (!file.isEmpty) {
-            val getToken = storageTokenService.getTokenId()
-            imageService.insertTokenId(getToken)
-            val reviewImageUrl = imageService.uploadImage(file.inputStream)
-            reviewDTO.reviewImage = reviewImageUrl
-        }
-        reviewService.createReview(loginInfo.userId, orderId, reviewDTO)
+        reviewService.createReview(loginInfo.userId, orderId, reviewDTO, file)
         mav.addObject("data", alertDTO("리뷰가 정상적으로 등록되었습니다.", "/api/reviews/users"))
         mav.viewName = "user/alert"
         return mav
     }
 
+    /*
+    * 리뷰 수정
+    * */
     @PutMapping("/api/reviews/{reviewId}/update")
     fun updateReview(
         @PathVariable("reviewId") reviewId: Long,
@@ -128,19 +123,16 @@ class ReviewController(
             mav.viewName = "review/update"
             return mav
         }
-        if (!file.isEmpty) {
-            val getToken = storageTokenService.getTokenId()
-            imageService.insertTokenId(getToken)
-            val reviewImageUrl = imageService.uploadImage(file.inputStream)
-            reviewDTO.reviewImage = reviewImageUrl
-        }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        reviewService.updateReview(loginInfo.userId, reviewId, reviewDTO)
+        reviewService.updateReview(loginInfo.userId, reviewId, reviewDTO, file)
         mav.addObject("data", alertDTO("리뷰가 정상적으로 수정되었습니다.", "/api/reviews/users"))
         mav.viewName = "user/alert"
         return mav
     }
 
+    /*
+    * 리뷰 삭제
+    * */
     @PutMapping("/api/reviews/{reviewId}/delete")
     fun deleteReview(
         @PathVariable("reviewId") reviewId: Long,
@@ -151,5 +143,17 @@ class ReviewController(
         mav.addObject("data", alertDTO("리뷰가 정상적으로 삭제되었습니다.", "/api/reviews/users"))
         mav.viewName = "user/alert"
         return mav
+    }
+
+    /*
+    * 리뷰 이미지 삭제 - 업데이트 과정에서
+    * */
+    @DeleteMapping("/api/reviews/{reviewId}")
+    fun deleteReviewImage(@PathVariable("reviewId") reviewId: Long, redirect: RedirectAttributes): String {
+        println("controller access")
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        reviewService.deleteReviewImage(loginInfo.userId, reviewId)
+        redirect.addAttribute("reviewId", reviewId)
+        return "redirect:/api/reviews/{reviewId}/updateForm"
     }
 }

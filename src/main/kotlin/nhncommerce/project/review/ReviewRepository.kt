@@ -12,5 +12,4 @@ interface ReviewRepository : JpaRepository<Review, Long>, QuerydslPredicateExecu
     @Query("SELECT Count(r) FROM Review r WHERE r.status='ACTIVE' and r.product= :product")
     fun findActiveReviewCountByProduct(@Param("product") product: Product): Int
 
-
 }

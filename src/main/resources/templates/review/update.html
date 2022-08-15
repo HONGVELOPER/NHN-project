@@ -45,11 +45,22 @@
         <body>
         <div class="container">
             <p>리뷰 작성</p>
-            <form th:action="@{/api/reviews/{reviewId}/update(reviewId = ${reviewId})}" enctype="multipart/form-data" th:method="put" th:object="${reviewDTO}" id="myForm" >
-                <div class="col-md-6">
-                    <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()"><br>
-                    <img th:src="${reviewDTO.reviewImage}" height="200" alt="Image preview">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${reviewDTO.reviewImage}" height="200" alt="Image preview">
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <form th:action="@{/api/reviews/{reviewId}(reviewId = ${reviewId})}" th:method="delete">
+                                    <button class="btn btn-outline-dark mt-auto" type="submit" onclick="cancelFile()">삭제</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <form th:action="@{/api/reviews/{reviewId}/update(reviewId = ${reviewId})}" enctype="multipart/form-data" th:method="put" th:object="${reviewDTO}" id="myForm" >
+                <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()"><br>
                 <div>
                     <div for="content">내용</div>
                     <!--                    <input type="text" id="content" th:field="*{content}" class="form-control" placeholder="내용을 입력하세요.">-->
@@ -91,6 +102,12 @@
                         if (file) {
                             reader.readAsDataURL(file);
                         }
+                    }
+
+                    function cancelFile() {
+                        const preview = document.querySelector('img');
+                        preview.src = "delete";
+                        document.getElementById("file").value = ""
                     }
                 </script>
         </div>

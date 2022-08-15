@@ -27,7 +27,7 @@ class Review(
     var star: Int = 0,
 
     @Column(nullable = true)
-    var reviewImage: String,
+    var reviewImage: String ?= null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -42,6 +42,24 @@ class Review(
     val product: Product,
 
 ): BaseEntity() {
+
+    fun entityToReviewDto(): ReviewDTO {
+        return ReviewDTO(
+            content = content,
+            star = star,
+            reviewImage = reviewImage
+        )
+    }
+
+    fun entityToReviewListDto(): ReviewListDTO {
+        return ReviewListDTO (
+            reviewId = reviewId,
+            content = content,
+            star = star,
+            createdAt = createdAt
+        )
+    }
+
     fun update(reviewDTO: ReviewDTO) {
         content = reviewDTO.content
         star = reviewDTO.star
