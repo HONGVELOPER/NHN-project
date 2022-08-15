@@ -30,7 +30,7 @@
                                     </p>
                                 </form>
                                 <br>
-                                <form th:action="@{/admin/coupons}"  method="post" th:object="${couponDTO}">
+                                <form th:action="@{/admin/coupons}"  method="post" th:object="${couponDTO}" onsubmit="return check()">
 
                                     <p th:text="${error}"></p>
                                     쿠폰 이름
@@ -39,7 +39,7 @@
 
                                     할인율
 
-                                    <input type="number" class="form-control"  th:field="*{discountRate}" /><br>
+                                    <input type="number" class="form-control" id="discount"  th:field="*{discountRate}" /><br>
                                     <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
 
                                     만료 기간
@@ -59,6 +59,16 @@
                                         <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발행</button>
                                     </p>
                                 </form>
+
+
+                                <script>
+                                    function check(){
+                                        if (document.getElementById("discount").value == "") {
+                                            alert("재고를 입력해주세요. (재고가 없는경우 0 입력)")
+                                            return false
+                                        }
+                                    }
+                                </script>
                             </div>
                         </div>
                     </div>
