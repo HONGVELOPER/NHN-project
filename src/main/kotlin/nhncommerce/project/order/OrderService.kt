@@ -30,7 +30,6 @@ class OrderService(
     val deliverRepository: DeliverRepository
 ) {
 
-
     fun createOrder(orderRequestDTO: OrderRequestDTO, userId: Long) {
 
         val user = userRepository.findById(userId).get()
@@ -63,29 +62,14 @@ class OrderService(
 
         val orderDTO = OrderDTO(
             status = Status.ACTIVE, productPrice,
-            orderRequestDTO.phone, user, coupon, optionDetail, deliver
+            orderRequestDTO.phone, user, coupon, optionDetail, deliver!!
         )
 
-        val order = orderDTO.toEntity()
+        val order = orderDTO.dtoToEntity()
         orderRepository.save(order)
         optionDetailRepository.save(optionDetail)
     }
 
-
-    fun toOrderListDTO(order: Order): OrderListDTO {
-        return OrderListDTO(
-            order.orderId,
-            order.status!!,
-            order.price,
-            order.phone,
-            order.user,
-            order.coupon,
-            order.optionDetail,
-            order.deliver,
-            order.createdAt,
-            order.updatedAt
-        )
-    }
 
     /**
      * user 조회
@@ -95,7 +79,7 @@ class OrderService(
         var booleanBuilder = getUserSearch(userId, myOrderDTO)
         val result = orderRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Order, OrderListDTO> =
-            Function<Order, OrderListDTO> { entity: Order? -> toOrderListDTO(entity!!) }
+            Function<Order, OrderListDTO> {entity: Order? -> entity!!.entityToDTO() }
         return PageResultDTO<OrderListDTO, Order>(result, fn)
 
     }
@@ -108,7 +92,7 @@ class OrderService(
         var booleanBuilder = getSearch(myOrderDTO)
         val result = orderRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Order, OrderListDTO> =
-            Function<Order, OrderListDTO> { entity: Order? -> toOrderListDTO(entity!!) }
+            Function<Order, OrderListDTO> {entity: Order? -> entity!!.entityToDTO() }
         return PageResultDTO<OrderListDTO, Order>(result, fn)
 
     }
@@ -136,13 +120,13 @@ class OrderService(
      * */
     fun cancelMyOrder(orderId: Long, userId: Long) {
         val user = userRepository.findById(userId).get()
-        var order = orderRepository.findByUserAndOrderId(user, orderId)
+        val order = orderRepository.findByUserAndOrderId(user, orderId)
 
             if (order.user!!.userId != userId) {
                 throw RedirectException(alertDTO("잘못된 접근입니다.", "/api/orders"))
             }
             if (order.coupon?.couponId != null) {
-                var coupon = couponRepository.findById(order.coupon!!.couponId!!).get()
+                val coupon = couponRepository.findById(order.coupon!!.couponId!!).get()
                 coupon.status = Status.ACTIVE
                 couponRepository.save(coupon)
             }

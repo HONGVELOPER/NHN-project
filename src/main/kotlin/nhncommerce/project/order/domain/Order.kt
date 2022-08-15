@@ -15,37 +15,51 @@ class Order (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    var orderId: Long? =null,
+    val orderId: Long? =null,
 
     @Column(nullable = false)
-    var price: Int? = null,
+    val price: Int,
 
     @Column(nullable = false)
-    var phone: String? = null,
+    val phone: String,
+
 
     @Column(nullable = false)
     var reviewStatus: Boolean = false,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     val user: User,
 
     @OneToOne
     @JoinColumn(name="coupon_id")
-    var coupon: Coupon?= null,
+    val coupon: Coupon?= null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_detail_id")
-    var optionDetail: OptionDetail?= null,
+    val optionDetail: OptionDetail,
 
     @OneToOne
     @JoinColumn(name="deliver_id")
-    var deliver: Deliver?= null,
+    val deliver: Deliver,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var status: Status? = Status.ACTIVE
+    var status: Status = Status.ACTIVE
 
 ): BaseEntity() {
-
+    fun entityToDTO() : OrderListDTO {
+        return OrderListDTO(
+            orderId = orderId,
+            status = status,
+            price = price,
+            phone = phone,
+            user = user,
+            coupon = coupon,
+            optionDetail = optionDetail,
+            deliver = deliver,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }
 }

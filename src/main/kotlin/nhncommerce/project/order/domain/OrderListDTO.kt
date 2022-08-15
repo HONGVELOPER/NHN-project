@@ -9,14 +9,14 @@ import nhncommerce.project.user.domain.User
 import java.time.LocalDateTime
 
 data class OrderListDTO(
-    var orderId: Long?,
-    var status: Status= Status.ACTIVE,
-    var price: Int?=null,
-    var phone: String?=null,
-    var user: User?=null,
-    var coupon: Coupon?=null,
-    var optionDetail: OptionDetail?=null,
-    var deliver: Deliver?=null,
-    var createdAt : LocalDateTime,
-    var updatedAt : LocalDateTime
+    val orderId: Long?,
+    val status: Status= Status.ACTIVE,
+    val price: Int,
+    val phone: String,
+    val user: User,
+    val coupon: Coupon?=null,
+    val optionDetail: OptionDetail,
+    val deliver: Deliver,
+    val createdAt : LocalDateTime,
+    val updatedAt : LocalDateTime
 )

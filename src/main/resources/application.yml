@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
     username: root
-    password: password
+    password: '0000'
   jpa:
     open-in-view: false
     hibernate:
@@ -41,4 +41,3 @@ server:
 logging:
   level:
     org.hibernate.SQL: debug
-

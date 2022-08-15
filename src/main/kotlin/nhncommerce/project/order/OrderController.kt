@@ -35,48 +35,35 @@ class OrderController(
 ) {
     /**
      * 상품 주문 페이지
-     */
-//    @PostMapping("/api/orderProducts")
-//    fun orderProductPage(
-//        @RequestParam("optionDetailId") optionDetailId: Long,
-//        model: Model
-//    ): String {
-//        couponService.updateCouponStatus()
-//        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-//        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, null, null, 0, optionDetailId, 0)
-//        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
-//
-//        val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
-//        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
-//        val userDTO = userService.findUserById(loginInfo.userId)
-//
-//        model.addAttribute("userDTO", userDTO)
-//        model.addAttribute("optionDetailDTO", optionDetailDTO)
-//        model.addAttribute("deliverListViewDTO", deliverListviewDTO)
-//        model.addAttribute("couponListViewDTO", couponListViewDTO)
-//        model.addAttribute("orderRequestDTO", orderRequestDTO)
-//        return "order/orderProduct"
-//    }
+     * */
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
-        @RequestParam("optionDetailId") optionDetailId: Long?=null,
-        @RequestParam("productId") productId : String,
-        mav : ModelAndView
+        @RequestParam("optionDetailId") optionDetailId: Long? = null,
+        @RequestParam("productId") productId: String,
+        mav: ModelAndView
     ): ModelAndView {
         if (optionDetailId == null) {
             mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
             mav.viewName = "user/alert"
             return mav
         }
-
+        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         couponService.updateCouponStatus()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, null, null, 0, optionDetailId, 0)
-        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
 
+        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
-        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         val userDTO = userService.findUserById(loginInfo.userId)
+        val orderRequestDTO = OrderRequestDTO(
+            status = Status.ACTIVE,
+            0,
+            userDTO.phone,
+            userId = loginInfo.userId,
+            null,
+            optionDetailId,
+            null
+        )
+
 
         mav.addObject("userDTO", userDTO)
         mav.addObject("optionDetailDTO", optionDetailDTO)
@@ -93,6 +80,8 @@ class OrderController(
     @PostMapping("/api/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+
+
         orderService.createOrder(orderRequestDTO, loginInfo.userId)
         alertService.alertMessage("주문이 완료되었습니다.", "/user", response)
     }
