@@ -12,6 +12,7 @@ import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.io.InputStream
 import java.util.function.Function
 
@@ -155,17 +156,21 @@ class ProductService(
     /**
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
-    fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream) {
+    fun updateProduct(productDTO: ProductDTO, file : MultipartFile) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
 
         val product = productRepository.findById(productDTO.productId!!.toLong()).get()
-        val thumbnail = getThumbnailUUID(product)
-        val url = imageService.uploadImage(inputSteam)
-        productDTO.thumbnail = url
-        imageService.deleteImage(thumbnail)
-        product.updateProduct(productDTO)
-        productRepository.save(product)
+
+        if(!file.originalFilename.equals("")){
+            val thumbnail = getThumbnailUUID(product)
+            val url = imageService.uploadImage(file.inputStream)
+            productDTO.thumbnail = url
+            imageService.deleteImage(thumbnail)
+            product.updateProduct(productDTO)
+            productRepository.save(product)
+        }
+
     }
 
     fun deleteProduct(productId: String) {
@@ -190,4 +195,9 @@ class ProductService(
     fun deleteProductImage(productImageId : Long){
         productImageRepository.deleteById(productImageId)
     }
+
+    fun getThumbnail(productId : String) : String{
+        return productRepository.findByProductId(productId.toLong()).thumbnail
+    }
+
 }

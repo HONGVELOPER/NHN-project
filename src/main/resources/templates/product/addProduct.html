@@ -58,7 +58,8 @@
                         </div>
                         <div th:if="${session.detailDescription == null}">
                             제품 상세 설명<br>
-                            <input  type="text" class="form-control"  th:field="*{detailDescription}"><br>
+                            <textarea  type="text" class="form-control"  th:field="*{detailDescription}"></textarea>
+                                <br>
                         </div>
 
                         <div>
