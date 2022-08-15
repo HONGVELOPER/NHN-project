@@ -7,8 +7,22 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <h1>이벤트 관리</h1>
-                    이벤트 설정 <p th:text="${setting}"></p>
-                    이벤트 진행 <p th:text="${progress}"></p>
+                    이벤트 상황 <br>
+                    <div th:if="${progress == 0}">
+                        이벤트 설정 전
+                    </div>
+                    <div th:if="${progress == 1}">
+                        이벤트 설정 완료, 이벤트 시작전
+                    </div>
+                    <div th:if="${progress == 2}">
+                        이벤트 진행중
+                    </div>
+                    <div th:if="${progress == 3}">
+                        이벤트 종료, 당첨자 쿠폰 발급 전
+                    </div>
+                    <div th:if="${progress == 4}">
+                        당첨자 쿠폰 발급 완료
+                    </div>
                     <form th:action="@{/admin/event/start}"  th:method="get">
                         <button class="btn btn-outline-dark mt-auto" type="submit">이벤트 시작</button>
                     </form>

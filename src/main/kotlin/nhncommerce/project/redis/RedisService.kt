@@ -17,11 +17,16 @@ class RedisService (
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
     companion object {
-        var couponCount  = CouponCount(null, null, null, null, false)
+        var couponCount  = CouponCount(null, null, null, null, 0)
+        const val INIT = 0
+        const val SETTING_OK = 1
+        const val EVENT_IN_PROGRESS = 2
+        const val EVENT_END = 3
+        const val PUBLISH_COUPON = 4
     }
 
     fun setCouponCount(eventCoupon: EventCoupon, discount : Int , queue: Int, expired : LocalDate) {
-        couponCount = CouponCount(eventCoupon, discount , queue, expired, false)
+        couponCount = CouponCount(eventCoupon, discount , queue, expired, 0)
     }
 
     // 대기 큐에 넣기
@@ -61,8 +66,15 @@ class RedisService (
 
     //당첨되었는지 확인
     fun getEventWinCheck(eventCoupon: EventCoupon, userId : Long) : Boolean {
-        val check =  redisTemplate.opsForZSet().score("Save" + eventCoupon.value, userId)
+        val check = redisTemplate.opsForZSet().score("Save" + eventCoupon.value, userId)
         return if (check == null) false else true
+    }
+
+    fun checkParticipation(eventCoupon: EventCoupon, userId : Long) : Boolean {
+        val winCheck = getEventWinCheck(eventCoupon, userId)
+        val order = getUserOrder(eventCoupon, userId)
+
+        return if (winCheck == true || order != null) true else false
     }
 
     //당첨자 리스트 조회
@@ -88,6 +100,6 @@ class RedisService (
 
     //이벤트 설정 초기화
     fun resetEventSet(){
-        couponCount = CouponCount(null, null, null, null, false)
+        couponCount = CouponCount(null, null, null, null, 0)
     }
 }

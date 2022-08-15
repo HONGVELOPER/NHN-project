@@ -193,7 +193,12 @@ class ProductService(
      * 상품 이미지 삭제
      */
     fun deleteProductImage(productImageId : Long){
-        productImageRepository.deleteById(productImageId)
+        val getToken = storageTokenService.getTokenId()
+        imageService.insertTokenId(getToken)
+
+        val productImage = productImageRepository.findById(productImageId).get()
+        imageService.deleteImage(productImage.image.split("/").toList().last())
+        productImageRepository.delete(productImage)
     }
 
     fun getThumbnail(productId : String) : String{
