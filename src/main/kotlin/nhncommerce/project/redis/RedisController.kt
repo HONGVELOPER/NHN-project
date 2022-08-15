@@ -67,6 +67,7 @@ class RedisController(
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) expired : LocalDate) : String {
         redisService.setCouponCount(EventCoupon.COUPON, discount,eventCouponNum, expired)
         couponCount.progress = SETTING_OK
+        redisService.refreshSet(EventCoupon.COUPON)
         model.addAttribute("progress",  couponCount.progress)
         return "redis/manageEvent"
     }
@@ -118,7 +119,7 @@ class RedisController(
                 couponName = EventCoupon.COUPON.value
             )
         }
-        //redisService.refreshSet(EventCoupon.COUPON)
+        redisService.resetQueue(EventCoupon.COUPON)
         couponCount.progress = PUBLISH_COUPON
         mav.viewName = "redirect:/admin/coupons"
         return mav
