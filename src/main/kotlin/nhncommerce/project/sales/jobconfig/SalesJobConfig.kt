@@ -52,7 +52,7 @@ class SalesJobConfig(
     fun salesStep2() : Step {
         return stepBuilderFactory["salesStep2"]
             .tasklet{ contribution, chunkContext ->
-                val sales = Sales(null, LocalDate.now(),quantity,totalAmount)
+                val sales = Sales(null, LocalDate.now().minusDays(1),quantity,totalAmount)
                 salesRepository.save(sales)
                 quantity = 0
                 totalAmount = 0
@@ -90,7 +90,7 @@ class SalesJobConfig(
         return JpaPagingItemReaderBuilder<Order>()
             .pageSize(10)
             .parameterValues(parameterValues)
-            .queryString("SELECT o FROM Order o WHERE o.updatedAt >= :start and o.updatedAt <= :end ORDER BY order_id ASC")
+            .queryString("SELECT o FROM Order o WHERE o.updatedAt >= :start and o.updatedAt <= :end and o.status = 'ACTIVE' ORDER BY order_id ASC")
             .entityManagerFactory(entityManagerFactory)
             .name("JpaPagingItemReader")
             .build()
