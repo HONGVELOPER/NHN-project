@@ -18,5 +18,6 @@ data class OrderListDTO(
     val optionDetail: OptionDetail,
     val deliver: Deliver,
     val createdAt : LocalDateTime,
-    val updatedAt : LocalDateTime
+    val updatedAt : LocalDateTime,
+    var reviewStatus: Boolean = false
 )
