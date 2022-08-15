@@ -62,7 +62,7 @@ class OrderService(
 
         val orderDTO = OrderDTO(
             status = Status.ACTIVE, productPrice,
-            orderRequestDTO.phone, user, coupon, optionDetail, deliver!!
+            orderRequestDTO.phone!!, user, coupon, optionDetail, deliver!!
         )
 
         val order = orderDTO.dtoToEntity()
