@@ -33,6 +33,9 @@ class OrderController(
 
 
 ) {
+    /**
+     * 상품 주문 페이지
+     * */
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
         @RequestParam("optionDetailId") optionDetailId: Long? = null,
