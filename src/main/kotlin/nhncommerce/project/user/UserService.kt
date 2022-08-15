@@ -2,9 +2,6 @@ package nhncommerce.project.user
 
 
 import com.querydsl.core.BooleanBuilder
-import nhncommerce.project.baseentity.ROLE
-import nhncommerce.project.deliver.domain.Deliver
-import nhncommerce.project.deliver.domain.DeliverListDTO
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO

@@ -3,10 +3,13 @@ package nhncommerce.project.util.loginInfo
 import nhncommerce.project.security.domain.FormLoginUserDetails
 import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.session.SessionRegistry
 import org.springframework.stereotype.Service
 
 @Service
-class LoginInfoService {
+class LoginInfoService(
+    val sessionRegistry: SessionRegistry,
+) {
 
     fun getUserIdFromSession(): LoginInfoDTO {
         val authentication = SecurityContextHolder.getContext().authentication
@@ -27,6 +30,25 @@ class LoginInfoService {
                 userId = userId,
                 isAdmin = isAdmin
             )
+        }
+    }
+
+    fun expireUserSession(expireUserId: Long) {
+        println("session 진입")
+        val allPrincipal = sessionRegistry.allPrincipals
+        allPrincipal.map { principal ->
+            val loginStatus = principal.javaClass.toString().split(".")[INDEX_OF_LOGIN_STATUS]
+            val userId = if (loginStatus == FORM_LOGIN_USER) {
+                (principal as FormLoginUserDetails).getId()
+            } else {
+                (principal as Oauth2LoginUserDetails).getId()
+            }
+            if (userId == expireUserId) {
+                val deleteSession = sessionRegistry.getAllSessions(principal, false)
+                deleteSession.map {
+                    it.expireNow()
+                }
+            }
         }
     }
 
