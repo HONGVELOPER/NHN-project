@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
     username: root
-    password: '0000'
+    password: rud680625!
   jpa:
     open-in-view: false
     hibernate:
@@ -32,7 +32,9 @@ spring:
     init:
       schema-locations: classpath:sql/category-insert.sql
       mode: never
-
+  batch:
+    jdbc:
+      initialize-schema: always
 server:
   servlet:
     session:
@@ -41,4 +43,5 @@ server:
 logging:
   level:
     org.hibernate.SQL: debug
+
 

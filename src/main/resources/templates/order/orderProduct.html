@@ -17,6 +17,7 @@
                                        th:field="${optionDetailDTO.optionDetailId}">
                                 <h5 class="fw-bolder" th:text="${optionDetailDTO.product.productName}"></h5>
 
+                                <input hidden type="text" th:field="${orderRequestDTO.userId}">
                             </div>
                             <div>
                                 <h5 class="fw-bolder">총 결제 가격 </h5>

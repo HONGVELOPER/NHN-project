@@ -40,14 +40,15 @@ class OrderController(
         @RequestParam("optionDetailId") optionDetailId: Long,
         model: Model
     ): String {
+        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         couponService.updateCouponStatus()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, null, null, 0, optionDetailId, 0)
-        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
 
+        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
-        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         val userDTO = userService.findUserById(loginInfo.userId)
+        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, userDTO.phone, userId = loginInfo.userId, null, optionDetailId, null)
+
 
         model.addAttribute("userDTO", userDTO)
         model.addAttribute("optionDetailDTO", optionDetailDTO)
@@ -63,6 +64,8 @@ class OrderController(
     @PostMapping("/api/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+
+
         orderService.createOrder(orderRequestDTO, loginInfo.userId)
         alertService.alertMessage("주문이 완료되었습니다.", "/user", response)
     }
