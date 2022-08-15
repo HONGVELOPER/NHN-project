@@ -3,10 +3,13 @@ package nhncommerce.project.user
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.ProductService
+import nhncommerce.project.security.domain.FormLoginUserDetails
+import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import nhncommerce.project.user.domain.*
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -89,12 +92,21 @@ class UserController(
     ): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
-        if (userDTO.provider != "") {
+        userDTO.provider?.let {
             mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
             mav.viewName = "user/alert"
             return mav
         }
         mav.viewName = "user/updatePassword"
+        return mav
+    }
+
+    @GetMapping("/api/users/sessionExpired")
+    fun sessionExpired(
+        mav: ModelAndView
+    ): ModelAndView {
+        mav.addObject("data", alertDTO("세션이 만료 되어 로그아웃 되었습니다. 다시 로그인 해주세요.", "/login"))
+        mav.viewName = "user/alert"
         return mav
     }
 
@@ -166,9 +178,10 @@ class UserController(
             return mav
         }
         userService.updateUserProfileByAdmin(userId, adminProfileDTO)
+        loginInfoService.expireUserSession(userId)
         mav.addObject("data", alertDTO("회원 프로필이 정상적으로 수정되었습니다.", "/admin/users/manage"))
         mav.viewName = "user/alert"
-        return mav
+        return  mav
     }
 
     /*
@@ -216,5 +229,4 @@ class UserController(
         mav.viewName = "user/alert"
         return mav
     }
-
 }

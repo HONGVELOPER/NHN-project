@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.session.SessionRegistry
+import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +23,11 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun sessionRegistry(): SessionRegistry {
+        return SessionRegistryImpl()
     }
 
     @Bean
@@ -54,6 +61,7 @@ class SecurityConfig(
             .and()
             .sessionManagement()
             .maximumSessions(1)
+            .expiredUrl("/api/users/sessionExpired")
 //            .maxSessionsPreventsLogin(true) // session 중복 로그인 처리
 //            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // default session 생성 방식
             .and()
