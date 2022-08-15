@@ -225,6 +225,7 @@ class UserController(
         mav: ModelAndView
     ): ModelAndView {
         userService.deleteUserById(userId)
+        loginInfoService.expireUserSession(userId)
         mav.addObject("data", alertDTO("회원 삭제가 완료되었습니다.", "/admin/users/manage"))
         mav.viewName = "user/alert"
         return mav
