@@ -31,7 +31,7 @@ data class UserDTO (
 
     val provider: String = "",
 ) {
-    fun toEntity(): User {
+    fun dtoToEntity(): User {
         val genderStatus: Gender = if (gender == "MALE") {
             Gender.MALE
         } else {
