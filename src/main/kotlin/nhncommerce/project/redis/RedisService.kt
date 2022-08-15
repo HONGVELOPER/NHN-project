@@ -92,6 +92,11 @@ class RedisService (
         return if (couponCount != null) couponCount.end() else false
     }
 
+    //대기열 초기화
+    fun resetQueue(eventCoupon: EventCoupon) {
+        redisTemplate.opsForZSet().removeRange(eventCoupon.value + "Queue", 0, -1)
+    }
+
     //set 초기화
     fun refreshSet(eventCoupon: EventCoupon){
         redisTemplate.opsForZSet().removeRange("Save" + eventCoupon.value, 0, -1)
