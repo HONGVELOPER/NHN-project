@@ -122,17 +122,31 @@
                         }
 
                         let listArr = ["option1List","option2List","option3List"]
+                        let optionArr = ["option1", "option2", "option3"]
 
                         function check() {
                             for(let j = 0; j < 3; j++){
+                                if (document.getElementById(optionArr[j]).value != "" && countArr[j] <= 0){
+                                    alert("옵션 타입만 입력되었습니다. 옵션 상세를 입력해주세요")
+                                    return false
+                                }
                                 for(let i = 0 ; i < countArr[j]; i++){
-                                    if (document.getElementById("option1").value == ""){
+                                    if (document.getElementById(optionArr[j]).value == ""){
                                         alert("옵션 타입을 입력해주세요")
                                         return false
                                     }
+                                    if (document.getElementById(optionArr[j]).value.length >= 30){
+                                        alert("옵션 타입과 상세는 30글자 이상 금지")
+                                        return false
+                                    }
+
                                     let list = document.getElementsByName(listArr[j])
                                     if (list[i].value == ""){
                                         alert("빈 옵션은 삭제 바랍니다")
+                                        return false
+                                    }
+                                    if (list[i].value.length >= 30){
+                                        alert("옵션 타입과 상세는 30글자 이상 금지")
                                         return false
                                     }
                                 }
