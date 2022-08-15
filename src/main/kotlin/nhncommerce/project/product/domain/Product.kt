@@ -37,7 +37,7 @@ class Product(
     var totalStar:Float=0F,
     
     //카테고리 추가
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var category: Category?=null
 
@@ -52,7 +52,7 @@ class Product(
         category = productDTO.category
     }
     
-    fun toProductDTO() : ProductDTO {
+    fun entityToDto() : ProductDTO {
         return ProductDTO(
             productId = productId,
             status = status,

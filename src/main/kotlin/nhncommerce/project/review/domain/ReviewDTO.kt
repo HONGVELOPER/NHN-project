@@ -2,6 +2,7 @@ package nhncommerce.project.review.domain
 
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.order.domain.Order
+import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.user.domain.User
 import nhncommerce.project.user.domain.UserDTO
 import java.io.InputStream
@@ -19,26 +20,18 @@ data class ReviewDTO (
 
     var reviewImage: String?,
 
-//    var orderId: Long = 0L,
-
 ) {
-//    fun toEntity(user: User, order: Order): Review { 주문 엮으면 바꿔야함.
-//        return Review (
-//            status = Status.ACTIVE,
-//            content = content,
-//            star = star,
-//            reviewImage = reviewImage,
-//            user = user,
-//            order = order,
-//        )
-//    }
-    fun toEntity(user: User): Review {
+    fun toEntity(order: Order): Review { // 주문 엮으면 바꿔야함.
         return Review (
             status = Status.ACTIVE,
             content = content,
             star = star,
             reviewImage = reviewImage ?: "",
-            user = user,
+            user = order.user,
+            order = order,
+            product = order.optionDetail?.product!!,
+            // 옵션 디테일과 상품이 nullable 한 관계 확인 필요.
+            // 오더와 옵션 디테일 nullable 한 관계 확인 필요.
         )
     }
 

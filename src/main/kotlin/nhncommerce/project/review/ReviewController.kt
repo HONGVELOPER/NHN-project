@@ -3,7 +3,6 @@ package nhncommerce.project.review
 import nhncommerce.project.image.ImageService
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
-import nhncommerce.project.product.ProductService
 import nhncommerce.project.review.domain.Review
 import nhncommerce.project.review.domain.ReviewDTO
 import nhncommerce.project.review.domain.ReviewListDTO
@@ -23,17 +22,24 @@ import javax.validation.Valid
 class ReviewController(
     val reviewService: ReviewService,
     val loginInfoService: LoginInfoService,
-    val productService: ProductService,
+    val storageTokenService: StorageTokenService,
     val imageService: ImageService,
-    val storageTokenService: StorageTokenService
 ) {
 
     /*
     * 리뷰 작성 페이지 + 주문 완성되면 어떤 주문에 대하여 리뷰 작성할건지 파라미터 넘기고 리뷰 작성 유무 판별헤야함.
     * */
-    @GetMapping("/api/reviews/createForm")
-    fun reviewCreateForm(reviewDTO: ReviewDTO): String {
-        return "review/create"
+    @GetMapping("/api/reviews/orders/{orderId}/createForm")
+    fun reviewCreateForm(
+        @PathVariable orderId: Long,
+        reviewDTO: ReviewDTO,
+        mav: ModelAndView
+    ): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        reviewService.findReviewStatus(loginInfo.userId, orderId)
+        mav.addObject("orderId", orderId)
+        mav.viewName = "review/create"
+        return mav
     }
 
     /*
@@ -55,10 +61,18 @@ class ReviewController(
     /*
     * 리뷰 페이지 - 상품 기준
     * */
-//    @GetMapping("/api/review/product/{productId}")
-//    fun reviewListByProductId() {
-//
-//    }
+    @GetMapping("/reviews/products/{productId}")
+    fun reviewListByProductId(
+        @PathVariable("productId") productId: Long,
+            pageRequestDTO: PageRequestDTO,
+            mav:ModelAndView
+    ):ModelAndView {
+        val result: PageResultDTO<ReviewListDTO, Review> =
+            reviewService.findReviewListByProduct(productId, pageRequestDTO)
+        mav.addObject("reviews", result)
+        mav.viewName = "review/reviewListByProduct"
+        return mav
+    }
 
     /*
     * 리뷰 페이지 - 유저 기준
@@ -77,8 +91,9 @@ class ReviewController(
     * 리뷰 작성
     * */
 //    @GetMapping("/users/review/list")
-    @PostMapping("/api/reviews")
+    @PostMapping("/api/reviews/orders/{orderId}")
     fun createReview(
+        @PathVariable("orderId") orderId: Long,
         @Valid @ModelAttribute reviewDTO: ReviewDTO,
         bindingResult: BindingResult,
         @RequestPart file : MultipartFile,
@@ -89,13 +104,13 @@ class ReviewController(
             return mav
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        var reviewImageUrl: String = ""
         if (!file.isEmpty) {
-            storageTokenService.accessToken()
-            reviewImageUrl = imageService.uploadImage(file.inputStream)
+            val getToken = storageTokenService.getTokenId()
+            imageService.insertTokenId(getToken)
+            val reviewImageUrl = imageService.uploadImage(file.inputStream)
             reviewDTO.reviewImage = reviewImageUrl
         }
-        reviewService.createReview(loginInfo.userId, reviewDTO)
+        reviewService.createReview(loginInfo.userId, orderId, reviewDTO)
         mav.addObject("data", alertDTO("리뷰가 정상적으로 등록되었습니다.", "/api/reviews/users"))
         mav.viewName = "user/alert"
         return mav
@@ -114,7 +129,8 @@ class ReviewController(
             return mav
         }
         if (!file.isEmpty) {
-            storageTokenService.accessToken()
+            val getToken = storageTokenService.getTokenId()
+            imageService.insertTokenId(getToken)
             val reviewImageUrl = imageService.uploadImage(file.inputStream)
             reviewDTO.reviewImage = reviewImageUrl
         }
@@ -130,10 +146,9 @@ class ReviewController(
         @PathVariable("reviewId") reviewId: Long,
         mav: ModelAndView
     ): ModelAndView {
-        println("진입~~~~~~~")
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         reviewService.deleteReview(loginInfo.userId, reviewId)
-        mav.addObject("data", alertDTO("리뷰가 정상적으로 삭제되었습니다.", "/review/reviewListByUser"))
+        mav.addObject("data", alertDTO("리뷰가 정상적으로 삭제되었습니다.", "/api/reviews/users"))
         mav.viewName = "user/alert"
         return mav
     }

@@ -12,6 +12,7 @@ import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.io.InputStream
 import java.util.function.Function
 
@@ -23,24 +24,6 @@ class ProductService(
     val imageService: ImageService,
     val storageTokenService: StorageTokenService
 ) {
-
-    fun dtoTOEntity(productDTO: ProductDTO): Product {
-        val product = Product(
-            null, Status.ACTIVE, productDTO.productName, productDTO.price,
-            productDTO.briefDescription, productDTO.detailDescription, productDTO.thumbnail, productDTO.viewCount,
-            productDTO.totalStar, productDTO.category
-        )
-
-        return product
-    }
-
-    fun entityToDto(product: Product): ProductDTO {
-        val productDTO = ProductDTO(
-            product.productId, product.status, product.productName, product.price, product.briefDescription,
-            product.briefDescription, product.thumbnail, product.viewCount, product.totalStar, product.category
-        )
-        return productDTO
-    }
 
     fun separate(productOptionDTO: ProductOptionDTO): MutableList<Any> {
         val category = categoryRepository.findById(productOptionDTO.categoryId!!.toLong()).get()
@@ -82,9 +65,7 @@ class ProductService(
         val url = imageService.uploadImage(inputSteam)
         productDTO.thumbnail = url
 
-        val product = dtoTOEntity(productDTO)
-
-        return productRepository.save(product)
+        return productRepository.save(productDTO.dtoToEntity())
     }
 
     /**
@@ -114,7 +95,7 @@ class ProductService(
         val result = productRepository.findAll(booleanBuilder, pageable)
 
         val fn: Function<Product, ProductDTO> =
-            Function<Product, ProductDTO> { entity: Product? -> entityToDto(entity!!) }
+            Function<Product, ProductDTO> { entity: Product? -> entity?.entityToDto() }
 
         return PageResultDTO<ProductDTO, Product>(result, fn)
     }
@@ -124,7 +105,7 @@ class ProductService(
     }
 
     fun getProductDTO(productId: Long): ProductDTO {
-        return productRepository.findById(productId).get().toProductDTO()
+        return productRepository.findById(productId).get().entityToDto()
     }
 
     fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
@@ -160,7 +141,7 @@ class ProductService(
 
     fun getProduct(productId: String): ProductDTO {
         val product = productRepository.findById(productId.toLong()).get()
-        return entityToDto(product)
+        return product.entityToDto()
     }
 
     /**
@@ -175,17 +156,21 @@ class ProductService(
     /**
      * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
      */
-    fun updateProduct(productDTO: ProductDTO, inputSteam: InputStream) {
+    fun updateProduct(productDTO: ProductDTO, file : MultipartFile) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
 
         val product = productRepository.findById(productDTO.productId!!.toLong()).get()
-        val thumbnail = getThumbnailUUID(product)
-        val url = imageService.uploadImage(inputSteam)
-        productDTO.thumbnail = url
-        imageService.deleteImage(thumbnail)
-        product.updateProduct(productDTO)
-        productRepository.save(product)
+
+        if(!file.originalFilename.equals("")){
+            val thumbnail = getThumbnailUUID(product)
+            val url = imageService.uploadImage(file.inputStream)
+            productDTO.thumbnail = url
+            imageService.deleteImage(thumbnail)
+            product.updateProduct(productDTO)
+            productRepository.save(product)
+        }
+
     }
 
     fun deleteProduct(productId: String) {
@@ -210,4 +195,9 @@ class ProductService(
     fun deleteProductImage(productImageId : Long){
         productImageRepository.deleteById(productImageId)
     }
+
+    fun getThumbnail(productId : String) : String{
+        return productRepository.findByProductId(productId.toLong()).thumbnail
+    }
+
 }

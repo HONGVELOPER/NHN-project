@@ -17,9 +17,8 @@ class ProductImage (
     @Column(nullable = false)
     var image:String,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product: Product
-
 
 ):BaseEntity() {}

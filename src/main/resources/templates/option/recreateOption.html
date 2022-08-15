@@ -12,7 +12,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <h1 class="mt-4">Create Option</h1>
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <form th:action="@{/admin/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="post" th:object="${optionList}">
+                    <form th:action="@{/admin/options/products/{productId}(productId = ${optionList.productDTO?.productId})}" th:method="post" th:object="${optionList}" onsubmit="return check()">
                         <div class="col-md-6">
                             <div th:if="*{productDTO.thumbnail !=''}">
                                 <img class="card-img-top" th:src="*{productDTO.thumbnail}" alt="..." />
@@ -31,38 +31,83 @@
                         </div>
                         <div >
                             제품 간략 설명
-                            <input type="text" class="form-control"  th:field="*{productDTO.briefDescription}" readonly/>
+                            <input type="text" class="form-control" th:field="*{productDTO.briefDescription}" readonly/>
                             <br>
                         </div>
                         <div id="box1" class="1">
                             <input type="hidden" value="1">
-                            <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
+                            <input id="option1" type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
                             <input type="button" value="추가" onclick="add_textbox(1)">
                         </div>
                         <div id="box2" class="2">
                             <input type="hidden" value="2">
-                            <input type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
+                            <input id="option2" type="text" class="form-control" th:field="*{option2}" placeholder="Enter Option 2">
                             <input type="button" value="추가" onclick="add_textbox(2)">
                         </div>
                         <div id="box3" class="3">
                             <input type="hidden" value="3">
-                            <input type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
+                            <input id="option3" type="text" class="form-control" th:field="*{option3}" placeholder="Enter Option 3">
                             <input type="button" value="추가" onclick="add_textbox(3)">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     <script th:inline="javascript">
+                        var countArr = [0,0,0]
+
                         const add_textbox = (num) => {
+                            if (countArr[num-1] < 4)
+                                countArr[num-1]++
+                            else{
+                                alert("옵션의 개수는 종류당 4개가 최대입니다.")
+                                return;
+                            }
                             const box = document.getElementById("box"+num);
                             const newP = document.createElement('p');
                             newP.innerHTML = "옵션명 <input type='text' class='form-control-sm' placeholder='option'> " +
                                 "<input type='button' value='삭제' class='btn btn-secondary' onclick='remove(this)'>";
                             newP.firstElementChild.name = "option" + num + "List";
                             box.appendChild(newP);
+                            // console.log(countArr)
                         }
                         const remove = (obj) => {
                             num = obj.parentNode.parentNode.firstElementChild.value
+                            countArr[num-1]--
                             document.getElementById('box'+num).removeChild(obj.parentNode);
+                            // console.log(countArr)
+                        }
+
+                        let listArr = ["option1List","option2List","option3List"]
+                        let optionArr = ["option1", "option2", "option3"]
+
+                        function check() {
+                            //console.log(document.getElementById(optionArr[0]).value.length)
+                            for(let j = 0; j < 3; j++){
+                                if (document.getElementById(optionArr[j]).value != "" && countArr[j] <= 0){
+                                    alert("옵션 타입만 입력되었습니다. 옵션 상세를 입력해주세요")
+                                    return false
+                                }
+                                for(let i = 0 ; i < countArr[j]; i++){
+                                    if (document.getElementById(optionArr[j]).value == ""){
+                                        alert("옵션 타입을 입력해주세요")
+                                        return false
+                                    }
+                                    if (document.getElementById(optionArr[j]).value.length >= 30){
+                                        alert("옵션 타입과 상세는 30글자 이상 금지")
+                                        return false
+                                    }
+
+                                    let list = document.getElementsByName(listArr[j])
+                                    if (list[i].value == ""){
+                                        alert("빈 옵션은 삭제 바랍니다")
+                                        return false
+                                    }
+                                    if (list[i].value.length >= 30){
+                                        alert("옵션 타입과 상세는 30글자 이상 금지")
+                                        return false
+                                    }
+                                }
+                            }
+                            return true
                         }
                     </script>
                 </div>

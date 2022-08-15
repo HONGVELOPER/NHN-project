@@ -12,7 +12,7 @@ class Option (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var optionId : Long?=null,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id")
     var parentOption : Option? = null,
 
@@ -24,12 +24,12 @@ class Option (
     @Enumerated(EnumType.STRING)
     var status : Status? = Status.ACTIVE,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product : Product?=null
 
 ) : BaseEntity() {
-    fun toOptionDTO() : OptionDTO {
+    fun entityToDto() : OptionDTO {
         return OptionDTO(
             optionId = optionId,
             parentOption = parentOption,

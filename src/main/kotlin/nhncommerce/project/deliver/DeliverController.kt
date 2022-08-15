@@ -3,14 +3,12 @@ package nhncommerce.project.deliver
 import nhncommerce.project.deliver.domain.Deliver
 import nhncommerce.project.deliver.domain.DeliverDTO
 import nhncommerce.project.deliver.domain.DeliverListDTO
-import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
@@ -30,9 +28,9 @@ class DeliverController (
     }
 
     /*
-    * 배송지 수정 페이지 // deliver id 앞으로 경로 수정 하자
+    * 배송지 수정 페이지
     */
-    @GetMapping("/api/delivers/updateForm/{deliverId}")
+    @GetMapping("/api/delivers/{deliverId}/updateForm")
     fun updateDeliverForm(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView,
@@ -90,7 +88,7 @@ class DeliverController (
    /*
     * 배송지 수정
     * */
-    @PutMapping("/api/delivers/{deliverId}")
+    @PutMapping("/api/delivers/{deliverId}/update")
     fun updateDeliver(
         @PathVariable("deliverId") deliverId: Long,
         @ModelAttribute deliverDTO: DeliverDTO,
@@ -111,7 +109,7 @@ class DeliverController (
     /*
     * 배송지 삭제
     * */
-    @DeleteMapping("/api/delivers/{deliverId}")
+    @PutMapping("/api/delivers/{deliverId}/delete")
     fun deleteDeliverById(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView

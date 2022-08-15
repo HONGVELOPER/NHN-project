@@ -217,18 +217,4 @@ class UserController(
         return mav
     }
 
-
-//     권한 확인 위한 테스트 api
-    @GetMapping("/api/test")
-    fun test(): String {
-        println("api test 진입")
-        return "redirect:/user"
-    }
-
-    @GetMapping("/admin/test")
-    fun adminTest(): String {
-        println("admin test 진입")
-        return "redirect:/user"
-    }
-
 }

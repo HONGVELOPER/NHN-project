@@ -61,7 +61,7 @@ data class ProductDTO(
         return true
     }
 
-    fun toEntity() : Product {
+    fun dtoToEntity() : Product {
         return Product(
             productId = productId,
             status = status,

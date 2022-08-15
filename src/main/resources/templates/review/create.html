@@ -45,7 +45,7 @@
         <body>
         <div class="container">
             <p>리뷰 작성</p>
-            <form th:action="@{/api/reviews}" enctype="multipart/form-data" method="post" th:object="${reviewDTO}" id="myForm" >
+            <form th:action="@{/api/reviews/orders/{orderId}(orderId = ${orderId})}" enctype="multipart/form-data" method="post" th:object="${reviewDTO}" id="myForm" >
                 <div class="col-md-6">
                     <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()"><br>
                     <img src="" height="200" alt="Image preview">

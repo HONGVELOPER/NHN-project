@@ -10,7 +10,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate.enable_lazy_load_no_trans: true
@@ -31,10 +31,8 @@ spring:
   sql:
     init:
       schema-locations: classpath:sql/category-insert.sql
-      mode: never
-  batch:
-    jdbc:
-      initialize-schema: always
+      mode: always
+
 server:
   servlet:
     session:
@@ -43,5 +41,3 @@ server:
 logging:
   level:
     org.hibernate.SQL: debug
-
-

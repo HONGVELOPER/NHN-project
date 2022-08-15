@@ -28,4 +28,11 @@ data class CouponDTO (
     @field:NotNull(message = "할인율을 입력하세요.")
     var discountRate: Int=0,
 
-)
+){
+
+    fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
+        val coupon = Coupon(null,user,couponDTO.status,couponDTO.couponName,couponDTO.discountRate,expired)
+        return coupon
+    }
+
+}

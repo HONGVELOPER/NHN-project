@@ -30,11 +30,31 @@ class Deliver(
     @Column(length = 13)
     var phone: String? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User
 
 ): BaseEntity() {
+
+    fun entityToDeliverDto(): DeliverDTO {
+        return DeliverDTO(
+            addressName = addressName,
+            name = name,
+            address = address,
+            phone = phone ?: "",
+        )
+    }
+
+    fun entityToDeliverListDto(): DeliverListDTO {
+        return DeliverListDTO(
+            deliverId = deliverId,
+            addressName = addressName,
+            address = address,
+            name = name,
+            phone = phone ?: "",
+            createdAt = createdAt,
+        )
+    }
 
     fun update(deliverDTO: DeliverDTO) {
         name = deliverDTO.name

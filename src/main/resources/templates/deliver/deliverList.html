@@ -23,11 +23,10 @@
                 <td>[[${deliver.phone}]]</td>
                 <td>[[${#temporals.format(deliver.createdAt,'yyyy/MM/dd')}]]</td>
                 <td>
-<!--                    href 로 링크 하면 delete 안먹음-->
-                    <form th:method="get" th:action="'/api/delivers/updateForm/'+${deliver.deliverId}" style="display: inline">
+                    <form th:method="get" th:action="@{/api/delivers/{deliverId}/updateForm(deliverId = ${deliver.deliverId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
-                    <form th:method="delete" th:action="'/api/delivers/'+${deliver.deliverId}" style="display: inline">
+                    <form th:method="put" th:action="@{/api/delivers/{deliverId}/delete(deliverId = ${deliver.deliverId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
                     </form>
                 </td>

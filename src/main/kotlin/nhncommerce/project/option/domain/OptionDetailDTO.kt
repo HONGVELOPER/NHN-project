@@ -15,7 +15,7 @@ data class OptionDetailDTO (
     var option2 : Option? = null,
     var option3 : Option? = null,
 ) {
-    fun toEntity() : OptionDetail {
+    fun dtoToEntity() : OptionDetail {
         return OptionDetail(
             optionDetailId = optionDetailId,
             status = status,

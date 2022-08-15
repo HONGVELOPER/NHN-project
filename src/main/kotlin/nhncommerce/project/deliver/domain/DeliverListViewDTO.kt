@@ -1,6 +1,6 @@
 package nhncommerce.project.deliver.domain
 
 data class DeliverListViewDTO (
-    var deliverId : Long? = null,
-    var fullAddress : String? = null
+    val deliverId : Long? = null,
+    val fullAddress : String? = null
 )

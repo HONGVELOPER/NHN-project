@@ -39,4 +39,10 @@ class Coupon(
         this.expired = expired
     }
 
+    fun entityToDto(coupon : Coupon): CouponListDTO{
+        val couponListDTO = CouponListDTO(null,coupon.user.email,coupon.status,coupon.couponName,
+            coupon.discountRate,coupon.expired,coupon.createdAt, coupon.updatedAt)
+        return couponListDTO
+    }
+
 }

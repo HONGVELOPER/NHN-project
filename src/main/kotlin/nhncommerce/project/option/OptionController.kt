@@ -14,7 +14,6 @@ class OptionController (
     private val optionService: OptionService,
     private val productService: ProductService)
 {
-
     /**
      * 옵션 수정 페이지
      */
@@ -34,7 +33,7 @@ class OptionController (
         optionService.deleteOptions(productId)
 
         val optionListDTO = OptionListDTO()
-        optionListDTO.productDTO = productService.getProduct(productId).toProductDTO()
+        optionListDTO.productDTO = productService.getProduct(productId).entityToDto()
 
         model.addAttribute("optionList", optionListDTO)
         return "option/recreateOption"

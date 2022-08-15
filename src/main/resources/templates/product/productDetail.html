@@ -71,6 +71,7 @@
                         <p class="lead" th:text="${productDTO.detailDescription}"></p>
                         <h5 class="fw-bolder">옵션</h5>
                         <form th:action="@{/api/orderProducts}" th:method="post">
+                            <input type="hidden" th:field="${productDTO.productId}">
                             <select name="optionDetailId" class="form-select">
                                 <div th:each="optionDetail : ${optionDetailList}">
                                     <div th:if="${optionDetail.stock > 0}">

@@ -30,7 +30,7 @@ class SchedulerConfiguration(
                 couponCount.progress = false
                 log.info("==== 이벤트 종료 ====")
             } else {
-                println("^^^^^")
+                println("~~~ 이벤트 진행중 ~~~")
                 redisService.publish(EventCoupon.COUPON)
                 redisService.getOrder(EventCoupon.COUPON)
             }

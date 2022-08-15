@@ -15,6 +15,7 @@ data class OrderDTO(
     val coupon: Coupon?=null,
     val optionDetail: OptionDetail,
     val deliver: Deliver
+
 ){
     fun dtoToEntity(): Order{
         return Order(

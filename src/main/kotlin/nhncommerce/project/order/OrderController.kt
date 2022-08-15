@@ -4,11 +4,11 @@ import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
 import nhncommerce.project.option.OptionService
-import nhncommerce.project.order.domain.OrderDTO
 import nhncommerce.project.order.domain.OrderRequestDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.user.UserService
 import nhncommerce.project.util.alert.AlertService
+import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletResponse
 
 @Controller
@@ -32,14 +33,17 @@ class OrderController(
 
 
 ) {
-    /**
-     * 상품 주문 페이지
-     */
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
-        @RequestParam("optionDetailId") optionDetailId: Long,
-        model: Model
-    ): String {
+        @RequestParam("optionDetailId") optionDetailId: Long? = null,
+        @RequestParam("productId") productId: String,
+        mav: ModelAndView
+    ): ModelAndView {
+        if (optionDetailId == null) {
+            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
+            mav.viewName = "user/alert"
+            return mav
+        }
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         couponService.updateCouponStatus()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
@@ -47,15 +51,24 @@ class OrderController(
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val userDTO = userService.findUserById(loginInfo.userId)
-        val orderRequestDTO = OrderRequestDTO(status = Status.ACTIVE, 0, userDTO.phone, userId = loginInfo.userId, null, optionDetailId, null)
+        val orderRequestDTO = OrderRequestDTO(
+            status = Status.ACTIVE,
+            0,
+            userDTO.phone,
+            userId = loginInfo.userId,
+            null,
+            optionDetailId,
+            null
+        )
 
 
-        model.addAttribute("userDTO", userDTO)
-        model.addAttribute("optionDetailDTO", optionDetailDTO)
-        model.addAttribute("deliverListViewDTO", deliverListviewDTO)
-        model.addAttribute("couponListViewDTO", couponListViewDTO)
-        model.addAttribute("orderRequestDTO", orderRequestDTO)
-        return "order/orderProduct"
+        mav.addObject("userDTO", userDTO)
+        mav.addObject("optionDetailDTO", optionDetailDTO)
+        mav.addObject("deliverListViewDTO", deliverListviewDTO)
+        mav.addObject("couponListViewDTO", couponListViewDTO)
+        mav.addObject("orderRequestDTO", orderRequestDTO)
+        mav.viewName = "order/orderProduct"
+        return mav
     }
 
     /**

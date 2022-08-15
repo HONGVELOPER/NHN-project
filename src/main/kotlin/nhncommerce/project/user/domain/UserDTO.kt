@@ -9,34 +9,33 @@ import javax.validation.constraints.Size
 data class UserDTO (
 
     @field:NotBlank(message = "이메일을 입력해주세요.")
-    var email: String = "",
+    val email: String = "",
 
     @field:NotBlank(message = "성별을 선택해주세요.")
-    var gender: String = "",
+    val gender: String = "",
 
     @field:Size(max = 30, message = "이름을 30자 이내로 입력하세요")
     @field:NotBlank(message = "이름을 입력해주세요.")
-    var name: String = "",
+    val name: String = "",
 
     @field:NotBlank(message = "비밀번호를 입력해주세요.")
     @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
-    var password: String = "",
+    val password: String = "",
 
     @field:NotBlank(message = "비밀번호를 한번 더 입력해주세요.")
     @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
-    var passwordVerify: String = "",
+    val passwordVerify: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
-    var phone: String = "",
+    val phone: String = "",
 
-    var provider: String = "",
+    val provider: String = "",
 ) {
     fun toEntity(): User {
-        val genderStatus: Gender
-        if (gender == "MALE") {
-            genderStatus = Gender.MALE
+        val genderStatus: Gender = if (gender == "MALE") {
+            Gender.MALE
         } else {
-            genderStatus = Gender.FEMALE
+            Gender.FEMALE
         }
         return User(
             email = email,
@@ -47,20 +46,5 @@ data class UserDTO (
             role = ROLE.ROLE_USER,
             status = Status.ACTIVE,
         )
-    }
-
-    companion object {
-        fun fromEntity(user: User): UserDTO {
-            return user.run {
-                UserDTO(
-                    email = email,
-                    gender = gender.name,
-                    name = name,
-                    password = password?: "", // oauth 에서는 password가 없고 form login 에서는 provider 가 없음.
-                    phone = phone,
-                    provider = provider?: "",
-                )
-            }
-        }
     }
 }

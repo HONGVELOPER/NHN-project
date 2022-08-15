@@ -23,6 +23,10 @@ class Order (
     @Column(nullable = false)
     val phone: String,
 
+
+    @Column(nullable = false)
+    var reviewStatus: Boolean = false,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     val user: User,

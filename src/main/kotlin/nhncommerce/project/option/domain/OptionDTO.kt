@@ -10,7 +10,7 @@ data class OptionDTO (
     var status : Status? = Status.ACTIVE,
     var product : Product?=null
 ) {
-    fun toEntity() : Option{
+    fun dtoToEntity() : Option{
         return Option(
             optionId = optionId,
             name = name,
