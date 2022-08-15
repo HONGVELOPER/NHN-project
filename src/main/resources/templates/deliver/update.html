@@ -13,18 +13,22 @@
                 <div>
                     <label for="addressName">배송지 이름</label>
                     <input type="text" id="addressName" th:field="*{addressName}" class="form-control" placeholder="배송지 이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('addressName')}" th:errors="*{addressName}" class="jb-red"></p>
                 </div>
                 <div>
                     <label for="name">받는 사람</label>
                     <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="jb-red"></p>
                 </div>
                 <div>
                     <label for="phone">받는 사람 전화번호</label>
                     <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="전화번호를 입력하세요.">
+                    <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
                 </div>
                 <div>
                     <label for="address">주소</label>
                     <input type="text" id="address" th:field="*{address}" class="form-control" placeholder="이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="jb-red"></p>
                 </div>
                 <div class="row">
                     <div class="col">

@@ -57,7 +57,7 @@ class OrderController(
         val orderRequestDTO = OrderRequestDTO(
             status = Status.ACTIVE,
             0,
-            userDTO.phone,
+            userDTO.phone ?: "",
             userId = loginInfo.userId,
             null,
             optionDetailId,
