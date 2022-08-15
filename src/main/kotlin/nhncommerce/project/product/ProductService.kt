@@ -162,15 +162,16 @@ class ProductService(
 
         val product = productRepository.findById(productDTO.productId!!.toLong()).get()
 
-        if(!file.originalFilename.equals("")){
+        if(!file.originalFilename.equals("")){ //새이미지 들어오면
             val thumbnail = getThumbnailUUID(product)
             val url = imageService.uploadImage(file.inputStream)
             productDTO.thumbnail = url
             imageService.deleteImage(thumbnail)
-            product.updateProduct(productDTO)
-            productRepository.save(product)
+        }else{ //기존 이미지 유지
+            productDTO.thumbnail = product.thumbnail
         }
-
+        product.updateProduct(productDTO)
+        productRepository.save(product)
     }
 
     fun deleteProduct(productId: String) {

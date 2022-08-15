@@ -8,17 +8,46 @@
                 <h1 class="mt-4">OptionDetail List</h1>
                 <div class="row gx-4 gx-lg-5 align-items-center">
 
-                    <form th:object="${optionDetailList}" th:method="put" th:action="@{/admin/options/products}">
+                    <form th:object="${optionDetailList}" th:method="put" th:action="@{/admin/options/products}" onsubmit="return check()">
                         <div class="form-group" th:each="optionDetail : ${optionDetailList}">
                             <p>
                                 <input type="hidden" th:value="${optionDetail.optionDetailId}" name="detailIdList">
                                 옵션 <input type="text" class="form-control-sm" th:value="${optionDetail.name}" readonly>
-                                재고 <input type="text" class="form-control-sm" th:name="detailStockList" th:value="${optionDetail.stock}">
-                                추가금액 <input type="text" class="form-control-sm" th:name="detailChargeList" th:value="${optionDetail.extraCharge}">
+                                재고 <input id="stock" type="number" class="form-control-sm" th:name="detailStockList" th:value="${optionDetail.stock}">
+                                추가금액 <input id="charge" type="number" class="form-control-sm" th:name="detailChargeList" th:value="${optionDetail.extraCharge}">
                             </p>
                         </div>
                         <button class="btn btn-primary" type="submit">Submit</button>
                     </form>
+
+                    <script>
+                        function check(){
+                            if (document.getElementById("charge").value == "") {
+                                alert("추가금액을 입력해주세요. (기본값 0)")
+                                return false
+                            }
+                            if (document.getElementById("stock").value == "") {
+                                alert("재고를 입력해주세요. (재고가 없는경우 0 입력)")
+                                return false
+                            }
+                            if (document.getElementById("charge").value < 0){
+                                alert("추가금액은 음수가 될 수 없습니다.")
+                                return false
+                            }
+                            if (document.getElementById("stock").value < 0){
+                                alert("재고는 음수가 될 수 없습니다.")
+                                return false
+                            }
+                            if (document.getElementById("charge").value > 2147483647){
+                                alert("추가금액이 매우 큽니다")
+                                return false
+                            }
+                            if (document.getElementById("stock").value > 2147483647){
+                                alert("재고량이 매우 큽니다")
+                                return false
+                            }
+                        }
+                    </script>
                 </div>
             </div>
         </section>

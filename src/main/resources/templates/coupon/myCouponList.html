@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
 
     <th:block th:fragment="content">
         <h1 class="mt-4">쿠폰 목록</h1>
@@ -14,7 +14,6 @@
                 <th scope="col">쿠폰 상태</th>
                 <th scope="col">유효 기간</th>
                 <th scope="col">발행 날짜</th>
-                <th scope="col">삭제</th>
             </tr>
             </thead>
             <tbody>
@@ -26,11 +25,6 @@
                 <td th:if="${coupon.status.toString().equals('IN_ACTIVE')}">사용 불가능</td>
                 <td>[[${#temporals.format(coupon.expired,'yyyy/MM/dd')}]]</td>
                 <td>[[${#temporals.format(coupon.createdAt,'yyyy/MM/dd')}]]</td>
-                <td>
-                    <form th:method="delete" th:action="'/coupons/'+${coupon.couponId}" style="display: inline">
-                        <button th:if="${coupon.status.toString().equals('IN_ACTIVE')}" class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
-                    </form>
-                </td>
             </tr>
             </tbody>
 

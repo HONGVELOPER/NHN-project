@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
+import javax.validation.Valid
 
 @Controller
 class DeliverController (
@@ -48,7 +49,7 @@ class DeliverController (
     * */
     @PostMapping("/api/delivers")
     fun createDeliver(
-        @ModelAttribute deliverDTO: DeliverDTO,
+        @Valid @ModelAttribute deliverDTO: DeliverDTO,
         bindingResult: BindingResult,
         mav: ModelAndView
     ): ModelAndView {
@@ -91,7 +92,7 @@ class DeliverController (
     @PutMapping("/api/delivers/{deliverId}/update")
     fun updateDeliver(
         @PathVariable("deliverId") deliverId: Long,
-        @ModelAttribute deliverDTO: DeliverDTO,
+        @Valid @ModelAttribute deliverDTO: DeliverDTO,
         bindingResult: BindingResult,
         mav: ModelAndView
     ): ModelAndView {
