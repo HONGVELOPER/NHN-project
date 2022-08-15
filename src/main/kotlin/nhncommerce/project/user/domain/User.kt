@@ -32,8 +32,8 @@ class User (
     @Column() // oauth 로그인은 비밀번호가 없음 null 허용
     var password: String? = null,
 
-    @Column(nullable = false, length = 13)
-    var phone: String,
+    @Column(length = 13)
+    var phone: String? = null,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -71,9 +71,9 @@ class User (
             email = email,
             gender = gender.name,
             name = name,
-            password = password ?: "",
+            password = password,
             phone = phone,
-            provider = provider ?: "",
+            provider = provider,
         )
     }
 

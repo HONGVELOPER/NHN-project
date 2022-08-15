@@ -14,22 +14,23 @@ data class UserDTO (
     @field:NotBlank(message = "성별을 선택해주세요.")
     val gender: String = "",
 
-    @field:Size(max = 30, message = "이름을 30자 이내로 입력하세요")
+    @field:Size(max = 20, message = "이름을 20자 이내로 입력해주세요")
     @field:NotBlank(message = "이름을 입력해주세요.")
     val name: String = "",
 
     @field:NotBlank(message = "비밀번호를 입력해주세요.")
-    @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
-    val password: String = "",
+    @field:Size(min = 6, max = 20, message = "비밀번호를 6자 이상 20자 이내로 입력해주세요")
+    val password: String? = null,
 
     @field:NotBlank(message = "비밀번호를 한번 더 입력해주세요.")
-    @field:Size(max = 30, message = "비밀번호를 30자 이내로 입력하세요")
+    @field:Size(min = 6, max = 20, message = "비밀번호를 6자 이상 20자 이내로 입력해주세요")
     val passwordVerify: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
-    val phone: String = "",
+    @field:Size(max = 13, message = "전화번호를 13자 이내로 입력해주세요")
+    val phone: String? = null,
 
-    val provider: String = "",
+    val provider: String? = null,
 ) {
     fun toEntity(): User {
         val genderStatus: Gender = if (gender == "MALE") {

@@ -18,8 +18,8 @@ class Oauth2LoginUserService(
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)
         val provider = userRequest.clientRegistration.registrationId // google
-        val providerId = oAuth2User.attributes["sub"] as String
-        val username = oAuth2User.attributes["name"] as  String
+        val oauthId = oAuth2User.attributes["sub"] as String
+        val username = oAuth2User.attributes["name"] as String
         val email = oAuth2User.attributes["email"] as String
         val role = ROLE.ROLE_USER
 
@@ -30,10 +30,9 @@ class Oauth2LoginUserService(
                     name = username,
                     email = email,
                     role = role,
-                    oauthId = providerId,
+                    oauthId = oauthId,
                     provider = provider,
                     gender = Gender.MALE,
-                    phone = "",
                     status = Status.ACTIVE
                 )
             )
