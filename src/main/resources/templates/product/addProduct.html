@@ -33,12 +33,12 @@
 
                         <div th:if="${session.price != null}">
                             제품 가격
-                            <input type="number" class="form-control"  th:field="*{price}" /><br>
+                            <input id="price1" type="number" class="form-control"  th:field="*{price}" /><br>
                             <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
                         </div>
                         <div th:if="${session.price == null}">
                             제품 가격<br>
-                            <input type="number" class="form-control"  th:field="*{price}"><br>
+                            <input id="price2" type="number" class="form-control"  th:field="*{price}"><br>
                         </div>
 
                         <div th:if="${session.briefDescription != null}">
@@ -124,8 +124,23 @@
 
                         let listArr = ["option1List","option2List","option3List"]
                         let optionArr = ["option1", "option2", "option3"]
+                        let priceArr = ["price1", "price2"]
 
                         function check() {
+                            for(let i = 0; i < 2; i++){
+                                if (document.getElementById(priceArr[i]).value == ""){
+                                    alert("금액을 입력해주세요")
+                                    return false
+                                }
+                                if (document.getElementById(priceArr[i]).value < 0){
+                                    alert("금액은 음수가 될 수 없습니다.")
+                                    return false
+                                }
+                                if (document.getElementById(priceArr[i]).value > 2147483647){
+                                    alert("금액이 매우 큽니다.")
+                                    return false
+                                }
+                            }
                             for(let j = 0; j < 3; j++){
                                 if (document.getElementById(optionArr[j]).value != "" && countArr[j] <= 0){
                                     alert("옵션 타입만 입력되었습니다. 옵션 상세를 입력해주세요")
