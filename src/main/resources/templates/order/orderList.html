@@ -55,6 +55,12 @@
                         </button>
                     </form>
 
+                    <div th:if="${order.reviewStatus == false}">
+                        <form th:method="get" th:action="'/api/reviews/orders/'+${order.orderId} + '/createForm'"
+                              style="display: inline">
+                            <button class="btn btn-outline-dark mt-auto" type="submit">리뷰 작성</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -64,7 +70,8 @@
             <li class="page-item" th:if="${userOrders.prev}">
                 <a class="page-link" href="#" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${userOrders.page == page? 'active':''}" th:each="page : ${userOrders.pageList}">
+            <li th:class="'page-item' + ${userOrders.page == page? 'active':''}"
+                th:each="page : ${userOrders.pageList}">
                 <a class="page-link" th:href="@{/api/orders(page=${page})}">
                     [[${page}]]
                 </a>

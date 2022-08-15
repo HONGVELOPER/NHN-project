@@ -59,7 +59,8 @@ class Order (
             optionDetail = optionDetail,
             deliver = deliver,
             createdAt = createdAt,
-            updatedAt = updatedAt
+            updatedAt = updatedAt,
+            reviewStatus = reviewStatus
         )
     }
 }
