@@ -9,10 +9,19 @@
                     <h1>당첨 확인</h1>
                     <form th:action="@{/api/checkEvent}"  th:method="post" th:object="${eventCheckDTO}">
                         <div th:if="*{check == true}">
-                            이벤트 당첨! 쿠폰은 이벤트 종료후 발급.
+                            이벤트 당첨!
+                            <div th:if="${progress == 2}">
+                                이벤트 진행중, 이벤트가 종료되면 쿠폰 발급
+                            </div>
+                            <div th:if="${progress == 3}">
+                                이벤트 종료, 당첨자 쿠폰 발급 전
+                            </div>
+                            <div th:if="${progress == 4}">
+                                당첨자 쿠폰 발급 완료
+                            </div>
                         </div>
                         <div th:if="*{check == false}">
-                            <div th:if="*{!eventNow}">
+                            <div th:if="${progress != 2}">
                                 이벤트가 종료되었습니다.
                                 <div th:if="*{order == null}">
                                     이벤트에 참여하지않았습니다
@@ -21,7 +30,7 @@
                                     아쉽게도 당첨되지 못했습니다
                                 </div>
                             </div>
-                            <div th:if="*{eventNow}">
+                            <div th:if="${progress == 2}">
                                 이벤트 진행중
                                 <div th:if="*{order == null}">
                                     이벤트에 참여하지않았습니다

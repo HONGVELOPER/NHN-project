@@ -1,6 +1,10 @@
 package nhncommerce.project.redis
 
 import nhncommerce.project.coupon.CouponService
+import nhncommerce.project.redis.RedisService.Companion.EVENT_END
+import nhncommerce.project.redis.RedisService.Companion.EVENT_IN_PROGRESS
+import nhncommerce.project.redis.RedisService.Companion.PUBLISH_COUPON
+import nhncommerce.project.redis.RedisService.Companion.SETTING_OK
 import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.RedisService.Companion.couponCount
 import nhncommerce.project.redis.config.SchedulerConfiguration
@@ -28,14 +32,20 @@ class RedisController(
 ) {
     //쿠폰 발급 페이지
     @GetMapping("/api/eventCoupon")
-    fun reqCouponPage(model: Model) : String{
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        println("=============")
-        //기존에 지원한적이 있다면 리다이렉트
-        println(loginInfo.userId)
-        model.addAttribute("userId", loginInfo.userId)
+    fun reqCouponPage(mav : ModelAndView) : ModelAndView {
+        val userId = loginInfoService.getUserIdFromSession().userId
 
-        return "redis/redis"
+        // 참여 여부 확인
+        val checkParticipation = redisService.checkParticipation(EventCoupon.COUPON, userId)
+        if (checkParticipation){
+            mav.addObject("data", alertDTO("이미 참여하였습니다.", "/products"))
+            mav.viewName = "redis/alert"
+            return mav
+        }
+
+        mav.addObject("userId", userId)
+        mav.viewName = "redis/redis"
+        return mav
     }
     //쿠폰 발급 (큐에 넣기)
     @PostMapping("/api/eventCoupon")
@@ -56,8 +66,8 @@ class RedisController(
     fun eventCouponSet(@RequestParam eventCouponNum : Int, discount : Int, model: Model,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) expired : LocalDate) : String {
         redisService.setCouponCount(EventCoupon.COUPON, discount,eventCouponNum, expired)
-        model.addAttribute("setting", if (couponCount.eventCoupon == null) "No" else "Yes")
-        model.addAttribute("progress",  if (couponCount.progress!!) "Yes" else "No")
+        couponCount.progress = SETTING_OK
+        model.addAttribute("progress",  couponCount.progress)
         return "redis/manageEvent"
     }
 
@@ -72,10 +82,10 @@ class RedisController(
 
         redisService.refreshSet(EventCoupon.COUPON)
         postProcessor.postProcessAfterInitialization(schedulerConfiguration, "scheduledTasks")
-        couponCount.progress = true
-        mav.addObject("setting", if (couponCount.eventCoupon == null) "No" else "Yes")
-        mav.addObject("progress", if (couponCount.progress!!) "Yes" else "No")
-        mav.viewName = "redis/manageEvent"
+
+        couponCount.progress = EVENT_IN_PROGRESS
+        mav.addObject("progress", couponCount.progress)
+        mav.viewName = "redirect:/admin/eventManage"
         return mav
     }
 
@@ -83,10 +93,10 @@ class RedisController(
     @GetMapping("/admin/event/stop")
     fun eventStop(model : Model) : String {
         postProcessor.postProcessBeforeDestruction(schedulerConfiguration, "scheduledTasks")
-        couponCount.eventCoupon = null
-        couponCount.progress = false
-        model.addAttribute("setting", if (couponCount.eventCoupon == null) "No" else "Yes")
-        model.addAttribute("progress",if (couponCount.progress!!) "Yes" else "No")
+        //couponCount.eventCoupon = null
+        couponCount.progress = EVENT_END
+
+        model.addAttribute("progress", couponCount.progress)
         return "redis/manageEvent"
     }
 
@@ -99,8 +109,7 @@ class RedisController(
             mav.viewName = "redis/alert"
             return mav
         }
-        //주고나서 캐시 비우기 추가
-        //수정 필요
+
         for(user in winnerList!!){
             couponService.createEventCoupon(
                 userId = user.toString().toLong(),
@@ -109,7 +118,8 @@ class RedisController(
                 couponName = EventCoupon.COUPON.value
             )
         }
-        redisService.refreshSet(EventCoupon.COUPON)
+        //redisService.refreshSet(EventCoupon.COUPON)
+        couponCount.progress = PUBLISH_COUPON
         mav.viewName = "redirect:/admin/coupons"
         return mav
     }
@@ -117,8 +127,7 @@ class RedisController(
     //이벤트 시작 종료 버튼 페이지
     @GetMapping("/admin/eventManage")
     fun manageEvent(model : Model) : String {
-        model.addAttribute("setting", if (couponCount.eventCoupon == null) "No" else "Yes")
-        model.addAttribute("progress", if (couponCount.progress!!) "Yes" else "No")
+        model.addAttribute("progress", couponCount.progress)
         return "redis/manageEvent"
     }
 
@@ -127,9 +136,10 @@ class RedisController(
     fun checkEvent(model : Model) : String {
         val userId = loginInfoService.getUserIdFromSession().userId
         val check = redisService.getEventWinCheck(EventCoupon.COUPON, userId)
-        val eventNow = !redisService.validEnd()
+        //val eventNow = !redisService.validEnd()
         val order = redisService.getUserOrder(EventCoupon.COUPON, userId)
-        model.addAttribute("eventCheckDTO", EventCheckDTO(check, order, eventNow))
+        model.addAttribute("eventCheckDTO", EventCheckDTO(check, order))
+        model.addAttribute("progress", couponCount.progress)
 
         return "redis/checkEventResult"
     }

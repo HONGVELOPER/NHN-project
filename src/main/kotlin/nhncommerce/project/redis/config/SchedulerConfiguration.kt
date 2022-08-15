@@ -2,6 +2,7 @@ package nhncommerce.project.redis.config
 
 import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.RedisService
+import nhncommerce.project.redis.RedisService.Companion.EVENT_END
 import nhncommerce.project.redis.RedisService.Companion.couponCount
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
@@ -26,8 +27,7 @@ class SchedulerConfiguration(
             if (redisService.validEnd()){
                 log.info("==== 선착순 쿠폰 끝 ====")
                 postProcessor.postProcessBeforeDestruction(this,"scheduledTasks")
-                couponCount.eventCoupon = null
-                couponCount.progress = false
+                couponCount.progress = EVENT_END //이벤트 종료 쿠폰 발급전
                 log.info("==== 이벤트 종료 ====")
             } else {
                 println("~~~ 이벤트 진행중 ~~~")

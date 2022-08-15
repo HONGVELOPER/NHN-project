@@ -8,7 +8,7 @@ data class CouponCount (
     var discount : Int?=0,
     var limit : Int?,
     var expired : LocalDate?,
-    var progress : Boolean?
+    var progress : Int = 0
 ) {
     fun decrease(){
         this.limit = this.limit!! - 1
