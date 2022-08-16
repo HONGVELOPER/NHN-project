@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 data class FormLoginUserDetails(
     val user: User,
 ): UserDetails {
-    fun getId(): Long = user.userId!!
+    fun getId(): Long = user.userId
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
         arrayListOf(SimpleGrantedAuthority(user.role.name))

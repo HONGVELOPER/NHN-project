@@ -3,13 +3,10 @@ package nhncommerce.project.user
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.ProductService
-import nhncommerce.project.security.domain.FormLoginUserDetails
-import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import nhncommerce.project.user.domain.*
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -25,26 +22,17 @@ class UserController(
     val loginInfoService: LoginInfoService,
 ) {
 
-    /*
-    * 유저 메인 페이지
-    * */
     @GetMapping("/user")
     fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
         return "product/userProductList"
     }
 
-    /*
-    * 회원 가입 페이지
-    * */
     @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
     }
 
-    /*
-    * 마이 페이지
-    * */
     @GetMapping("/api/users/myPageForm")
     fun myPageForm(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
@@ -54,9 +42,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원 프로필 수정 페이지
-    * */
     @GetMapping("/api/users/updateProfileForm")
     fun updateProfileForm(
         mav: ModelAndView,
@@ -68,9 +53,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 관리자 - 회원 프로필 수정 페이지
-    * */
     @GetMapping("/admin/users/{userId}/updateProfileForm")
     fun updateProfileFormByAdmin(
         @PathVariable("userId") userId: Long,
@@ -82,9 +64,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원 비밀번호 수정 페이지
-    * */
     @GetMapping("/api/users/updatePasswordForm")
     fun updatePasswordForm(
         passwordDTO: PasswordDTO,
@@ -110,9 +89,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 관리자 - 회원 관리 페이지
-\    * */
     @GetMapping("/admin/users/manage")
     fun userManageForm(
         pageRequestDTO: PageRequestDTO,
@@ -124,9 +100,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원가입
-    * */
     @PostMapping("/users")
     fun createUserByForm(
         @Valid @ModelAttribute userDTO: UserDTO,
@@ -143,9 +116,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원 프로필 수정
-    * */
     @PutMapping("/api/users/profile")
     fun updateUserProfileById(
         @Valid @ModelAttribute profileDTO: ProfileDTO,
@@ -163,9 +133,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 관리자 - 회원 프로필 수정
-    * */
     @PutMapping("/admin/users/{userId}/profile")
     fun updateUserProfileByAdmin(
         @PathVariable("userId") userId: Long,
@@ -184,9 +151,6 @@ class UserController(
         return  mav
     }
 
-    /*
-    * 회원 비밀번호 수정
-    * */
     @PutMapping("/api/users/password")
     fun updateUserPasswordById(
         @Valid @ModelAttribute passwordDTO: PasswordDTO,
@@ -204,9 +168,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 회원 탈퇴
-    * */
     @DeleteMapping("/api/users")
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
@@ -216,9 +177,6 @@ class UserController(
         return mav
     }
 
-    /*
-    * 관리자 회원 삭제
-    * */
     @DeleteMapping("/admin/users/{userId}")
     fun deleteUserById(
         @PathVariable("userId") userId: Long,

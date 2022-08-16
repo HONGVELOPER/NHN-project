@@ -14,10 +14,13 @@ class ExceptionHandler {
 //        return "errorPage/errorPage"
 //    }
 
-    @ExceptionHandler(CustomException::class)
-    fun handleCustomException(ex: CustomException) {
-        println(ex.errorCode.message)
-        println(ex.errorCode.status)
+    @ExceptionHandler(AlertException::class)
+    fun handleAlertException(ex: AlertException): ModelAndView {
+        val mav: ModelAndView = ModelAndView()
+        val error = ex.errorMessage
+        mav.addObject("data", alertDTO(error.message, error.href))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     @ExceptionHandler(RedirectException::class)
