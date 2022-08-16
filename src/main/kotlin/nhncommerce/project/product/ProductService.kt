@@ -11,6 +11,7 @@ import nhncommerce.project.product.domain.*
 import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.io.InputStream
@@ -54,7 +55,7 @@ class ProductService(
         return objectList
     }
 
-
+    @Transactional
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream): Product {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
@@ -145,6 +146,7 @@ class ProductService(
     }
 
 
+    @Transactional
     fun updateProduct(productDTO: ProductDTO, file : MultipartFile) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
@@ -160,13 +162,12 @@ class ProductService(
             productDTO.thumbnail = product.thumbnail
         }
         product.updateProduct(productDTO)
-        productRepository.save(product)
     }
 
+    @Transactional
     fun deleteProduct(productId: String) {
         val product = productRepository.findById(productId.toLong())
         product.get().status = Status.IN_ACTIVE
-        productRepository.save(product.get())
     }
 
 
