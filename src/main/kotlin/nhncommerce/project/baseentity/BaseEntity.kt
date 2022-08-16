@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass
 abstract class BaseEntity {
 
     @CreationTimestamp
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    val createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
     var updatedAt: LocalDateTime = LocalDateTime.now()
