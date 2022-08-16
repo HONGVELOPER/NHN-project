@@ -36,14 +36,51 @@ class OrderController(
     /**
      * 상품 주문 페이지
      * */
+//    @PostMapping("/api/orderProducts")
+//    fun orderProductPage(
+//        @RequestParam("optionDetailId") optionDetailId: Long? = null,
+//        @RequestParam("productId") productId: String,
+//        mav: ModelAndView
+//    ): ModelAndView {
+//        if (optionDetailId == null) {
+//            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
+//            mav.viewName = "user/alert"
+//            return mav
+//        }
+//        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
+//        couponService.updateCouponStatus()
+//        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+//
+//        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
+//        val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
+//        val userDTO = userService.findUserById(loginInfo.userId)
+//        val orderRequestDTO = OrderRequestDTO(
+//            status = Status.ACTIVE,
+//            price = 0,
+//            phone = userDTO.phone?: "",
+//            userId = loginInfo.userId,
+//            couponId = null,
+//            optionDetailId = optionDetailId,
+//            deliverId = null
+//        )
+//
+//
+//        mav.addObject("userDTO", userDTO)
+//        mav.addObject("optionDetailDTO", optionDetailDTO)
+//        mav.addObject("deliverListViewDTO", deliverListviewDTO)
+//        mav.addObject("couponListViewDTO", couponListViewDTO)
+//        mav.addObject("orderRequestDTO", orderRequestDTO)
+//        mav.viewName = "order/orderProduct"
+//        return mav
+//    }
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
-        @RequestParam("optionDetailId") optionDetailId: Long? = null,
+        @RequestParam("optionDetailId") optionDetailId: Long = 0L,
         @RequestParam("productId") productId: String,
         mav: ModelAndView
     ): ModelAndView {
-        if (optionDetailId == null) {
-            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
+        if (optionDetailId == 0L) {
+            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/$productId"))
             mav.viewName = "user/alert"
             return mav
         }
@@ -56,12 +93,12 @@ class OrderController(
         val userDTO = userService.findUserById(loginInfo.userId)
         val orderRequestDTO = OrderRequestDTO(
             status = Status.ACTIVE,
-            0,
-            userDTO.phone?: "",
+            price = 0,
+            phone = userDTO.phone?: "",
             userId = loginInfo.userId,
-            null,
-            optionDetailId,
-            null
+            couponId = null,
+            optionDetailId = optionDetailId,
+            deliverId = null
         )
 
 
