@@ -16,11 +16,8 @@ import java.util.*
 @Service
 class ImageService {
 
-    @Value("\${image.storageUrl}")
-    private var storageUrl = ""
-
-    @Value("\${image.containerName}")
-    var containerName = ""
+    private var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
+    private var containerName = "kirin"
 
     var tokenId = ""
     var restTemplate = RestTemplate()
