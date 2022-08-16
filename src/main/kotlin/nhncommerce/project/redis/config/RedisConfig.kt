@@ -10,9 +10,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
 class RedisConfig {
+    //todo : lettuece 를 왜 사용했는지
     @Bean
     fun redisConnectionFactory() : RedisConnectionFactory {
-        return LettuceConnectionFactory("localhost", 6379)
+        return LettuceConnectionFactory("localhost", 6379) //t더do : yml로 관리하자
     }
 
     @Bean

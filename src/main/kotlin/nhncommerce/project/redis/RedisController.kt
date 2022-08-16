@@ -20,7 +20,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import java.time.LocalDate
-
+//todo :이름 변경
 @Controller
 class RedisController(
     val redisService : RedisService,

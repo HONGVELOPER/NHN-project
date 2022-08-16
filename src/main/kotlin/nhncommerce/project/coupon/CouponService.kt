@@ -26,6 +26,7 @@ class CouponService(
     val loginInfoService: LoginInfoService
 ) {
 
+    //todo : 세션을 서비스로 내려주는건 안좋다. 서비스는 비즈니스 로직만 들어가야한다.
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
         val user = session.getAttribute("user")
         val coupon = couponDTO.dtoToEntity(couponDTO, user as User,expired)
@@ -63,6 +64,9 @@ class CouponService(
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
 
+    //todo : 트랜잭션 염두
+    //todo : 삭제와 수정은 트랜잭션  염두
+    //연관된 트랜잭션들이 롤백이 안된다.
     fun removeCoupon(couponId : Long){
         couponRepository.deleteById(couponId)
     }
@@ -78,7 +82,7 @@ class CouponService(
         val list = mutableListOf<CouponListViewDTO>()
         val user = userRepository.findById(userId).get()
         val couponList = couponRepository.findByUser(user)
-        couponList.map {
+        couponList.map { //todo : 좀더 깔끔하게 할수있다.
             val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
             list.add(CouponListDTO)
         }
@@ -158,13 +162,16 @@ class CouponService(
 
     fun updateCouponStatus(){
         val loginUserId = loginInfoService.getUserIdFromSession().userId
-        val user = userRepository.findById(loginUserId).get() ?: null
+        val user = userRepository.findById(loginUserId).get() ?: null //todo : 보장해준다.
         val findCouponsByUser = couponRepository.findCouponsByUser(user!!,LocalDate.now())
         for (coupon in findCouponsByUser) {
             coupon.status=Status.IN_ACTIVE
             couponRepository.save(coupon)
         }
     }
+
+    //todo : alertDTO 따로 관리해보자
+    // exception 관리 따로 만들기 (궁금) , 메세지 프로퍼티 ,
 
 
 

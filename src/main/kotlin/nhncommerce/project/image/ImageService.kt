@@ -14,6 +14,8 @@ import java.util.*
 
 @Service
 class ImageService {
+    //todo : 불변값 val, 떠는 yml로 관리하자
+    //todo : private으로 관리
     var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
     var containerName = "kirin"
     var tokenId = ""
@@ -24,13 +26,14 @@ class ImageService {
     }
 
     private fun getUrl(containerName: String, objectName: String): String {
+        //todo : 문자열 탬플릿으로 변경
         return this.storageUrl + "/" + containerName + "/" + objectName
     }
 
     fun uploadObject(containerName: String, objectName: String, inputStream: InputStream?) : String{
         val url = getUrl(containerName, objectName)
         val requestCallback = RequestCallback { request ->
-            request.headers.add("X-Auth-Token", tokenId)
+            request.headers.add("X-Auth-Token", tokenId) //todo : static 하게 사용하는게 좋다.
             IOUtils.copy(inputStream, request.body)
         }
         val requestFactory = SimpleClientHttpRequestFactory()
@@ -44,8 +47,8 @@ class ImageService {
         return url
     }
 
-    fun deleteObject(objectName: String?) {
-        val url = getUrl(containerName!!, objectName!!)
+    fun deleteObject(objectName: String?) { //todo : ? 를 없애면 관리하기가 좋다.
+        val url = getUrl(containerName!!, objectName!!) //todo : !!를 안쓰는게 좋다. 관리가 안된다. npe가 발생할수있다. //
         val headers = HttpHeaders()
         headers.add("X-Auth-Token", tokenId)
         val requestHttpEntity: HttpEntity<String> = HttpEntity<String>(null, headers)
@@ -53,6 +56,7 @@ class ImageService {
     }
 
     fun uploadImage(inputStream: InputStream?) : String{
+        //todo : catch에서 관리를 해줘야한다. 로그를 찍는등
         try {
             val uuid = UUID.randomUUID().toString()
             return uploadObject(containerName, uuid, inputStream)

@@ -9,10 +9,10 @@ import javax.persistence.*
 class Category (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var categoryId : Long? = null,
+    var categoryId : Long? = null, //todo : id는 null일 필요없다. var 사용을 줄이자, 수정같은건 메서드로수정을해야 찾기가 편하다.
 
     @Column(nullable = false)
-    var name : String? = null,
+    var name : String? = null, //todo : 수정해야함 nullable 과 null
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parent_id")

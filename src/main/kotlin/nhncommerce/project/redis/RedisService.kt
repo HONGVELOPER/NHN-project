@@ -16,6 +16,7 @@ class RedisService (
 
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
+    //todo 위치 조정
     companion object {
         var couponCount  = CouponCount(null, null, null, null, 0)
         const val INIT = 0

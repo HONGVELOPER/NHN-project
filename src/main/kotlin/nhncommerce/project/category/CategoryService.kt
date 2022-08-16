@@ -19,6 +19,7 @@ import javax.transaction.Transactional
 
 @Service
 @Transactional
+//todo 트랜잭션 필요할때만 사용한다.
 class CategoryService (
     private val categoryRepository: CategoryRepository,
     private val productRepository: ProductRepository
@@ -41,6 +42,7 @@ class CategoryService (
     }
 
     //부모 카테고리 찾기
+    //todo : if 문은 리턴한다.
     fun findParentCategory(categoryId : Long) : CategoryDTO? {
         val findCategory = categoryRepository.findById(categoryId).get()
         if (findCategory.parentCategory == null)
@@ -55,6 +57,7 @@ class CategoryService (
     }
 
     //product 생성 및 수정을 위한 category List
+    //todo : todo 문자열 과 map 수정
     fun getCategoryList():List<CategoryListDTO> {
         val list = mutableListOf<CategoryListDTO>()
         val categories = categoryRepository.findAllByParentCategoryIsNotNull()
@@ -66,6 +69,7 @@ class CategoryService (
     }
 
     //해당 카테고리의 productList 조회
+    //todo : 삭제
     fun findProducts(categoryId : Long) : List<Product> {
         //카테고리
         val category = categoryRepository.findById(categoryId).get()
@@ -85,10 +89,11 @@ class CategoryService (
         }
     }
 
+    //todo : 노란줄 수정하자
     //카테고리 조회 및 페이징 처리
     fun findProductList(categoryId : Long, pageRequestDTO: PageRequestDTO) : PageResultDTO<ProductDTO, Product>{
         val category = categoryRepository.findById(categoryId).get()
-        pageRequestDTO.size = 12
+        pageRequestDTO.size = 12 //todo : 메서드로 수정하자 왜 12인지 적는것도 중요
         val sort = categorySort(pageRequestDTO)
         val pageable = pageRequestDTO.getPageable(sort)
         var booleanBuilder = BooleanBuilder()

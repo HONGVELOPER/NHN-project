@@ -11,6 +11,7 @@ import javax.persistence.MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity {
 
+    //todo :val로 변경
     @CreationTimestamp
     var createdAt: LocalDateTime = LocalDateTime.now()
 

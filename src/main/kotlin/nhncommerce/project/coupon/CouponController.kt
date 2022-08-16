@@ -17,6 +17,7 @@ class CouponController(
     val couponService: CouponService
 ) {
 
+    //todo : 삭제 예정
     @GetMapping("/")
     fun main():String{
         return "redirect:/user"
@@ -87,6 +88,7 @@ class CouponController(
     /**
      * 쿠폰 목록 조회
      */
+    //todo : 이름이 이상하다.
     @GetMapping("/admin/coupons")
     fun list(pageRequestDTO: PageRequestDTO, model : Model) : String{
         model.addAttribute("coupons",couponService.getCouponList(pageRequestDTO))

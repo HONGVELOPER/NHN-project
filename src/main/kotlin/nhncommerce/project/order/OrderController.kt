@@ -36,12 +36,15 @@ class OrderController(
     /**
      * 상품 주문 페이지
      * */
+    //todo
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
-        @RequestParam("optionDetailId") optionDetailId: Long? = null,
+        @RequestParam("optionDetailId") optionDetailId: Long? = null, //todo : null을 없애면 if문을 없앨수있다.
         @RequestParam("productId") productId: String,
         mav: ModelAndView
     ): ModelAndView {
+        //todo : if 문을 없앨수있다.
+        //todo : 코틀린 스럽게 하자 href
         if (optionDetailId == null) {
             mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
             mav.viewName = "user/alert"
@@ -54,10 +57,10 @@ class OrderController(
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
         val userDTO = userService.findUserById(loginInfo.userId)
-        val orderRequestDTO = OrderRequestDTO(
+        val orderRequestDTO = OrderRequestDTO( //todo 다 명시하자
             status = Status.ACTIVE,
             0,
-            userDTO.phone?: "",
+            userDTO.phone?: "", //todo : phone.orEmpty로 줄일수있다.
             userId = loginInfo.userId,
             null,
             optionDetailId,

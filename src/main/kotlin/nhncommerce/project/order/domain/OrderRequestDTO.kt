@@ -7,6 +7,8 @@ import nhncommerce.project.user.domain.User
 import org.jetbrains.annotations.NotNull
 import javax.validation.constraints.NotBlank
 
+//todo : 진짜 수정이 필요한것만 var 로 하자
+// request는 var을 안쓴다.
 data class OrderRequestDTO(
     var status: Status=Status.ACTIVE,
     var price: Int,

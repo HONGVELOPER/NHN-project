@@ -58,10 +58,11 @@ class AuthService {
     fun generateToken() : String?{
         val authService = AuthService()
         val token = authService.requestToken()
-        println(token)
+        println(token) //todo : 로그를 해라, 더 디테일 하게
         return token
     }
 
+    //todo : 없애야함
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
