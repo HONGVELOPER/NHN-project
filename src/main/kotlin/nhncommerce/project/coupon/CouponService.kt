@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
 import java.util.function.Function
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
 
 @Service
 class CouponService(
@@ -26,39 +24,29 @@ class CouponService(
     val loginInfoService: LoginInfoService
 ) {
 
-    fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, session: HttpSession) {
-        val user = session.getAttribute("user")
-        val coupon = couponDTO.dtoToEntity(couponDTO, user as User,expired)
+    fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, email: String) {
+        val findUser = userRepository.findByEmail(email) ?: notFoundUser()
+        val coupon = couponDTO.dtoToEntity(findUser as User,expired)
         couponRepository.save(coupon)
     }
 
     //이벤트 쿠폰 발급
     fun createEventCoupon(userId : Long, discountRate : Int,  expired: LocalDate, couponName : String){
         val user = userRepository.findById(userId).get()
-        val coupon = Coupon(null, user, Status.ACTIVE, couponName, discountRate, expired)
+        val coupon = Coupon(0L,user, Status.ACTIVE, couponName, discountRate, expired)
         couponRepository.save(coupon)
     }
 
-    fun isPresentUser(email: String, response: HttpServletResponse, session: HttpSession) {
-        val findUser = userRepository.findByEmail(email) ?: notFoundUser(response,session)
-        session.setAttribute("email", email)
-        session.setAttribute("isPresentUser", "true")
-        session.setAttribute("user",findUser)
-        throw RedirectException(alertDTO("존재하는 회원 입니다.","/admin/publishCouponPage"))
-    }
-
-    private fun notFoundUser(response: HttpServletResponse, session: HttpSession) {
-        session.removeAttribute("isPresentUser")
-        session.removeAttribute("email")
+    private fun notFoundUser() {
         throw RedirectException(alertDTO("존재하지 않는 회원 입니다. 다시 입력해주세요.","/admin/publishCouponPage"))
     }
 
     fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{
         val pageable = requestDTO.getPageable(Sort.by("couponId").descending())
-        val booleanBuilder = getSearch(requestDTO)
+        val booleanBuilder = getCouponSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
-            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity!!.entityToDto(entity) }
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity?.entityToDto(entity) }
 
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
@@ -86,13 +74,13 @@ class CouponService(
     }
 
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
-        val coupon = couponRepository.findById(couponDTO.couponId!!).get()
+        val coupon = couponRepository.findById(couponDTO.couponId).get()
         coupon.updateCoupon(couponDTO,expired)
         couponRepository.save(coupon)
     }
 
 
-    fun getSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
+    fun getCouponSearch(pageRequestDTO: PageRequestDTO): BooleanBuilder {
 
         val type = pageRequestDTO.type
 
@@ -137,14 +125,14 @@ class CouponService(
         val booleanBuilder = getMyCouponListSearch(requestDTO)
         val result = couponRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Coupon, CouponListDTO> =
-            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity!!.entityToDto(entity) }
+            Function<Coupon, CouponListDTO> { entity: Coupon? -> entity?.entityToDto(entity) }
 
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
 
     fun getMyCouponListSearch(pageRequestDTO: PageRequestDTO) : BooleanBuilder{
         val loginUserId = loginInfoService.getUserIdFromSession().userId
-        val user = userRepository.findById(loginUserId).get() ?: null
+        val user = userRepository.findById(loginUserId).get()
 
         val booleanBuilder = BooleanBuilder()
 
@@ -158,8 +146,8 @@ class CouponService(
 
     fun updateCouponStatus(){
         val loginUserId = loginInfoService.getUserIdFromSession().userId
-        val user = userRepository.findById(loginUserId).get() ?: null
-        val findCouponsByUser = couponRepository.findCouponsByUser(user!!,LocalDate.now())
+        val user = userRepository.findById(loginUserId).get()
+        val findCouponsByUser = couponRepository.findCouponsByUser(user,LocalDate.now())
         for (coupon in findCouponsByUser) {
             coupon.status=Status.IN_ACTIVE
             couponRepository.save(coupon)
