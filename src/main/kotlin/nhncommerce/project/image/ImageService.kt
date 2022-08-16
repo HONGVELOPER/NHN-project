@@ -1,6 +1,7 @@
 package nhncommerce.project.image
 
 import org.apache.tomcat.util.http.fileupload.IOUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -14,8 +15,13 @@ import java.util.*
 
 @Service
 class ImageService {
-    var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    var containerName = "kirin"
+
+    @Value("\${image.storageUrl}")
+    private var storageUrl = ""
+
+    @Value("\${image.containerName}")
+    var containerName = ""
+
     var tokenId = ""
     var restTemplate = RestTemplate()
 
@@ -24,7 +30,7 @@ class ImageService {
     }
 
     private fun getUrl(containerName: String, objectName: String): String {
-        return this.storageUrl + "/" + containerName + "/" + objectName
+        return "${this.storageUrl}/$containerName/$objectName"
     }
 
     fun uploadObject(containerName: String, objectName: String, inputStream: InputStream?) : String{
@@ -44,8 +50,8 @@ class ImageService {
         return url
     }
 
-    fun deleteObject(objectName: String?) {
-        val url = getUrl(containerName!!, objectName!!)
+    fun deleteObject(objectName: String) {
+        val url = getUrl(containerName, objectName)
         val headers = HttpHeaders()
         headers.add("X-Auth-Token", tokenId)
         val requestHttpEntity: HttpEntity<String> = HttpEntity<String>(null, headers)
