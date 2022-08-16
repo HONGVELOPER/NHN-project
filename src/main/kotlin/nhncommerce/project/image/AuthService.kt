@@ -1,5 +1,6 @@
 package nhncommerce.project.image
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
@@ -9,10 +10,18 @@ import org.springframework.web.client.RestTemplate
 @Service
 class AuthService {
 
-    var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-    var tenantId = "507cc2a432bc43de8721f24810f3daa1"
-    var username = "soonbum-jeong@nhn-commerce.com" //NHN Cloud Account
-    var password = "1234"
+    @Value("\${image.authUrl}")
+    private var authUrl=""
+
+    @Value("\${image.tenantId}")
+    private var tenantId = ""
+
+    @Value("\${image.username}")
+    var username = ""
+
+    @Value("\${image.password}")
+    var password = ""
+
     var tokenRequest = TokenRequest()
     var restTemplate = RestTemplate()
 
@@ -55,18 +64,9 @@ class AuthService {
         return response.body
     }
 
-    fun generateToken() : String?{
+    fun generateToken(): String? {
         val authService = AuthService()
-        val token = authService.requestToken()
-        println(token)
-        return token
+        return authService.requestToken()
     }
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val authService = AuthService()
-            authService.generateToken()
-        }
-    }
 }
