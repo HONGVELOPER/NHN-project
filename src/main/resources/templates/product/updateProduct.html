@@ -39,25 +39,16 @@
                                 <img id = "thumbnail" src="" height="200" >
 
 
-                            <div th:if="${session.productName != null}">
                                 제품 이름
                                 <input type="text" class="form-control"  th:field="*{productName}"><br>
                                 <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.productName == null}">
-                                제품 이름<br>
-                                <input type="text" class="form-control" th:field="*{productName}"><br>
-                            </div>
 
-                            <div th:if="${session.price != null}">
+
+
                                 제품 가격
                                 <input type="number" class="form-control"  th:field="*{price}" /><br>
                                 <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.price == null}">
-                                제품 가격<br>
-                                <input type="number" class="form-control"  th:field="*{price}"><br>
-                            </div>
+
 
                             제품 상태
                             <div th:if="${#strings.equals(productDTO.status,'ACTIVE')}"}>
@@ -73,47 +64,28 @@
                                 </select>
                             </div> <br>
 
-                            <div th:if="${session.briefDescription != null}">
                                 제품 간략 설명
                                 <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
                                 <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.briefDescription == null}">
-                                제품 간략 설명<br>
-                                <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
-                            </div>
 
-                            <div th:if="${session.detailDescription != null}">
+
+
                                 제품 상세 설명
                                 <textarea type="text" class="form-control"  th:field="*{detailDescription}"/><br>
                                 <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
-                            </div>
-                            <div th:if="${session.detailDescription == null}">
-                                제품 상세 설명<br>
-                                <textarea  type="text" class="form-control"  th:field="*{detailDescription}"/><br>
-                            </div>
+
 
                             <div>
-                                <div th:if="${session.categoryList != null}">
-                                    카테고리 선택 <br>
-                                    <select name="categoryId" class="form-select">
-                                        <option selected th:text="${session.category.parentCategory.name}+' > '+${session.category.name}" th:value="${session.category.categoryId}"></option>
-                                        <option value="none">=== 기존 ===</option>
-                                        <div th:each="category : ${session.categoryList}">
-                                            <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                        </div>
-                                    </select>
-                                </div>
-                                <div th:if="${session.categoryList == null}">
-                                    카테고리 선택 <br>
-                                    <select name="categoryId" class="form-select">
-                                        <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
-                                        <option value="none">=== 기존 ===</option>
-                                        <div th:each="category : ${categoryListDTO}">
-                                            <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                        </div>
-                                    </select>
-                                </div>
+
+                                카테고리 선택 <br>
+                                <select name="categoryId" class="form-select">
+                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
+                                    <option value="none">=== 기존 ===</option>
+                                    <div th:each="category : ${categoryListDTO}">
+                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                    </div>
+                                </select>
+
                             </div>
                             <br>
 
