@@ -13,6 +13,7 @@ import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.util.*
 import java.util.function.Function
@@ -24,13 +25,14 @@ class CouponService(
     val loginInfoService: LoginInfoService
 ) {
 
+    @Transactional
     fun createCoupon(couponDTO: CouponDTO, expired: LocalDate, email: String) {
         val findUser = userRepository.findByEmail(email) ?: notFoundUser()
         val coupon = couponDTO.dtoToEntity(findUser as User,expired)
         couponRepository.save(coupon)
     }
 
-    //이벤트 쿠폰 발급
+    @Transactional
     fun createEventCoupon(userId : Long, discountRate : Int,  expired: LocalDate, couponName : String){
         val user = userRepository.findById(userId).get()
         val coupon = Coupon(0L,user, Status.ACTIVE, couponName, discountRate, expired)
@@ -70,10 +72,10 @@ class CouponService(
         return list.toList()
     }
 
+    @Transactional
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){
         val coupon = couponRepository.findById(couponDTO.couponId).get()
         coupon.updateCoupon(couponDTO,expired)
-        couponRepository.save(coupon)
     }
 
 
@@ -129,28 +131,25 @@ class CouponService(
 
     fun getMyCouponListSearch(pageRequestDTO: PageRequestDTO) : BooleanBuilder{
         val loginUserId = loginInfoService.getUserIdFromSession().userId
-        val user = userRepository.findById(loginUserId).get()
 
         val booleanBuilder = BooleanBuilder()
 
         val qCoupon = QCoupon.coupon
 
-        val expression = qCoupon.user.eq(user)
+        val expression = qCoupon.user.userId.eq(loginUserId)
         booleanBuilder.and(expression)
 
         return booleanBuilder
     }
 
+    @Transactional
     fun updateCouponStatus(){
         val loginUserId = loginInfoService.getUserIdFromSession().userId
         val user = userRepository.findById(loginUserId).get()
         val findCouponsByUser = couponRepository.findCouponsByUser(user,LocalDate.now())
         for (coupon in findCouponsByUser) {
             coupon.status=Status.IN_ACTIVE
-            couponRepository.save(coupon)
         }
     }
-
-
 
 }
