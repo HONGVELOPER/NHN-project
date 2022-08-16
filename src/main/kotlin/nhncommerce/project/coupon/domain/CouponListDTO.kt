@@ -8,7 +8,7 @@ import javax.validation.constraints.*
 
 class CouponListDTO (
 
-    val couponId : Long?,
+    val couponId : Long = 0L,
 
     val userId : String,
 
