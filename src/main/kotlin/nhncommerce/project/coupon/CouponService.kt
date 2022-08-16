@@ -58,10 +58,7 @@ class CouponService(
     fun getCoupon(couponId: Long): Optional<Coupon> {
         return couponRepository.findById(couponId)
     }
-
-    /**
-     * 주문하기Page 에서 사용자의 사용가능한 쿠폰들 가져오기
-     * */
+    
     fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
         val list = mutableListOf<CouponListViewDTO>()
         val user = userRepository.findById(userId).get()
