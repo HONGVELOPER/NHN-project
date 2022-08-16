@@ -26,7 +26,7 @@
                     <form th:method="get" th:action="@{/api/delivers/{deliverId}/updateForm(deliverId = ${deliver.deliverId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
-                    <form th:method="put" th:action="@{/api/delivers/{deliverId}/delete(deliverId = ${deliver.deliverId})}" style="display: inline">
+                    <form th:method="delete" th:action="@{/api/delivers/{deliverId}(deliverId = ${deliver.deliverId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
                     </form>
                 </td>

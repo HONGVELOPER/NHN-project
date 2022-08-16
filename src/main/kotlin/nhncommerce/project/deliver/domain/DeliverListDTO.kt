@@ -3,7 +3,7 @@ package nhncommerce.project.deliver.domain
 import java.time.LocalDateTime
 
 class DeliverListDTO(
-    val deliverId: Long?,
+    val deliverId: Long,
 
     val addressName: String,
 
@@ -11,7 +11,7 @@ class DeliverListDTO(
 
     val name: String,
 
-    val phone: String? = null,
+    val phone: String,
 
     val createdAt: LocalDateTime,
 

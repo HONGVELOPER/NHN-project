@@ -22,6 +22,11 @@ class UserController(
     val loginInfoService: LoginInfoService,
 ) {
 
+    @GetMapping("/")
+    fun userHome(): String {
+        return "redirect:/user"
+    }
+
     @GetMapping("/user")
     fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))

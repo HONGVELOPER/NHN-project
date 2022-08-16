@@ -12,23 +12,23 @@ class Deliver(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    val deliverId: Long? = null,
+    val deliverId: Long = 0L,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var status: Status,
 
     @Column(nullable = false)
-    var name: String, // 등록한 사람
+    var name: String, // 배송을 받는 사람
 
     @Column(nullable = false)
-    var addressName: String, // 자취방, 집, 회사
+    var addressName: String,
 
     @Column(nullable = false)
     var address: String,
 
-    @Column(length = 13)
-    var phone: String? = null,
+    @Column(length = 13, nullable = false)
+    var phone: String, // 배송을 받는 사람의 전화번호
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -41,7 +41,7 @@ class Deliver(
             addressName = addressName,
             name = name,
             address = address,
-            phone = phone ?: "",
+            phone = phone,
         )
     }
 
@@ -51,7 +51,7 @@ class Deliver(
             addressName = addressName,
             address = address,
             name = name,
-            phone = phone ?: "",
+            phone = phone,
             createdAt = createdAt,
         )
     }
@@ -61,5 +61,9 @@ class Deliver(
         addressName = deliverDTO.addressName
         address = deliverDTO.address
         phone = deliverDTO.phone
+    }
+
+    fun updateStatus(newStatus: Status) {
+         status = newStatus
     }
 }

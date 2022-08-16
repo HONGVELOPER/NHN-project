@@ -4,6 +4,9 @@ enum class ErrorMessage(
     val message: String,
     val href: String,
 ) {
+    // 권한
+    WRONG_ACCESS("잘못된 접근입니다.", "/user"),
+
     // 유저
     DUPLICATE_EMAIL("중복된 이메일입니다.", "/users/joinForm"),
     INCORRECT_PASSWORD("비밀번호가 일치하지 않습니다.", "/users/joinForm"),
@@ -12,5 +15,6 @@ enum class ErrorMessage(
     INCORRECT_NEW_PASSWORD("새로운 비밀번호가 일치하지 않습니다.", "/api/users/updatePasswordForm"),
 
 
+    // 배송지
 
 }
