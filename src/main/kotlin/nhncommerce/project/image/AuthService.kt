@@ -10,17 +10,11 @@ import org.springframework.web.client.RestTemplate
 @Service
 class AuthService {
 
-    @Value("\${image.authUrl}")
-    private var authUrl=""
 
-    @Value("\${image.tenantId}")
-    private var tenantId = ""
-
-    @Value("\${image.username}")
-    var username = ""
-
-    @Value("\${image.password}")
-    var password = ""
+    private var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+    private var tenantId = "507cc2a432bc43de8721f24810f3daa1"
+    private var username = "soonbum-jeong@nhn-commerce.com"
+    private var password = "1234"
 
     var tokenRequest = TokenRequest()
     var restTemplate = RestTemplate()
