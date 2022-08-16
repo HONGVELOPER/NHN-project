@@ -70,7 +70,7 @@ class CategoryServiceTest {
 
             for(j in 1..3){
                 val subCategory = Category(
-                    categoryId = null,
+                    categoryId = 0L,
                     name = "${subCategoryList[i-1][j-1]}",
                     parentCategory = category,
                     status = Status.ACTIVE
@@ -111,7 +111,7 @@ class CategoryServiceTest {
                     productRepository.save(product)
 
                     val optionDetail = OptionDetail(
-                        optionDetailId = null,
+                        optionDetailId = 0L,
                         status = Status.ACTIVE,
                         extraCharge = 0,
                         stock = 0,
