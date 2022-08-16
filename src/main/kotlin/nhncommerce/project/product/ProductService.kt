@@ -28,14 +28,13 @@ class ProductService(
     fun separate(productOptionDTO: ProductOptionDTO): MutableList<Any> {
         val category = categoryRepository.findById(productOptionDTO.categoryId!!.toLong()).get()
         val productDTO = ProductDTO(
-            null,
+            0L,
             Status.ACTIVE,
             productOptionDTO.productName,
             productOptionDTO.price,
             productOptionDTO.briefDescription,
             productOptionDTO.detailDescription,
             productOptionDTO.thumbnail,
-            productOptionDTO.viewCount,
             productOptionDTO.totalStar,
             category,
         )
@@ -55,9 +54,7 @@ class ProductService(
         return objectList
     }
 
-    /**
-     * 상품 등록시 사진 넣지 않아면 thumbnail에 빈문자열 들어감
-     */
+
     fun createProduct(productDTO: ProductDTO, inputSteam: InputStream): Product {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
@@ -68,9 +65,7 @@ class ProductService(
         return productRepository.save(productDTO.dtoToEntity())
     }
 
-    /**
-     * 상품 이미지 등록
-     */
+
     fun createProductImageList(fileList: List<MultipartFile>, product: Product) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
@@ -85,9 +80,7 @@ class ProductService(
         }
     }
 
-    /**
-     * 상품 전제 조회
-     */
+
     fun getProductList(pageRequestDTO: PageRequestDTO): PageResultDTO<ProductDTO, Product> {
         pageRequestDTO.size = 12
         val pageable = pageRequestDTO.getPageable(Sort.by("productId").descending())
@@ -144,23 +137,19 @@ class ProductService(
         return product.entityToDto()
     }
 
-    /**
-     * 상품 이미지 삭제하기 위해 uuid파싱
-     */
+
     fun getThumbnailUUID(product: Product): String {
-        val thumbnail = productRepository.findById(product.productId!!).get().thumbnail
-        val thumbnailUUID = thumbnail.toString().split("/").toTypedArray()
+        val thumbnail = productRepository.findById(product.productId).get().thumbnail
+        val thumbnailUUID = thumbnail.split("/").toTypedArray()
         return thumbnailUUID[6]
     }
 
-    /**
-     * 새 이미지 저장 후 기존 이미지의 uuid를 사용해 서버의 이미지 삭제
-     */
+
     fun updateProduct(productDTO: ProductDTO, file : MultipartFile) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
 
-        val product = productRepository.findById(productDTO.productId!!.toLong()).get()
+        val product = productRepository.findById(productDTO.productId).get()
 
         if(!file.originalFilename.equals("")){ //새이미지 들어오면
             val thumbnail = getThumbnailUUID(product)
@@ -180,9 +169,7 @@ class ProductService(
         productRepository.save(product.get())
     }
 
-    /**
-     * 상품 이미지 dto 리스트 조회
-     */
+
     fun getProductImageDTOList(product: Product): List<ProductImageDTO>? {
         val imageList = mutableListOf<ProductImageDTO>()
         val list = productImageRepository.findByProduct(product)?: return null
@@ -190,9 +177,7 @@ class ProductService(
             imageList.add(ProductImageDTO(productImage.productImageId!!, productImage.image))
         return imageList
     }
-    /**
-     * 상품 이미지 삭제
-     */
+
     fun deleteProductImage(productImageId : Long){
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
