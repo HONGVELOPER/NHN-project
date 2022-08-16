@@ -10,23 +10,24 @@ import javax.persistence.*
 class Option (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var optionId : Long?=null,
+    val optionId : Long=0L,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="parent_id")
-    var parentOption : Option? = null,
+    val parentOption : Option? = null,
 
     @Column(nullable = false)
-    var name : String? = null,
+    val name : String,
 
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var status : Status? = Status.ACTIVE,
+    val status : Status = Status.ACTIVE,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    var product : Product?=null
+    val product : Product
+//    var product : Product?=null
 
 ) : BaseEntity() {
     fun entityToDto() : OptionDTO {

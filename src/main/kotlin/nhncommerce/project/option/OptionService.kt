@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
 @Service
-@Transactional
 class OptionService (
     private val optionRepository: OptionRepository,
     private val optionDetailRepository: OptionDetailRepository,
@@ -22,8 +21,8 @@ class OptionService (
         return optionDetailList.map { it.entityToDto() };
     }
 
-
     //옵션 초기화
+    @Transactional
     fun deleteOptions(productId: Long){
         //외래키의 연관관계로 자식 옵션 부터 삭제
         optionDetailRepository.deleteOptionDetailsByProductId(productId)
@@ -32,6 +31,7 @@ class OptionService (
     }
 
     //상품 재고, 추가금액 수정
+    @Transactional
     fun updateOptionDetail(optionStockDTO: OptionStockDTO) {
         for(i in 0 until optionStockDTO.detailIdList.size){
             val detailId = optionStockDTO.detailIdList[i]
@@ -71,6 +71,7 @@ class OptionService (
 
 
     //옵션 상세 생성
+    @Transactional
     fun createOptionDetail(optionListDTO: OptionListDTO) {
         val product = optionListDTO.productDTO!!.dtoToEntity()
         val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
@@ -82,9 +83,9 @@ class OptionService (
         //option 생성
         for(i in 0..2){
             if (!optionTypeList[i].isNullOrEmpty()){
-                val optionType = optionRepository.save(Option(null, null, optionTypeList[i], Status.ACTIVE, product))
+                val optionType = optionRepository.save(Option(parentOption = null, name = optionTypeList[i]!!, status = Status.ACTIVE, product = product))
                 for(optionName in optionNameList[i]){
-                    val option = optionRepository.save(Option(null, optionType, optionName, Status.ACTIVE, product))
+                    val option = optionRepository.save(Option(parentOption = optionType, name = optionName, status = Status.ACTIVE, product = product))
                     optionList[i].add(option)
                 }
             }
@@ -103,8 +104,8 @@ class OptionService (
                     val num = optionList[0].size + optionList[1].size + optionList[2].size
                     val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
-                        null, Status.ACTIVE, 0, 0, num, name, product,
-                        optionList[0][o1], optionList[1][o2], optionList[2][o3]
+                         status = Status.ACTIVE, extraCharge = 0, stock = 0, num = num, name = name, product = product,
+                        option1 = optionList[0][o1], option2 = optionList[1][o2], option3 = optionList[2][o3]
                     )
                     optionDetailRepository.save(optionDetail)
                 }

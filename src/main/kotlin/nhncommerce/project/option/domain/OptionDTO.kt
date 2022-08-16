@@ -4,11 +4,11 @@ import nhncommerce.project.baseentity.Status
 import nhncommerce.project.product.domain.Product
 
 data class OptionDTO (
-    var optionId : Long? = null,
+    var optionId : Long=0L,
     var parentOption : Option? = null,
-    var name : String? = null,
-    var status : Status? = Status.ACTIVE,
-    var product : Product?=null
+    val name : String,
+    val status : Status = Status.ACTIVE,
+    val product : Product
 ) {
     fun dtoToEntity() : Option{
         return Option(
