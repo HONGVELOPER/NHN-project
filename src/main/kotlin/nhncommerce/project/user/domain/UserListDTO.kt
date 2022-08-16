@@ -3,7 +3,7 @@ package nhncommerce.project.user.domain
 import java.time.LocalDateTime
 
 class UserListDTO(
-    val userId: Long?,
+    val userId: Long,
 
     val role: String,
 
