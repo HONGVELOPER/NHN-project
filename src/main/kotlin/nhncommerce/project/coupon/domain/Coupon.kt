@@ -4,7 +4,6 @@ import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.user.domain.User
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.persistence.*
 
 
@@ -12,7 +11,7 @@ import javax.persistence.*
 class Coupon(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val couponId : Long? = null,
+    val couponId : Long = 0L,
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -39,10 +38,11 @@ class Coupon(
         this.expired = expired
     }
 
-    fun entityToDto(coupon : Coupon): CouponListDTO{
-        val couponListDTO = CouponListDTO(coupon.couponId,coupon.user.email,coupon.status,coupon.couponName,
-            coupon.discountRate,coupon.expired,coupon.createdAt, coupon.updatedAt)
-        return couponListDTO
+    fun entityToDto(coupon: Coupon): CouponListDTO {
+        return CouponListDTO(
+            coupon.couponId, coupon.user.email, coupon.status, coupon.couponName,
+            coupon.discountRate, coupon.expired, coupon.createdAt, coupon.updatedAt
+        )
     }
 
 }
