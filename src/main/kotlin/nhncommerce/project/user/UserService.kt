@@ -10,6 +10,7 @@ import nhncommerce.project.user.domain.*
 import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.function.Function
 
 @Service
@@ -18,6 +19,7 @@ class UserService(
     val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder(),
 ) {
 
+    @Transactional
     fun createUserByForm(userDTO: UserDTO) {
         val duplicateUser: User? = userRepository.findByEmail(userDTO.email)
         if (duplicateUser?.email == userDTO.email) {
@@ -46,19 +48,20 @@ class UserService(
         return user.entityToAdminProfileDto()
     }
 
+    @Transactional
     fun updateUserProfileById(userId: Long, profileDTO: ProfileDTO) {
         val user: User = userRepository.findById(userId).get()
         user.updateProfile(profileDTO)
-        userRepository.save(user)
     }
 
+    @Transactional
     fun updateUserProfileByAdmin(userId: Long, adminProfileDTO: AdminProfileDTO) {
         val user: User = userRepository.findById(userId).get()
         user.updateProfileByAdmin(adminProfileDTO)
-        userRepository.save(user)
     }
 
 
+    @Transactional
     fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO) {
         val user: User = userRepository.findById(userId).get()
         if (!passwordEncoder.matches(passwordDTO.password, user.password)) {
@@ -70,12 +73,12 @@ class UserService(
         }
         val newEncodedPassword = passwordEncoder.encode(passwordDTO.newPassword)
         user.updatePassword(newEncodedPassword)
-        userRepository.save(user)
     }
 
+    @Transactional
     fun deleteUserById(userId: Long) {
         val deleteUser = userRepository.findById(userId).get()
-        userRepository.deleteById(deleteUser.userId!!)
+        userRepository.deleteById(deleteUser.userId)
     }
 
     fun findUserList(pageRequestDTO: PageRequestDTO): PageResultDTO<UserListDTO, User> {
