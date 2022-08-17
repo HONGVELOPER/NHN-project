@@ -22,7 +22,7 @@ class RedisService (
     fun addQueue(userId : Long ,eventCoupon: EventCoupon) {
         val now = System.currentTimeMillis()
         redisTemplate.opsForZSet().add(eventCoupon.value + "Queue", userId, now.toDouble())
-        log.info("대기열에 추가 - {} ({}초)", userId ,now)
+        log.info("대기열에 추가 - ${userId} (${now}초)")
     }
     // 쿠폰 발급후 큐에서 삭제
     fun publish(eventCoupon: EventCoupon) {
@@ -31,7 +31,7 @@ class RedisService (
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
 
         for (people in queue!!) {
-            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", people, eventCoupon.value)
+            log.info("${people}님의 ${eventCoupon.value} 쿠폰이 발급되었습니다")
             redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
             redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
             event.decrease()
@@ -46,7 +46,7 @@ class RedisService (
 
         for (people in queue!!) {
             val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
-            log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", people, rank)
+            log.info("${people}님의 현재 대기열은 ${rank}명 남았습니다.")
         }
     }
 
