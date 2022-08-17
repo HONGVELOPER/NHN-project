@@ -75,15 +75,10 @@ class OrderController(
 //    }
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
-        @RequestParam("optionDetailId") optionDetailId: Long = 0L,
+        @RequestParam("optionDetailId") optionDetailId: Long,
         @RequestParam("productId") productId: String,
         mav: ModelAndView
     ): ModelAndView {
-        if (optionDetailId == 0L) {
-            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/$productId"))
-            mav.viewName = "user/alert"
-            return mav
-        }
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
         couponService.updateCouponStatus()
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()

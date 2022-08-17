@@ -115,7 +115,6 @@ class CategoryServiceTest {
                         status = Status.ACTIVE,
                         extraCharge = 0,
                         stock = 0,
-                        num = 3,
                         name = "옵션 없음",
                         product = product,
                         option1 = null,
@@ -130,5 +129,4 @@ class CategoryServiceTest {
             }
         }
     }
-
 }

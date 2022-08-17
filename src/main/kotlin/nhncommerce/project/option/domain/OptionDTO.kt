@@ -4,8 +4,8 @@ import nhncommerce.project.baseentity.Status
 import nhncommerce.project.product.domain.Product
 
 data class OptionDTO (
-    var optionId : Long=0L,
-    var parentOption : Option? = null,
+    val optionId : Long=0L,
+    val parentOption : Option? = null,
     val name : String,
     val status : Status = Status.ACTIVE,
     val product : Product

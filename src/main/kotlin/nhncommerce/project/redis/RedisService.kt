@@ -29,19 +29,13 @@ class RedisService (
         val start = 0L //대기열 첫번째
         val end = 9L //대기열 마지막
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
-        queue?.let {
-            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", it, eventCoupon.value)
-            redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, it, System.currentTimeMillis().toDouble())
-            redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", it)
+
+        for (people in queue!!) {
+            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", people, eventCoupon.value)
+            redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
+            redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
             event.decrease()
         }
-
-//        for (people in queue!!) {
-//            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", people, eventCoupon.value)
-//            redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
-//            redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
-//            couponCount.decrease()
-//        }
     }
 
     //대기열 조회
@@ -49,15 +43,11 @@ class RedisService (
         val start  = 0L
         val end = -1L
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
-        queue?.let {
-            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", it)
-            log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", it, rank)
+
+        for (people in queue!!) {
+            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
+            log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", people, rank)
         }
-//
-//        for (people in queue) {
-//            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
-//            log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", people, rank)
-//        }
     }
 
     //사용자 대기열 순번 조회
@@ -90,7 +80,7 @@ class RedisService (
 
     //쿠폰다 발급했는지
     fun validEnd(): Boolean {
-        return if (event != null) event.end() else false
+        return event.end()
     }
 
     //대기열 초기화

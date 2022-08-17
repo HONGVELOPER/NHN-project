@@ -5,10 +5,9 @@ import nhncommerce.project.product.domain.Product
 
 data class OptionDetailDTO (
     val optionDetailId : Long=0L,
-    var status : Status = Status.ACTIVE,
-    var extraCharge : Int? = null,
-    var stock : Int? = null,
-    var num : Int? = null,
+    val status : Status = Status.ACTIVE,
+    val extraCharge : Int=0,
+    val stock : Int=0,
     val name : String,
     val product : Product,
     val option1 : Option? = null,
@@ -21,7 +20,6 @@ data class OptionDetailDTO (
             status = status,
             extraCharge = extraCharge,
             stock = stock,
-            num = num,
             name = name,
             product = product,
             option1 = option1,

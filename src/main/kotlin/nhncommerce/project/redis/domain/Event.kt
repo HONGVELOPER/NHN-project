@@ -7,7 +7,7 @@ data class Event (
     val eventCoupon : EventCoupon?,
     val discount : Int=0,
     var limit : Int = 0,
-    var expired : LocalDate= LocalDate.now(),
+    val expired : LocalDate= LocalDate.now(),
     var progress : Int = 0
 ) {
     fun decrease(){
@@ -15,6 +15,6 @@ data class Event (
     }
 
     fun end() : Boolean {
-        return limit == 0 || limit == null
+        return limit == 0
     }
 }

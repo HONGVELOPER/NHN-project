@@ -15,14 +15,11 @@ class OptionDetail (
     @Column(nullable = false)
     val status : Status = Status.ACTIVE,
 
-    @Column(nullable = true)
-    var extraCharge : Int? = null,
+    @Column(nullable = false)
+    var extraCharge : Int = 0,
 
     @Column(nullable = false)
-    var stock : Int? = null,
-
-    @Column(nullable = false)
-    val num : Int? = null,
+    var stock : Int = 0,
 
     @Column(nullable = false)
     val name : String,
@@ -50,7 +47,6 @@ class OptionDetail (
                 status = status,
                 extraCharge = extraCharge,
                 stock = stock,
-                num = num,
                 name = name,
                 product = product,
                 option1 = option1,

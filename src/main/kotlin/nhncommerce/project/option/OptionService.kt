@@ -37,12 +37,15 @@ class OptionService (
             val detailId = optionStockDTO.detailIdList[i]
             val detailStock = optionStockDTO.detailStockList[i]
             val detailCharge = optionStockDTO.detailChargeList[i]
+            val optionDetail = optionDetailRepository.findById(detailId).get()
 
-            var optionDetail = optionDetailRepository.findById(detailId).get()
-
-            optionDetail.stock = detailStock
-            optionDetail.extraCharge = detailCharge
-            optionDetailRepository.save(optionDetail)
+            optionDetail.apply {
+                stock = detailStock
+                extraCharge = detailCharge
+            }
+//            optionDetail.stock = detailStock
+//            optionDetail.extraCharge = detailCharge
+//            optionDetailRepository.save(optionDetail) //todo : 변경감지
         }
     }
 
@@ -65,7 +68,6 @@ class OptionService (
                 optionNameList.add(null)
             }
         }
-
         return UpdateOptionDTO(product.entityToDto(), optionTypeList, optionNameList)
     }
 
@@ -73,7 +75,7 @@ class OptionService (
     //옵션 상세 생성
     @Transactional
     fun createOptionDetail(optionListDTO: OptionListDTO) {
-        val product = optionListDTO.productDTO!!.dtoToEntity()
+        val product = optionListDTO.productDTO!!.dtoToEntity() //todo : 리팩토링
         val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
         //옵션 종류
         val optionTypeList = mutableListOf<String?>(optionListDTO.option1, optionListDTO.option2, optionListDTO.option3)
@@ -89,28 +91,44 @@ class OptionService (
                     optionList[i].add(option)
                 }
             }
-        }
-
-        //옵션이 비어있을 경우 null 넣어주기
-        for(i in 0..2){
             if (optionList[i].size == 0)
                 optionList[i].add(null)
         }
 
+//        //옵션이 비어있을 경우 null 넣어주기
+//        for(i in 0..2){
+//            if (optionList[i].size == 0)
+//                optionList[i].add(null)
+//        }
         //옵션들의 경우의수에 맞게 optionDetail 생성
         for(o1 in 0 until optionList[0].size){
-            for(o2 in 0 until (if (optionList[1].size > 0) optionList[1].size else 1)){
-                for(o3 in 0 until (if (optionList[2].size > 0) optionList[2].size else 1)){
+            for(o2 in 0 until optionList[1].size){
+                for(o3 in 0 until optionList[2].size){
                     val num = optionList[0].size + optionList[1].size + optionList[2].size
                     val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
-                         status = Status.ACTIVE, extraCharge = 0, stock = 0, num = num, name = name, product = product,
+                        status = Status.ACTIVE, extraCharge = 0, stock = 0, name = name, product = product,
                         option1 = optionList[0][o1], option2 = optionList[1][o2], option3 = optionList[2][o3]
                     )
                     optionDetailRepository.save(optionDetail)
                 }
             }
         }
+
+//        //옵션들의 경우의수에 맞게 optionDetail 생성
+//        for(o1 in 0 until optionList[0].size){
+//            for(o2 in 0 until (if (optionList[1].size > 0) optionList[1].size else 1)){
+//                for(o3 in 0 until (if (optionList[2].size > 0) optionList[2].size else 1)){
+//                    val num = optionList[0].size + optionList[1].size + optionList[2].size
+//                    val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
+//                    val optionDetail = OptionDetail(
+//                         status = Status.ACTIVE, extraCharge = 0, stock = 0, name = name, product = product,
+//                        option1 = optionList[0][o1], option2 = optionList[1][o2], option3 = optionList[2][o3]
+//                    )
+//                    optionDetailRepository.save(optionDetail)
+//                }
+//            }
+//        }
     }
 
     fun generateDetailName(optionList : List<String?>) : String{
@@ -122,10 +140,7 @@ class OptionService (
                 name += optionList[i]
             }
         }
-        if (name.equals(""))
-            return "옵션 없음"
-        else
-            return name
+        return if (name == "") "옵션 없음" else name
     }
 
     fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{

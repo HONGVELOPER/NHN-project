@@ -106,20 +106,11 @@ class RedisController(
             return mav
         }
 
-//        for(user in winnerList){
-//            couponService.createEventCoupon(
-//                userId = user.toString().toLong(),
-//                discountRate = couponCount.discount!!,
-//                expired = couponCount.expired!!,
-//                couponName = EventCoupon.COUPON.value
-//            )
-//        }
-
-        winnerList.let {
+        for(user in winnerList){
             couponService.createEventCoupon(
-                userId = it.toString().toLong(),
-                discountRate = event.discount?:0,
-                expired = event.expired!!,
+                userId = user.toString().toLong(),
+                discountRate = event.discount,
+                expired = event.expired,
                 couponName = EventCoupon.COUPON.value
             )
         }
