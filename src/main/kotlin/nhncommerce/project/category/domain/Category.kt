@@ -9,19 +9,19 @@ import javax.persistence.*
 class Category (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var categoryId : Long? = null,
+    val categoryId : Long = 0L,
 
     @Column(nullable = false)
-    var name : String? = null,
+    val name : String,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="parent_id")
-    var parentCategory : Category? = null,
+    val parentCategory : Category? = null,
 
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var status : Status? = Status.ACTIVE
+    val status : Status = Status.ACTIVE
 ): BaseEntity() {
     fun entityToDto() : CategoryDTO {
         return CategoryDTO(

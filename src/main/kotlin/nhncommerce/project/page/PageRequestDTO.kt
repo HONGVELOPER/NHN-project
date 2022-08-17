@@ -15,4 +15,8 @@ class PageRequestDTO(
     fun getPageable(sort : Sort) : Pageable{
         return PageRequest.of(page -1, size,sort)
     }
+
+    fun changeSize(n : Int){
+        size = n
+    }
 }

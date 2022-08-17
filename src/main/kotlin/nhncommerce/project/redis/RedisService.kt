@@ -1,13 +1,10 @@
 package nhncommerce.project.redis
 
 import nhncommerce.project.redis.constant.EventCoupon
-import nhncommerce.project.redis.domain.CouponCount
+import nhncommerce.project.redis.domain.Event
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Service
@@ -16,35 +13,28 @@ class RedisService (
 
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
-    companion object {
-        var couponCount  = CouponCount(null, null, null, null, 0)
-        const val INIT = 0
-        const val SETTING_OK = 1
-        const val EVENT_IN_PROGRESS = 2
-        const val EVENT_END = 3
-        const val PUBLISH_COUPON = 4
-    }
 
     fun setCouponCount(eventCoupon: EventCoupon, discount : Int , queue: Int, expired : LocalDate) {
-        couponCount = CouponCount(eventCoupon, discount , queue, expired, 0)
+        event = Event(eventCoupon, discount , queue, expired, 0)
     }
 
     // 대기 큐에 넣기
     fun addQueue(userId : Long ,eventCoupon: EventCoupon) {
         val now = System.currentTimeMillis()
         redisTemplate.opsForZSet().add(eventCoupon.value + "Queue", userId, now.toDouble())
-        log.info("대기열에 추가 - {} ({}초)", userId ,now)
+        log.info("대기열에 추가 - ${userId} (${now}초)")
     }
     // 쿠폰 발급후 큐에서 삭제
     fun publish(eventCoupon: EventCoupon) {
         val start = 0L //대기열 첫번째
         val end = 9L //대기열 마지막
-        val queue = redisTemplate!!.opsForZSet().range(eventCoupon.value + "Queue", start, end)
+        val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
+
         for (people in queue!!) {
-            log.info("'{}'님의 {} 쿠폰이 발급되었습니다", people, eventCoupon.value)
+            log.info("${people}님의 ${eventCoupon.value} 쿠폰이 발급되었습니다")
             redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
             redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
-            couponCount.decrease()
+            event.decrease()
         }
     }
 
@@ -53,9 +43,10 @@ class RedisService (
         val start  = 0L
         val end = -1L
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
+
         for (people in queue!!) {
             val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
-            log.info("'{}'님의 현재 대기열은 {}명 남았습니다.", people, rank)
+            log.info("${people}님의 현재 대기열은 ${rank}명 남았습니다.")
         }
     }
 
@@ -67,14 +58,14 @@ class RedisService (
     //당첨되었는지 확인
     fun getEventWinCheck(eventCoupon: EventCoupon, userId : Long) : Boolean {
         val check = redisTemplate.opsForZSet().score("Save" + eventCoupon.value, userId)
-        return if (check == null) false else true
+        return check != null
     }
 
     fun checkParticipation(eventCoupon: EventCoupon, userId : Long) : Boolean {
         val winCheck = getEventWinCheck(eventCoupon, userId)
         val order = getUserOrder(eventCoupon, userId)
 
-        return if (winCheck == true || order != null) true else false
+        return winCheck || order != null
     }
 
     //당첨자 리스트 조회
@@ -89,7 +80,7 @@ class RedisService (
 
     //쿠폰다 발급했는지
     fun validEnd(): Boolean {
-        return if (couponCount != null) couponCount.end() else false
+        return event.end()
     }
 
     //대기열 초기화
@@ -105,6 +96,15 @@ class RedisService (
 
     //이벤트 설정 초기화
     fun resetEventSet(){
-        couponCount = CouponCount(null, null, null, null, 0)
+        event = Event(eventCoupon = null, limit =  0, progress = 0)
+    }
+
+    companion object {
+        var event  = Event(eventCoupon = null, limit =  0, progress = 0)
+        const val INIT = 0
+        const val SETTING_OK = 1
+        const val EVENT_IN_PROGRESS = 2
+        const val EVENT_END = 3
+        const val PUBLISH_COUPON = 4
     }
 }
