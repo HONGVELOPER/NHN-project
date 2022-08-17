@@ -12,8 +12,9 @@ class OptionDetail (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val optionDetailId : Long=0L,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val status : Status = Status.ACTIVE,
+    var status : Status = Status.ACTIVE,
 
     @Column(nullable = false)
     var extraCharge : Int = 0,
