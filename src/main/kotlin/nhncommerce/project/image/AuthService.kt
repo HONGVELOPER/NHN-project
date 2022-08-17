@@ -43,7 +43,7 @@ class AuthService {
     }
 
     fun requestToken(): String? {
-        val identityUrl = authUrl + "/tokens"
+        val identityUrl = "$authUrl/tokens"
 
         // 헤더 생성
         val headers = org.springframework.http.HttpHeaders()
