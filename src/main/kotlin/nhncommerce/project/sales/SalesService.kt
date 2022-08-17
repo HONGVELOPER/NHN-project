@@ -26,7 +26,7 @@ class SalesService(
     }
 
     fun getSalesList(requestDTO : PageRequestDTO) : PageResultDTO<SalesDTO, Sales> {
-        var sort = getSort(requestDTO)
+        val sort = getSort(requestDTO)
         val pageable = requestDTO.getPageable(sort)
         val result = salesRepository.findAll(pageable)
         val fn: Function<Sales, SalesDTO> =

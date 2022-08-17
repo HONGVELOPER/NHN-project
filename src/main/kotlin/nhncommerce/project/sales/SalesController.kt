@@ -19,9 +19,6 @@ class SalesController(
 
 ) {
 
-    /**
-     * 관리자 메인 페이지
-     */
     @GetMapping("/admin")
     fun adminPage(model: Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("type",pageRequestDTO.type)
