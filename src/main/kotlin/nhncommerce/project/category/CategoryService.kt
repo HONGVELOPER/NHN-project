@@ -40,12 +40,10 @@ class CategoryService (
 
     //product 생성 및 수정을 위한 category List
     fun getCategoryList() : List<CategoryListDTO> {
-        val list = mutableListOf<CategoryListDTO>()
         val categories = categoryRepository.findAllByParentCategoryIsNotNull()
-        categories.map {
-            list.add(CategoryListDTO(it.categoryId, "${it.parentCategory?.name} > ${it.name}"))
+        return categories.map {
+            CategoryListDTO(it.categoryId, "${it.parentCategory?.name} > ${it.name}")
         }
-        return list.toList()
     }
 
     //카테고리 조회 및 페이징 처리
