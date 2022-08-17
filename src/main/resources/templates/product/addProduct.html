@@ -6,9 +6,6 @@
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-<!--                    <form action="fileupload" method="post"enctype="multipart/form-data">-->
-<!--                        <input type="file" name="file" multiple /><br />-->
-<!--                    </form>-->
 
                 <form th:action="@{/admin/products}"  method="post" enctype="multipart/form-data" th:object="${productOptionDTO}" onsubmit="return check()">
                     <div class="col-md-6">
@@ -21,64 +18,40 @@
                         <div id="multiple-container" class="col mb-5">
                         </div>
                     </div>
-                        <div th:if="${session.productName != null}">
+
                             제품 이름
                             <input type="text" class="form-control"  th:field="*{productName}" /><br>
                             <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
-                        </div>
-                        <div th:if="${session.productName == null}">
-                            제품 이름<br>
-                            <input type="text" class="form-control" th:field="*{productName}"><br>
-                        </div>
 
-                        <div th:if="${session.price != null}">
+
+
                             제품 가격
                             <input id="price1" type="number" class="form-control"  th:field="*{price}" /><br>
                             <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
-                        </div>
-                        <div th:if="${session.price == null}">
-                            제품 가격<br>
-                            <input id="price2" type="number" class="form-control"  th:field="*{price}"><br>
-                        </div>
 
-                        <div th:if="${session.briefDescription != null}">
+
+
                             제품 간략 설명
                             <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
                             <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
-                        </div>
-                        <div th:if="${session.briefDescription == null}">
-                            제품 간략 설명<br>
-                            <input type="text" class="form-control"  th:field="*{briefDescription}"><br>
-                        </div>
 
-                        <div th:if="${session.detailDescription != null}">
+
+
                             제품 상세 설명
                             <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
                             <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
-                        </div>
-                        <div th:if="${session.detailDescription == null}">
-                            제품 상세 설명<br>
-                            <textarea  type="text" class="form-control"  th:field="*{detailDescription}"></textarea>
-                                <br>
-                        </div>
+
 
                         <div>
-                            <div th:if="${session.categoryListDTO != null}">
-                                카테고리 선택 <br>
-                                <select name="categoryId" class="form-select">
-                                    <div th:each="category : ${session.categoryListDTO}">
-                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                    </div>
-                                </select>
-                            </div>
-                            <div th:if="${session.categoryListDTO == null}">
+
                                 카테고리 선택 <br>
                                 <select name="categoryId" class="form-select">
                                     <div th:each="category : ${categoryListDTO}">
                                         <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
                                     </div>
                                 </select>
-                            </div>
+
+
                         </div>
                         <br>
 

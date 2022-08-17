@@ -9,7 +9,7 @@ import javax.persistence.*
 class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val productId:Long? = null,
+    val productId:Long = 0L,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -29,9 +29,6 @@ class Product(
 
     @Column(nullable = true)
     var thumbnail:String,
-
-    @Column(nullable = false)
-    var viewCount:Int=0,
 
     @Column(nullable = false)
     var totalStar:Float=0F,
@@ -61,7 +58,6 @@ class Product(
             briefDescription = briefDescription,
             detailDescription = detailDescription,
             thumbnail = thumbnail,
-            viewCount = viewCount,
             totalStar = totalStar,
             category = category
         )

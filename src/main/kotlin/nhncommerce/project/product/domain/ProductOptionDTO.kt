@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 
 data class ProductOptionDTO (
 
-    var productId : Long?=null,
+    var productId : Long = 0L,
 
     var status: Status = Status.ACTIVE,
 
@@ -29,8 +29,6 @@ data class ProductOptionDTO (
     var detailDescription:String?="",
 
     var thumbnail:String="",
-
-    var viewCount:Int=0,
 
     var totalStar:Float=0F,
 
