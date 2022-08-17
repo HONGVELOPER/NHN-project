@@ -1,6 +1,8 @@
 package nhncommerce.project.option
 
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.option.domain.*
 import nhncommerce.project.product.ProductRepository
@@ -25,9 +27,21 @@ class OptionService (
     @Transactional
     fun deleteOptions(productId: Long){
         //외래키의 연관관계로 자식 옵션 부터 삭제
-        optionDetailRepository.deleteOptionDetailsByProductId(productId)
-        optionRepository.deleteChildOptionsByProductId(productId)
-        optionRepository.deleteParentOptionsByProductId(productId)
+//        optionDetailRepository.deleteOptionDetailsByProductId(productId)
+//        optionRepository.deleteChildOptionsByProductId(productId)
+//        optionRepository.deleteParentOptionsByProductId(productId)
+        val product = productRepository.findById(productId).get()
+        val parentOptionList = optionRepository.findParentOptionsByProduct(product)
+        val optionDetails = optionDetailRepository.findOptionDetailsByProduct(product)
+        for(parent in parentOptionList)
+            parent.status = Status.IN_ACTIVE
+
+        for(detail in optionDetails) {
+            detail.status = Status.IN_ACTIVE
+            detail.option1?.status = Status.IN_ACTIVE
+            detail.option2?.status = Status.IN_ACTIVE
+            detail.option3?.status = Status.IN_ACTIVE
+        }
     }
 
     //상품 재고, 추가금액 수정
@@ -52,7 +66,8 @@ class OptionService (
     // 상품 , 옵션 리스트 가져오기
     fun getProductOptionList(productId : Long) : UpdateOptionDTO{
         val product = productRepository.findById(productId).get()
-        val parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
+        //val parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
+        val parentOptionList =optionRepository.findParentOptionsByProduct(product)
         val optionTypeList = mutableListOf<Option?>(null, null, null)
         val optionNameList = ArrayList<MutableList<Option>?>()
         //옵션 타입
@@ -75,7 +90,7 @@ class OptionService (
     //옵션 상세 생성
     @Transactional
     fun createOptionDetail(optionListDTO: OptionListDTO) {
-        val product = optionListDTO.productDTO!!.dtoToEntity() //todo : 리팩토링
+        val product = optionListDTO.productDTO?.let { it.dtoToEntity() } ?: throw AlertException(ErrorMessage.EMPTY_PRODUCTDTO)
         val optionList = mutableListOf(mutableListOf<Option?>(),mutableListOf<Option?>(),mutableListOf<Option?>())
         //옵션 종류
         val optionTypeList = mutableListOf<String?>(optionListDTO.option1, optionListDTO.option2, optionListDTO.option3)
