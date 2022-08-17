@@ -8,7 +8,7 @@ import javax.validation.constraints.Size
 
 data class ProductDTO(
 
-    var productId : Long?=null,
+    var productId : Long = 0L,
 
     var status: Status = Status.ACTIVE,
 
@@ -29,37 +29,12 @@ data class ProductDTO(
 
     var thumbnail:String="",
 
-    var viewCount:Int=0,
-
     var totalStar:Float=0F,
 
     //카테고리
     var category: Category?=null
 
 ){
-
-    fun String.intOrString(): Any {
-        val v = toIntOrNull()
-        return when(v) {
-            null -> this
-            else -> v
-        }
-    }
-
-    fun productValidate():Boolean{
-
-        if(price < 0){
-            throw error("가격이 음수가 될 수 없습니다.")
-        }
-
-        try{
-            price.toInt()
-        }catch (e: NumberFormatException) {
-            throw error("가격에 숫자가 아닌 문자열이 들어올 수 없습니다.")
-        }
-
-        return true
-    }
 
     fun dtoToEntity() : Product {
         return Product(
@@ -70,7 +45,6 @@ data class ProductDTO(
             briefDescription = briefDescription,
             detailDescription = detailDescription,
             thumbnail = thumbnail,
-            viewCount = viewCount,
             totalStar = totalStar,
             category = category
         )

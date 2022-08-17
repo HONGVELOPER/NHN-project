@@ -5,10 +5,10 @@ import nhncommerce.project.product.domain.ProductDTO
 
 data class OptionListDTO (
     var productDTO : ProductDTO?=null,
-    var option1 : String?=null,
-    var option2 : String?=null,
-    var option3 : String?=null,
-    var option1List: MutableList<String> = mutableListOf(),
-    var option2List: MutableList<String> = mutableListOf(),
-    var option3List: MutableList<String> = mutableListOf()
+    val option1 : String?=null,
+    val option2 : String?=null,
+    val option3 : String?=null,
+    val option1List: MutableList<String> = mutableListOf(),
+    val option2List: MutableList<String> = mutableListOf(),
+    val option3List: MutableList<String> = mutableListOf()
 )

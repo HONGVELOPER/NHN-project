@@ -3,19 +3,12 @@ package nhncommerce.project.coupon.domain
 
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.user.domain.User
-import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import javax.validation.constraints.*
 
 data class CouponDTO (
 
-    val couponId : Long?=null,
+    val couponId : Long = 0L,
 
     var status: Status = Status.ACTIVE,
 
@@ -30,9 +23,8 @@ data class CouponDTO (
 
 ){
 
-    fun dtoToEntity(couponDTO: CouponDTO, user : User, expired : LocalDate): Coupon{
-        val coupon = Coupon(null,user,couponDTO.status,couponDTO.couponName,couponDTO.discountRate,expired)
-        return coupon
+    fun dtoToEntity(user: User, expired: LocalDate): Coupon {
+        return Coupon(couponId, user, status, couponName, discountRate, expired)
     }
 
 }

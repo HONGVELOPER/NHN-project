@@ -1,5 +1,5 @@
 package nhncommerce.project.exception
 
-class CustomException(
-    val errorCode: ErrorCode
+class AlertException(
+    val errorMessage: ErrorMessage
 ) : RuntimeException() {}

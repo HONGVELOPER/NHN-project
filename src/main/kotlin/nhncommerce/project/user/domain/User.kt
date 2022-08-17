@@ -13,7 +13,7 @@ class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    val userId: Long? = null,
+    val userId: Long = 0L,
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -7,38 +7,16 @@
                 <section class="py-5">
                     <div class="container px-4 px-lg-5 my-5">
                         <div class="row gx-4 gx-lg-5 align-items-center">
-                            <!--                                섹션 나눔-->
-                            <!--                                <div class="col-md-6">-->
-                            <!--                                    <img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." />-->
-                            <!--                                </div>-->
                             <div class="col-md-6">
-
-                                회원 email
-                                <form th:action="@{/isPresentUser}"  method="post">
-                                    <div th:if="${session.isPresentUser != null}">
-                                        <input type="text" class="form-control" name="email" th:value="${session.email}" disabled/><br>
-                                    </div>
-
-                                    <div th:if="${session.email == null}">
-                                        <input type="text" class="form-control" name="email"/><br>
-                                    </div>
-                                    <p th:if="${session.isPresentUser != null}">
-                                        <button class="btn btn-outline-dark mt-auto" type="submit" disabled>회원 검색</button>
-                                    </p>
-                                    <p th:if="${session.isPresentUser == null}">
-                                        <button class="btn btn-outline-dark mt-auto" type="submit">회원 검색</button>
-                                    </p>
-                                </form>
-                                <br>
                                 <form th:action="@{/admin/coupons}"  method="post" th:object="${couponDTO}" onsubmit="return check()">
-
+                                    회원 email
+                                    <input type="text" class="form-control" name="email"/><br>
                                     <p th:text="${error}"></p>
                                     쿠폰 이름
                                     <input type="text" class="form-control"  th:field="*{couponName}" /><br>
                                     <p th:if="${#fields.hasErrors('couponName')}" th:errors="*{couponName}" class="jb-red"></p>
 
                                     할인율
-
                                     <input type="number" class="form-control" id="discount"  th:field="*{discountRate}" /><br>
                                     <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
 
@@ -52,12 +30,8 @@
                                     <script>
                                         document.getElementById('now_date').valueAsDate=new Date();
                                     </script>
-                                    <p th:if="${session.isPresentUser == null}">
-                                        <button class="btn btn-outline-dark mt-auto" type="submit" disabled>쿠폰 발행</button>
-                                    </p>
-                                    <p th:if="${session.isPresentUser != null}">
-                                        <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발행</button>
-                                    </p>
+
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발행</button>
                                 </form>
 
 

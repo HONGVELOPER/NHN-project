@@ -1,6 +1,9 @@
 package nhncommerce.project.image
 
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import org.apache.tomcat.util.http.fileupload.IOUtils
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -14,8 +17,10 @@ import java.util.*
 
 @Service
 class ImageService {
-    var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    var containerName = "kirin"
+
+    private var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
+    private var containerName = "kirin"
+
     var tokenId = ""
     var restTemplate = RestTemplate()
 
@@ -24,13 +29,14 @@ class ImageService {
     }
 
     private fun getUrl(containerName: String, objectName: String): String {
-        return this.storageUrl + "/" + containerName + "/" + objectName
+        return "${this.storageUrl}/$containerName/$objectName"
     }
 
     fun uploadObject(containerName: String, objectName: String, inputStream: InputStream?) : String{
         val url = getUrl(containerName, objectName)
         val requestCallback = RequestCallback { request ->
-            request.headers.add("X-Auth-Token", tokenId)
+//            request.headers.add("X-Auth-Token", tokenId)
+            request.headers.addToken(tokenId)
             IOUtils.copy(inputStream, request.body)
         }
         val requestFactory = SimpleClientHttpRequestFactory()
@@ -44,10 +50,11 @@ class ImageService {
         return url
     }
 
-    fun deleteObject(objectName: String?) {
-        val url = getUrl(containerName!!, objectName!!)
+    fun deleteObject(objectName: String) {
+        val url = getUrl(containerName, objectName)
         val headers = HttpHeaders()
-        headers.add("X-Auth-Token", tokenId)
+//        headers.add("X-Auth-Token", tokenId)
+        headers.addToken(tokenId)
         val requestHttpEntity: HttpEntity<String> = HttpEntity<String>(null, headers)
         restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String::class.java)
     }
@@ -57,16 +64,21 @@ class ImageService {
             val uuid = UUID.randomUUID().toString()
             return uploadObject(containerName, uuid, inputStream)
         } catch (e: Exception) {
-            e.printStackTrace()
+            throw AlertException(ErrorMessage.IMAGE_UPLOAD_FAILED)
         }
-        return ""
     }
 
     fun deleteImage(objectName : String){
         try {
             deleteObject(objectName)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            throw AlertException(ErrorMessage.IMAGE_DELETE_FAILED)
+        }
+    }
+
+    companion object{
+        fun HttpHeaders.addToken(tokenId: String){
+            add("X-Auth-Token", tokenId)
         }
     }
 

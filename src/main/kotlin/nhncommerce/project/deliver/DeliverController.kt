@@ -15,23 +15,18 @@ import org.springframework.web.servlet.ModelAndView
 import javax.validation.Valid
 
 @Controller
+@RequestMapping("/api")
 class DeliverController (
     val deliverService: DeliverService,
     val loginInfoService: LoginInfoService,
 ) {
 
-    /*
-    * 배송지 추가 페이지
-    * */
-    @GetMapping("/api/delivers/createForm")
+    @GetMapping("/delivers/createForm")
     fun createDeliverForm(deliverDTO: DeliverDTO): String {
         return "deliver/create"
     }
 
-    /*
-    * 배송지 수정 페이지
-    */
-    @GetMapping("/api/delivers/{deliverId}/updateForm")
+    @GetMapping("/delivers/{deliverId}/updateForm")
     fun updateDeliverForm(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView,
@@ -44,10 +39,7 @@ class DeliverController (
         return mav
     }
 
-    /*
-    * 배송지 추가
-    * */
-    @PostMapping("/api/delivers")
+    @PostMapping("/delivers")
     fun createDeliver(
         @Valid @ModelAttribute deliverDTO: DeliverDTO,
         bindingResult: BindingResult,
@@ -64,20 +56,14 @@ class DeliverController (
         return mav
     }
 
-    /*
-    * 단일 배송지 조회
-    * */
-    @GetMapping("/api/delivers/{deliverId}")
+    @GetMapping("/delivers/{deliverId}")
     fun findDeliverById(@PathVariable("deliverId") deliverId: Long) {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val deliverDTO: DeliverDTO = deliverService.findDeliverById(deliverId, loginInfo.userId)
         println(deliverDTO.toString())
     }
 
-    /*
-    * 유저 배송지 목록 조회
-    * */
-    @GetMapping("/api/delivers/users")
+    @GetMapping("/delivers/users")
     fun findDeliverByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val result: PageResultDTO<DeliverListDTO, Deliver> = deliverService.findDeliverListByUser(loginInfo.userId, pageRequestDTO)
@@ -86,10 +72,7 @@ class DeliverController (
         return mav
     }
 
-   /*
-    * 배송지 수정
-    * */
-    @PutMapping("/api/delivers/{deliverId}/update")
+    @PutMapping("/delivers/{deliverId}")
     fun updateDeliver(
         @PathVariable("deliverId") deliverId: Long,
         @Valid @ModelAttribute deliverDTO: DeliverDTO,
@@ -107,10 +90,7 @@ class DeliverController (
         return mav
     }
 
-    /*
-    * 배송지 삭제
-    * */
-    @PutMapping("/api/delivers/{deliverId}/delete")
+    @DeleteMapping("/delivers/{deliverId}")
     fun deleteDeliverById(
         @PathVariable("deliverId") deliverId: Long,
         mav: ModelAndView

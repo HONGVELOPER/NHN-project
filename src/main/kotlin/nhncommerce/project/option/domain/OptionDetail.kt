@@ -10,38 +10,35 @@ import javax.persistence.*
 class OptionDetail (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var optionDetailId : Long?=null,
+    val optionDetailId : Long=0L,
 
     @Column(nullable = false)
-    var status : Status? = Status.ACTIVE,
-
-    @Column(nullable = true)
-    var extraCharge : Int? = null,
+    val status : Status = Status.ACTIVE,
 
     @Column(nullable = false)
-    var stock : Int? = null,
+    var extraCharge : Int = 0,
 
     @Column(nullable = false)
-    var num : Int? = null,
+    var stock : Int = 0,
 
     @Column(nullable = false)
-    var name : String? = null,
+    val name : String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
-    var product : Product? = null,
+    val product : Product,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id1")
-    var option1 : Option? = null,
+    val option1 : Option? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id2")
-    var option2 : Option? = null,
+    val option2 : Option? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="option_id3")
-    var option3 : Option? = null
+    val option3 : Option? = null
 
     ): BaseEntity() {
         fun entityToDto() : OptionDetailDTO {
@@ -50,7 +47,6 @@ class OptionDetail (
                 status = status,
                 extraCharge = extraCharge,
                 stock = stock,
-                num = num,
                 name = name,
                 product = product,
                 option1 = option1,

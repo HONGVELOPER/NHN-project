@@ -32,7 +32,7 @@ class OrderService(
         if (optionDetail.stock!! < 1) {
             throw RedirectException(alertDTO("주문하신 제품의 재고가 소진되었습니다. 죄송합니다.", "/user"))
         }
-        optionDetail.stock = optionDetail.stock?.minus(1)
+        optionDetail.stock = optionDetail.stock.minus(1)
         var productPrice = optionDetail.product!!.price
         optionDetail.extraCharge?.let {
             productPrice += it
