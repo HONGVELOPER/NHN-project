@@ -16,8 +16,11 @@ enum class ErrorMessage(
 
     //이미지 업로드
     IMAGE_UPLOAD_FAILED("이미지 업로드 실패 입니다.","/admin/products"),
-    IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products")
+    IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
 
     // 배송지
+
+    //옵션
+    EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products")
 
 }
