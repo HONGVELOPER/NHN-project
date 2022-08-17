@@ -3,6 +3,8 @@ package nhncommerce.project.order
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.order.domain.OrderRequestDTO
@@ -30,8 +32,7 @@ class OrderController(
     val deliverService: DeliverService,
     val optionService: OptionService,
     val loginInfoService: LoginInfoService,
-    val userService: UserService,
-    val alertService: AlertService
+    val userService: UserService
 
 
 ) {
@@ -73,10 +74,10 @@ class OrderController(
     @PostMapping("/api/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, mav: ModelAndView): ModelAndView {
         if (orderRequestDTO.deliverId == null) {
-            throw RedirectException(alertDTO("배송지가 없습니다. 배송지를 등록해주세요.", "/api/delivers/createForm"))
+            throw AlertException(ErrorMessage.NOTEXIST_ADDRESS)
         }
         if (orderRequestDTO.phone == "") {
-            throw RedirectException(alertDTO("연락처가 없습니다. 연락처를 등록해주세요.", "/api/users/updateProfileForm"))
+            throw AlertException(ErrorMessage.NOTEXIST_USERPHONE)
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
 
