@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull
 import javax.validation.constraints.NotBlank
 
 data class OrderRequestDTO(
-    var status: Status=Status.ACTIVE,
-    var price: Int,
-    var phone: String?=null,
-    var userId: Long,
-    var couponId: Long?=null,
-    var optionDetailId: Long,
-    var deliverId: Long?=null
+    val status: Status=Status.ACTIVE,
+    val price: Int,
+    val phone: String,
+    val userId: Long,
+    val couponId: Long?=null,
+    val optionDetailId: Long,
+    val deliverId: Long?=null
 )

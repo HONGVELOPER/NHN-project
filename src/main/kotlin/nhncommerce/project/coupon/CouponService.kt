@@ -71,18 +71,13 @@ class CouponService(
         return couponRepository.findById(couponId)
     }
 
-    /**
-     * 주문하기Page 에서 사용자의 사용가능한 쿠폰들 가져오기
-     * */
+
     fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
-        val list = mutableListOf<CouponListViewDTO>()
         val user = userRepository.findById(userId).get()
         val couponList = couponRepository.findByUser(user)
-        couponList.map {
-            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
-            list.add(CouponListDTO)
+        return couponList.map {
+            CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
         }
-        return list.toList()
     }
 
     fun updateCoupon(couponDTO : CouponDTO ,expired: LocalDate){

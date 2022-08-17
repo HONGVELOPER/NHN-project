@@ -15,7 +15,7 @@ data class OrderDTO(
     val coupon: Coupon?=null,
     val optionDetail: OptionDetail,
     val deliver: Deliver,
-    var reviewStatus: Boolean = false
+    val reviewStatus: Boolean = false
 
 ){
     fun dtoToEntity(): Order{

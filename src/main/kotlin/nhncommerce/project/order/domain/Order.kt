@@ -14,8 +14,7 @@ class Order (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    val orderId: Long? =null,
+    val orderId: Long,
 
     @Column(nullable = false)
     val price: Int,
