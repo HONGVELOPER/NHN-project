@@ -52,7 +52,7 @@ class SalesJobConfig(
     fun salesStep2() : Step {
         return stepBuilderFactory["salesStep2"]
             .tasklet{ contribution, chunkContext ->
-                val sales = Sales(null, LocalDate.now().minusDays(1),quantity,totalAmount)
+                val sales = Sales(0L, LocalDate.now().minusDays(1),quantity,totalAmount)
                 salesRepository.save(sales)
                 quantity = 0
                 totalAmount = 0
@@ -64,12 +64,10 @@ class SalesJobConfig(
     @Bean
     @StepScope
     fun processor(): ItemProcessor<Order, Order> {
-        return object : ItemProcessor<Order, Order> {
-            override fun process(orders: Order): Order {
-                totalAmount+=orders.price!!
-                quantity+=1
-                return orders
-            }
+        return ItemProcessor<Order, Order> { orders ->
+            totalAmount+=orders.price
+            quantity+=1
+            orders
         }
     }
 
@@ -82,9 +80,9 @@ class SalesJobConfig(
     @StepScope
     fun reader(): JpaPagingItemReader<Order> {
         val parameterValues: MutableMap<String, Any> = HashMap()
-        var now = LocalDate.now()
-        var start = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0).minusDays(1)
-        var end = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0)
+        val now = LocalDate.now()
+        val start = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0).minusDays(1)
+        val end = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0)
         parameterValues.put("start",start)
         parameterValues.put("end",end)
         return JpaPagingItemReaderBuilder<Order>()

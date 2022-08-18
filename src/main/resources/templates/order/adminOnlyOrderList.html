@@ -15,6 +15,7 @@
                     <option value="price" th:selected="${pageRequestDTO.type=='price'}">제품 가격</option>
                     <option value="address" th:selected="${pageRequestDTO.type=='address'}">배송지</option>
                     <option value="status" th:selected="${pageRequestDTO.type=='status'}">주문 상태</option>
+                    <option value="name" th:selected="${pageRequestDTO.type=='name'}">주문자 이름</option>
                 </select>
                 <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
                 <div class="input-group-append" id="button-addon4">
@@ -29,6 +30,7 @@
                 <th scope="col">제품 이름</th>
                 <th scope="col">결제 가격</th>
                 <th scope="col">제품 옵션</th>
+                <th scope="col">주문자</th>
                 <th scope="col">배송지</th>
                 <th scope="col">주문 상태</th>
                 <th scope="col">주문 생성 및 수정 날짜</th>
@@ -40,6 +42,7 @@
                 <td>[[${order.optionDetail.product.productName}]]</td>
                 <td>[[${order.price}]]</td>
                 <td>[[${order.optionDetail.name}]]</td>
+                <td>[[${order.user.name}]]</td>
                 <td>[[${order.deliver.address}]]</td>
                 <td th:if="${order.status.toString().equals('ACTIVE')}">주문 완료</td>
                 <td th:if="${order.status.toString().equals('IN_ACTIVE')}">주문 취소</td>
