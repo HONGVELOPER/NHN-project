@@ -7,7 +7,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <h1>당첨 확인</h1>
-                    <form th:action="@{/api/checkEvent}"  th:method="post" th:object="${eventCheckDTO}">
+                    <form th:action="@{/api/coupons/event/result}"  th:method="post" th:object="${eventCheckDTO}">
                         <div th:if="*{check == true}">
                             이벤트 당첨!
                             <div th:if="${progress == 2}">

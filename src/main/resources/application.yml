@@ -6,11 +6,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
     username: root
-    password: '0000'
+    password: zxc74100
+
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate.enable_lazy_load_no_trans: true
@@ -45,10 +46,10 @@ logging:
   level:
     org.hibernate.SQL: debug
 
-#image:
-#  authUrl: "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-#  tenantId: "507cc2a432bc43de8721f24810f3daa1"
-#  username: "soonbum-jeong@nhn-commerce.com"
-#  password: "1234"
-#  storageUrl: "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-#  containerName: "kirin"
+image:
+  authUrl: "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+  tenantId: "507cc2a432bc43de8721f24810f3daa1"
+  username: "soonbum-jeong@nhn-commerce.com"
+  password: "1234"
+  storageUrl: "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
+  containerName: "kirin"

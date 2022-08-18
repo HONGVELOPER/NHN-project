@@ -11,47 +11,37 @@
                     <div class="col-md-6">
                         썸네일 <br>
                         <input type="file" name="file" id="file" accept="image/*" onchange="previewFile()" required><br>
-                        <img id = "thumbnail" src="" height="200" >
+                            <img id = "thumbnail" src="" height="200" >
                         <br>
                         상품 사진 목록 <br>
                         <input type="file" name="fileList" id="fileList" accept="image/*" onchange="setImageList(event)" multiple><br>
-                        <div id="multiple-container" class="col mb-5">
+                            <div id="multiple-container" class="col mb-5">
                         </div>
-                    </div>
+                        </div>
 
-                            제품 이름
-                            <input type="text" class="form-control"  th:field="*{productName}" /><br>
-                            <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
+                        제품 이름
+                        <input type="text" class="form-control"  th:field="*{productName}" /><br>
+                        <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
 
+                        제품 가격
+                        <input id="price1" type="number" class="form-control"  th:field="*{price}" /><br>
+                        <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
 
+                        제품 간략 설명
+                        <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
+                        <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
 
-                            제품 가격
-                            <input id="price1" type="number" class="form-control"  th:field="*{price}" /><br>
-                            <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
-
-
-
-                            제품 간략 설명
-                            <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
-                            <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
-
-
-
-                            제품 상세 설명
-                            <input type="text" class="form-control"  th:field="*{detailDescription}"/><br>
-                            <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
-
+                        제품 상세 설명
+                        <textarea type="text" class="form-control"  th:field="*{detailDescription}"></textarea><br>
+                        <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
 
                         <div>
-
-                                카테고리 선택 <br>
-                                <select name="categoryId" class="form-select">
-                                    <div th:each="category : ${categoryListDTO}">
-                                        <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
-                                    </div>
-                                </select>
-
-
+                            카테고리 선택 <br>
+                            <select name="categoryId" class="form-select">
+                                <div th:each="category : ${categoryListDTO}">
+                                    <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
+                                </div>
+                            </select>
                         </div>
                         <br>
 
