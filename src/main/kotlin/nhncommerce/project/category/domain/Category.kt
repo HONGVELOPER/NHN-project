@@ -5,17 +5,30 @@ import nhncommerce.project.baseentity.Status
 import javax.persistence.*
 
 @Entity
+@Table(name="category")
 class Category (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var categoryId : Long? = null,
+    val categoryId : Long = 0L,
 
     @Column(nullable = false)
-    var name : String? = null,
+    val name : String,
 
-    @OneToMany(mappedBy = "category")
-    var subCategories : MutableList<SubCategory>? = ArrayList<SubCategory>(),
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="parent_id")
+    val parentCategory : Category? = null,
+
 
     @Column(nullable = false)
-    var status : Status? = Status.ACTIVE
-): BaseEntity()
+    @Enumerated(EnumType.STRING)
+    val status : Status = Status.ACTIVE
+): BaseEntity() {
+    fun entityToDto() : CategoryDTO {
+        return CategoryDTO(
+            categoryId = categoryId,
+            name = name,
+            parentCategory = parentCategory,
+            status = status
+        )
+    }
+}

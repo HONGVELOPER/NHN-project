@@ -2,12 +2,18 @@ package nhncommerce.project.category.domain
 
 import nhncommerce.project.baseentity.Status
 
-class CategoryDTO (
-    var categoryId : Long? = null,
-
-    var name : String? = null,
-
-    var status : Status? = Status.ACTIVE,
-
-    var subCategories : MutableList<SubCategory>? = ArrayList<SubCategory>()
-)
+data class CategoryDTO (
+    val categoryId : Long = 0L,
+    val name : String,
+    val status : Status = Status.ACTIVE,
+    val parentCategory : Category? = null
+    ) {
+    fun dtoToEntity() : Category {
+        return Category(
+            categoryId = categoryId,
+            name = name,
+            status = status,
+            parentCategory = parentCategory
+        )
+    }
+}

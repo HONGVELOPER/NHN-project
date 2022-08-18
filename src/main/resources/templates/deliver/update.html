@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+        <head>
+            <title>Please Log In</title>
+        </head>
+        <body>
+        <p>배송지 수정</p>
+        <div class="container">
+
+            <form th:action="@{/api/delivers/{deliverId}(deliverId = ${deliverId})}" th:method="put" th:object="${deliverDTO}" >
+                <div>
+                    <label for="addressName">배송지 이름</label>
+                    <input type="text" id="addressName" th:field="*{addressName}" class="form-control" placeholder="배송지 이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('addressName')}" th:errors="*{addressName}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="name">받는 사람</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="phone">받는 사람 전화번호</label>
+                    <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="전화번호를 입력하세요.">
+                    <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
+                </div>
+                <div>
+                    <label for="address">주소</label>
+                    <input type="text" id="address" th:field="*{address}" class="form-control" placeholder="이름을 입력하세요.">
+                    <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="jb-red"></p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">배송지 수정</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </body>
+    </th:block>
+</th:block>
+</html>

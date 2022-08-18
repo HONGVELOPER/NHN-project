@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <h1>이벤트 세팅</h1>
+                    <form th:action="@{/admin/coupons/event/setting}"  th:method="post">
+                        이벤트 쿠폰 개수<input type="number" th:name="eventCouponNum">
+                        이벤트 쿠폰 할인률<input type="number" th:name="discount">
+                        <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
+                            <input class="form-control" th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date">
+                        </div>
+
+                        <script>
+                            document.getElementById('now_date').valueAsDate=new Date();
+                        </script>
+                        <button class="btn btn-outline-dark mt-auto" type="submit">이벤트 세팅</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </th:block>
+</th:block>
+</html>

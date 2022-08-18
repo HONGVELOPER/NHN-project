@@ -1,16 +1,13 @@
 package nhncommerce.project.deliver
 
 import nhncommerce.project.deliver.domain.Deliver
+import nhncommerce.project.user.domain.User
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.querydsl.QuerydslPredicateExecutor
 
-data class DeliverRepository (
-    var id: Long? = null,
-    var address: String,
-) {
-    fun toEntity(): Deliver {
-        return Deliver(address = address)
-    }
+interface DeliverRepository: JpaRepository<Deliver, Long>, QuerydslPredicateExecutor<Deliver> {
 
-    fun toUpdateEntity(): Deliver {
-        return Deliver(id = id, address = address)
-    }
+
+    fun findByUser(user: User): List<Deliver>
+
 }

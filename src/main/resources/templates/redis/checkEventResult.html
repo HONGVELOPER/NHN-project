@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <h1>당첨 확인</h1>
+                    <form th:action="@{/api/coupons/event/result}"  th:method="post" th:object="${eventCheckDTO}">
+                        <div th:if="*{check == true}">
+                            이벤트 당첨!
+                            <div th:if="${progress == 2}">
+                                이벤트 진행중, 이벤트가 종료되면 쿠폰 발급
+                            </div>
+                            <div th:if="${progress == 3}">
+                                이벤트 종료, 당첨자 쿠폰 발급 전
+                            </div>
+                            <div th:if="${progress == 4}">
+                                당첨자 쿠폰 발급 완료
+                            </div>
+                        </div>
+                        <div th:if="*{check == false}">
+                            <div th:if="${progress != 2}">
+                                이벤트가 종료되었습니다.
+                                <div th:if="*{order == null}">
+                                    이벤트에 참여하지않았습니다
+                                </div>
+                                <div th:if="*{order != null}">
+                                    아쉽게도 당첨되지 못했습니다
+                                </div>
+                            </div>
+                            <div th:if="${progress == 2}">
+                                이벤트 진행중
+                                <div th:if="*{order == null}">
+                                    이벤트에 참여하지않았습니다
+                                </div>
+                                <div th:if="*{order != null}">
+                                    <p th:text="'대기 ' + *{order + 1} + '번, 새로고침을 눌러주세요'"></p>
+                                </div>
+                            </div>
+                        </div>
+<!--                        <button class="btn btn-outline-dark mt-auto" type="submit">당첨 확인</button>-->
+                    </form>
+                </div>
+            </div>
+        </section>
+    </th:block>
+</th:block>
+</html>

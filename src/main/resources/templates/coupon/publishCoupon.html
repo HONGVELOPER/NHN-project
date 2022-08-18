@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+        <th:block th:fragment="content">
+
+            <main>
+                <section class="py-5">
+                    <div class="container px-4 px-lg-5 my-5">
+                        <div class="row gx-4 gx-lg-5 align-items-center">
+                            <div class="col-md-6">
+                                <form th:action="@{/admin/coupons}"  method="post" th:object="${couponDTO}" onsubmit="return check()">
+                                    회원 email
+                                    <input type="text" class="form-control" name="email"/><br>
+                                    <p th:text="${error}"></p>
+                                    쿠폰 이름
+                                    <input type="text" class="form-control"  th:field="*{couponName}" /><br>
+                                    <p th:if="${#fields.hasErrors('couponName')}" th:errors="*{couponName}" class="jb-red"></p>
+
+                                    할인율
+                                    <input type="number" class="form-control" id="discount"  th:field="*{discountRate}" /><br>
+                                    <p th:if="${#fields.hasErrors('discountRate')}" th:errors="*{discountRate}" class="jb-red"></p>
+
+                                    만료 기간
+                                    <br>
+                                    <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
+
+                                        <input class="form-control" th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date">
+                                    </div>
+
+                                    <script>
+                                        document.getElementById('now_date').valueAsDate=new Date();
+                                    </script>
+
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발행</button>
+                                </form>
+
+
+                                <script>
+                                    function check(){
+                                        if (document.getElementById("discount").value == "") {
+                                            alert("재고를 입력해주세요. (재고가 없는경우 0 입력)")
+                                            return false
+                                        }
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </th:block>
+    </th:block>
+</html>

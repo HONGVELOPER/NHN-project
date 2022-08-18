@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+        <h1 class="mt-4">쿠폰 목록</h1>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">쿠폰 이름</th>
+                <th scope="col">할인율</th>
+                <th scope="col">쿠폰 상태</th>
+                <th scope="col">유효 기간</th>
+                <th scope="col">발행 날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="coupon : ${myCoupon.dtoList}">
+                <td>[[${coupon.couponName}]]</td>
+                <td>[[${coupon.discountRate}]]%</td>
+                <td th:if="${coupon.status.toString().equals('ACTIVE')}">사용 가능</td>
+                <td th:if="${coupon.status.toString().equals('IN_ACTIVE')}">사용 불가능</td>
+                <td>[[${#temporals.format(coupon.expired,'yyyy/MM/dd')}]]</td>
+                <td>[[${#temporals.format(coupon.createdAt,'yyyy/MM/dd')}]]</td>
+            </tr>
+            </tbody>
+
+        </table>
+
+        <ul class="pagination  justify-content-center align-items-center">
+            <li class="page-item" th:if="${myCoupon.prev}">
+                <a class="page-link" th:href="@{/api/myCouponList(page=${myCoupon.start-1})}" tabindex="-1">Previous</a>
+            </li>
+            <li th:class="'page-item' + ${myCoupon.page == page? 'active':''}"th:each="page : ${myCoupon.pageList}">
+                <a class="page-link" th:href="@{/api/myCouponList(page=${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+            <li class="page-item" th:if="${myCoupon.next}">
+                <a class="page-link" th:href="@{/api/myCouponList(page=${myCoupon.end+1})}">Next</a>
+            </li>
+        </ul>
+    </th:block>
+</th:block>

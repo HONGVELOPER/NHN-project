@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org">
+
+<th:block th:fragment="setContent(content)">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Kulture</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" th:href="@{/products}">Kulture</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" th:href="@{/api/users/myPageForm}" sec:authorize="isAuthenticated()">My Page</a></li>
+                <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()" /></li>
+                <li><a class="dropdown-item" th:href="@{/api/orders}" sec:authorize="isAuthenticated()">My Order</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/delivers/users}" sec:authorize="isAuthenticated()">Deliver Address</a></li>
+                <li><a class="dropdown-item" th:href="@{/api/myCouponList}" sec:authorize="isAuthenticated()">My Coupon</a></li>
+                <li><hr class="dropdown-divider" sec:authorize="isAuthenticated()"/></li>
+                <li><a class="dropdown-item" href="/login" sec:authorize="!isAuthenticated()">Login</a></li>
+                <li><a class="dropdown-item" href="/logout" sec:authorize="isAuthenticated()">Logout</a></li>
+                <li><a class="dropdown-item" th:href="@{/users/joinForm}" sec:authorize="!isAuthenticated()">sign up</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+<!--                    -->
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-music"></i></div>
+                        MUSIC
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayouts1" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/1}">Music</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/8}">CD</a>
+                            <a class="nav-link" th:href="@{/categories/9}">DVD</a>
+                            <a class="nav-link" th:href="@{/categories/10}">etc</a>
+                        </nav>
+                    </div>
+<!--                    -->
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages2" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-photo-film"></i></div>
+                        PHOTO
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages2" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/2}">Photo</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/11}" >Printed</a>
+                            <a class="nav-link" th:href="@{/categories/12}" >Photo Book</a>
+                            <a class="nav-link" th:href="@{/categories/13}">etc</a>
+                        </nav>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages3" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                        CONCERT
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages3" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/3}">Concert</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/14}" >Official Fanlight</a>
+                            <a class="nav-link" th:href="@{/categories/15}" >Concert Goods</a>
+                            <a class="nav-link" th:href="@{/categories/16}">etc</a>
+                        </nav>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages4" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
+                        LIVING
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages4" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/4}">Living</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/17}">Home</a>
+                            <a class="nav-link" th:href="@{/categories/18}">F&B</a>
+                            <a class="nav-link" th:href="@{/categories/19}">Tech</a>
+                        </nav>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages5" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-ring"></i></div>
+                        BEAUTY
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages5" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/5}">Beauty</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/20}">Skin Care</a>
+                            <a class="nav-link" th:href="@{/categories/21}">Make Up</a>
+                            <a class="nav-link" th:href="@{/categories/22}">Perfume</a>
+                        </nav>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages6" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-pen"></i></div>
+                        STATIONERY
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages6" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/6}">Stationery</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/23}">Note</a>
+                            <a class="nav-link" th:href="@{/categories/24}">Office</a>
+                            <a class="nav-link" th:href="@{/categories/25}">Pen</a>
+                        </nav>
+                    </div>
+
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages7" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-shirt"></i></div>
+                        FASHION
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages7" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/categories/7}">Fashion</a>
+                            <hr class="dropdown-divider">
+                            <a class="nav-link" th:href="@{/categories/26}">Clothing</a>
+                            <a class="nav-link" th:href="@{/categories/27}">Acc</a>
+                            <a class="nav-link" th:href="@{/categories/28}">Jewelry</a>
+                        </nav>
+                    </div>
+                    <a class="nav-link" th:href="@{/api/coupons/event}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-ticket-simple"></i></div>
+                        Event Coupon
+                    </a>
+                    <a class="nav-link" th:href="@{/api/coupons/event/result}">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-trophy"></i></div>
+                        Event Result
+                    </a>
+
+                </div>
+            </div>
+<!--            <div class="sb-sidenav-footer">-->
+<!--                <div class="small">Logged in as:</div>-->
+<!--                Start Bootstrap-->
+<!--            </div>-->
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <th:block th:replace = "${content}"></th:block>
+        </main>
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; nhn-commerce 기린TF</p></div>
+            <div class="container"><p class="m-0 text-center text-white">정순범 유재형 홍영진 강경빈</p></div>
+        </footer>
+    </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="/assets/demo/chart-area-demo.js"></script>
+<script src="/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script src="/js/datatables-simple-demo.js"></script>
+</body>
+</th:block>
+</html>

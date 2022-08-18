@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en xmlns:th=http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6">
+                        <img class="card-img-top mb-5 mb-md-0" th:src="${optionDetailDTO.product.thumbnail}" alt="..."/>
+                    </div>
+                    <div class="col-md-6">
+
+                        <form th:action="@{/api/orders}" method="post" th:object="${orderRequestDTO}">
+                            <div>
+                                <input hidden type="text" class="form-control"
+                                       th:field="${optionDetailDTO.optionDetailId}">
+                                <h5 class="fw-bolder" th:text="${optionDetailDTO.product.productName}"></h5>
+
+                                <input hidden type="text" th:field="${orderRequestDTO.userId}">
+                            </div>
+                            <div>
+                                <h5 class="fw-bolder">총 결제 가격 </h5>
+                                <p class="form-control"
+                                   th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
+                                <input hidden type="number" class="form-control"
+                                       th:value="${optionDetailDTO.product.price}" th:name="price">
+
+                            </div>
+
+                            <h5 class="fw-bolder">상세 설명</h5>
+                            <p class="form-control" th:text="${optionDetailDTO.product.detailDescription}"></p>
+
+                            <h5 class="fw-bolder">옵션</h5>
+                            <p class="form-control" th:text="${optionDetailDTO.name}"></p>
+
+                            <h5 class="fw-bolder">연락처</h5>
+                            <input hidden type="text" class="form-control" th:name="phone" th:value="${userDTO.phone}">
+                            <p class="form-control" th:text="${userDTO.phone}"></p>
+
+                            <div th:disabled="${deliverListViewDTO != null}">
+                                <h5 class="fw-bolder">배송지 선택</h5>
+                                <select name="deliverId" class="form-select"
+                                        th:disabled="${deliverListViewDTO == null}">
+
+                                    <div th:each="delivers : ${deliverListViewDTO}">
+                                        <option th:if="${delivers != null}" th:text="${delivers.fullAddress}"
+                                                th:value="${delivers.deliverId}" name="deliverId"></option>
+                                    </div>
+                                </select>
+                            </div>
+                            <div>
+                                <br>
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{/api/delivers/createForm}">새 배송지 추가</a>
+                            </div>
+                            <br>
+                            <br>
+                            <div>
+                                <h5 class="fw-bolder">쿠폰 선택</h5>
+                                <select name="couponId" class="form-select">
+                                    <option value="0" name="couponId">선택 안함</option>
+                                    <div th:if="${coupons.status.toString().equals('ACTIVE')}"
+                                         th:each="coupons : ${couponListViewDTO}">
+                                        <option th:text="${coupons.couponName}" th:value="${coupons.couponId}"
+                                                name="couponId"></option>
+                                    </div>
+                                </select>
+                            </div>
+                            <br>
+                            <button class="btn btn-outline-dark mt-auto" type="submit">상품 주문</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+</th:block>
+</html>
+

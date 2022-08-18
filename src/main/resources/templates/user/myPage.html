@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+        <head>
+            <title>마이 페이지</title>
+        </head>
+        <body>
+        <div class="w3-content w3-container w3-margin-top">
+            <div class="w3-container w3-card-4">
+                <div class="w3-center w3-large w3-margin-top">
+                    <h3>My Page</h3>
+                </div>
+                <p>
+                    <div>name</div>
+                    <h3 th:text="${userDTO.name}"></h3>
+                </p>
+                <p>
+                    <div>email</div>
+                    <h3 th:text="${userDTO.email}"></h3>
+                </p>
+                <p>
+                    <div>gender</div>
+                    <h3 th:text="${userDTO.gender}"></h3>
+                </p>
+                <p>
+                    <div>phone</div>
+                    <h3 th:text="${userDTO.phone}"></h3>
+                </p>
+            </div>
+        </div>
+        </body>
+    </th:block>
+</th:block>
+</html>

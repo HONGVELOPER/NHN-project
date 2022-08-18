@@ -2,14 +2,16 @@ package nhncommerce.project.product.domain
 
 import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Status
+import nhncommerce.project.category.domain.Category
 import javax.persistence.*
 
 @Entity
 class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productId:Long? = null,
+    val productId:Long = 0L,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status:Status = Status.ACTIVE,
 
@@ -26,12 +28,42 @@ class Product(
     var detailDescription:String?,
 
     @Column(nullable = true)
-    var thumbnail:String?,
+    var thumbnail:String,
 
     @Column(nullable = false)
-    var viewCount:Int,
+    var totalStar:Float=0F,
+    
+    //카테고리 추가
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    var category: Category?=null
 
-    @Column(nullable = false)
-    var totalStar:Float,
+):BaseEntity(){
+    fun updateProduct(productDTO: ProductDTO){
+        productName = productDTO.productName
+        price = productDTO.price
+        status = productDTO.status
+        briefDescription = productDTO.briefDescription
+        detailDescription=  productDTO.detailDescription
+        thumbnail = productDTO.thumbnail
+        category = productDTO.category
+    }
+    
+    fun entityToDto() : ProductDTO {
+        return ProductDTO(
+            productId = productId,
+            status = status,
+            productName = productName,
+            price = price,
+            briefDescription = briefDescription,
+            detailDescription = detailDescription,
+            thumbnail = thumbnail,
+            totalStar = totalStar,
+            category = category
+        )
+    }
 
-):BaseEntity()
+    fun updateTotalStar(newTotalStar: Float) {
+        totalStar = newTotalStar
+    }
+ }  
