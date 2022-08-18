@@ -67,6 +67,7 @@ class ProductService(
     }
 
 
+    @Transactional
     fun createProductImageList(fileList: List<MultipartFile>, product: Product) {
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)
@@ -179,6 +180,7 @@ class ProductService(
         return imageList
     }
 
+    @Transactional
     fun deleteProductImage(productImageId : Long){
         val getToken = storageTokenService.getTokenId()
         imageService.insertTokenId(getToken)

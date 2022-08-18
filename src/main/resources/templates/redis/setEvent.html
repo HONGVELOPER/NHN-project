@@ -7,7 +7,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <h1>이벤트 세팅</h1>
-                    <form th:action="@{/admin/redis/eventSet}"  th:method="post">
+                    <form th:action="@{/admin/coupons/event/setting}"  th:method="post">
                         이벤트 쿠폰 개수<input type="number" th:name="eventCouponNum">
                         이벤트 쿠폰 할인률<input type="number" th:name="discount">
                         <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
