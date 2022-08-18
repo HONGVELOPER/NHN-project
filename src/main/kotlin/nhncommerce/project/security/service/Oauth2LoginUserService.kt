@@ -27,6 +27,7 @@ class Oauth2LoginUserService(
         val user: User = userRepository.findByEmail(email)
             ?: userRepository.save(
                 User(
+                    userId = 0L,    //없으면 에러
                     name = username,
                     email = email,
                     role = role,

@@ -3,10 +3,14 @@ package nhncommerce.project.order
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
+import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.order.domain.OrderRequestDTO
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.user.UserService
+import nhncommerce.project.user.domain.UserDTO
 import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
@@ -28,51 +32,11 @@ class OrderController(
     val deliverService: DeliverService,
     val optionService: OptionService,
     val loginInfoService: LoginInfoService,
-    val userService: UserService,
-    val alertService: AlertService
+    val userService: UserService
 
 
 ) {
-    /**
-     * 상품 주문 페이지
-     * */
-//    @PostMapping("/api/orderProducts")
-//    fun orderProductPage(
-//        @RequestParam("optionDetailId") optionDetailId: Long? = null,
-//        @RequestParam("productId") productId: String,
-//        mav: ModelAndView
-//    ): ModelAndView {
-//        if (optionDetailId == null) {
-//            mav.addObject("data", alertDTO("선택된 옵션이 없습니다.", "/products/" + productId))
-//            mav.viewName = "user/alert"
-//            return mav
-//        }
-//        val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
-//        couponService.updateCouponStatus()
-//        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-//
-//        val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
-//        val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
-//        val userDTO = userService.findUserById(loginInfo.userId)
-//        val orderRequestDTO = OrderRequestDTO(
-//            status = Status.ACTIVE,
-//            price = 0,
-//            phone = userDTO.phone?: "",
-//            userId = loginInfo.userId,
-//            couponId = null,
-//            optionDetailId = optionDetailId,
-//            deliverId = null
-//        )
-//
-//
-//        mav.addObject("userDTO", userDTO)
-//        mav.addObject("optionDetailDTO", optionDetailDTO)
-//        mav.addObject("deliverListViewDTO", deliverListviewDTO)
-//        mav.addObject("couponListViewDTO", couponListViewDTO)
-//        mav.addObject("orderRequestDTO", orderRequestDTO)
-//        mav.viewName = "order/orderProduct"
-//        return mav
-//    }
+
     @PostMapping("/api/orderProducts")
     fun orderProductPage(
         @RequestParam("optionDetailId") optionDetailId: Long,
@@ -85,11 +49,11 @@ class OrderController(
 
         val couponListViewDTO = couponService.getCouponViewList(loginInfo.userId)
         val deliverListviewDTO = deliverService.getDeliverViewList(loginInfo.userId)
-        val userDTO = userService.findUserById(loginInfo.userId)
+        val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
         val orderRequestDTO = OrderRequestDTO(
             status = Status.ACTIVE,
             price = 0,
-            phone = userDTO.phone?: "",
+            phone = userDTO.phone.orEmpty(),
             userId = loginInfo.userId,
             couponId = null,
             optionDetailId = optionDetailId,
@@ -106,42 +70,40 @@ class OrderController(
         return mav
     }
 
-    /**
-     * 상품 주문
-     */
+
     @PostMapping("/api/orders")
-    fun orderProduct(orderRequestDTO: OrderRequestDTO, response: HttpServletResponse) {
+    fun orderProduct(orderRequestDTO: OrderRequestDTO, mav: ModelAndView): ModelAndView {
+        if (orderRequestDTO.deliverId == null) {
+            throw AlertException(ErrorMessage.NOTEXIST_ADDRESS)
+        }
+        if (orderRequestDTO.phone == "") {
+            throw AlertException(ErrorMessage.NOTEXIST_USERPHONE)
+        }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
 
-
         orderService.createOrder(orderRequestDTO, loginInfo.userId)
-        alertService.alertMessage("주문이 완료되었습니다.", "/user", response)
+        mav.addObject("data", alertDTO("주문이 완료되었습니다.", "/api/orders"))
+        mav.viewName = "user/alert"
+        return mav
+
     }
 
 
-    /**
-     * 나의 주문내역 전체 조회 페이지 -user
-     */
     @GetMapping("/api/orders")
     fun orderList(pageRequestDTO: PageRequestDTO, model: Model): String {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        model.addAttribute("userOrders", orderService.getMyOrderList(pageRequestDTO, loginInfo.userId))
+        model.addAttribute("userOrders", orderService.getUserOrderList(pageRequestDTO, loginInfo.userId))
         return "order/orderList"
     }
 
 
-    /**
-     * 관라자용 모든 사용자 주문내역 전체 조회 페이지 -admin
-     */
     @GetMapping("/admin/orders")
     fun orderListTest(pageRequestDTO: PageRequestDTO, model: Model): String {
-        model.addAttribute("orders", orderService.getOrderList(pageRequestDTO))
+        model.addAttribute("orders", orderService.getAdminOrderList(pageRequestDTO))
         return "order/adminOnlyOrderList"
     }
 
-    /**
-     * 나의 주문내역 단건조회 - user
-     */
+
     @GetMapping("/api/orders/{orderId}")
     fun getMyOrder(@PathVariable("orderId") orderId: Long, model: Model): String {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
@@ -149,9 +111,7 @@ class OrderController(
         return "order/myOrderView"
     }
 
-    /**
-     * 관리자용 사용자 주문내역 단건조회 - admin
-     */
+
     @GetMapping("/admin/orders/{orderId}")
     fun getOrder(@PathVariable("orderId") orderId: Long, model: Model): String {
         model.addAttribute("orderInfo", orderService.getOrder(orderId))
@@ -159,23 +119,23 @@ class OrderController(
     }
 
 
-    /**
-     * 주문 취소 - user
-     */
     @PutMapping("/api/orders/orderCancel/{orderId}")
-    fun cancelMyOrder(@PathVariable("orderId") orderId: Long, response: HttpServletResponse) {
+    fun cancelMyOrder(@PathVariable("orderId") orderId: Long, mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        orderService.cancelMyOrder(orderId, loginInfo.userId)
-        alertService.alertMessage("주문이 취소되었습니다.", "/api/orders", response)
+        orderService.cancelOrder(orderId, loginInfo.userId)
+        mav.addObject("data", alertDTO("주문이 취소되었습니다.", "/api/orders"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
-    /**
-     * 주문 취소 - admin
-     */
+
     @PutMapping("/admin/orders/orderCancel/{orderId}")
-    fun calcelOrder(@PathVariable("orderId") orderId: Long, response: HttpServletResponse) {
-        orderService.cancelOrder(orderId)
-        alertService.alertMessage("주문이 취소되었습니다.", "/admin/orders", response)
+    fun cancelOrder(@PathVariable("orderId") orderId: Long, mav: ModelAndView): ModelAndView {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        orderService.cancelOrder(orderId, loginInfo.userId)
+        mav.addObject("data", alertDTO("주문이 취소되었습니다.", "/admin/orders"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
 }

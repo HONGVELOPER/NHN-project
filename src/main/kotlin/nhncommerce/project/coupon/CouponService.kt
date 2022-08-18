@@ -60,16 +60,13 @@ class CouponService(
     fun getCoupon(couponId: Long): Optional<Coupon> {
         return couponRepository.findById(couponId)
     }
-    
+
     fun getCouponViewList(userId: Long):List<CouponListViewDTO> {
-        val list = mutableListOf<CouponListViewDTO>()
         val user = userRepository.findById(userId).get()
         val couponList = couponRepository.findByUser(user)
-        couponList.map {
-            val CouponListDTO = CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
-            list.add(CouponListDTO)
+        return couponList.map {
+            CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
         }
-        return list.toList()
     }
 
     @Transactional
