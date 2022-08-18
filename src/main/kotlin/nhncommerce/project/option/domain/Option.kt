@@ -22,7 +22,7 @@ class Option (
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val status : Status = Status.ACTIVE,
+    var status : Status = Status.ACTIVE,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -38,5 +38,9 @@ class Option (
             status = status,
             product = product
         )
+    }
+
+    fun makeOptionInActive() {
+        status = Status.IN_ACTIVE
     }
 }

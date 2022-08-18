@@ -11,7 +11,8 @@ import java.util.Optional
 
 interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
 
-    fun findOptionDetailsByProduct(product: Product) : List<OptionDetail>
+    @Query(value = "select d from OptionDetail as d where d.product = :product and d.status = 'ACTIVE'")
+    fun findOptionDetailsByProduct(@Param("product") product: Product) : List<OptionDetail>
 
 //    //option에 해당하는 optionDetail 삭제
 //    @Modifying
@@ -25,6 +26,7 @@ interface OptionDetailRepository  : JpaRepository<OptionDetail, Long> {
     @Query(value = "delete from OptionDetail as d where d.product.productId=:productId")
     fun deleteOptionDetailsByProductId(@Param("productId") productId: Long)
 
-    fun findByOptionDetailId(optionDetailId: Long) : OptionDetail
+    @Query(value = "select d from OptionDetail as d where d.optionDetailId = :optionDetailId")
+    fun findByOptionDetailId(@Param("optionDetailId") optionDetailId: Long) : OptionDetail
 
 }

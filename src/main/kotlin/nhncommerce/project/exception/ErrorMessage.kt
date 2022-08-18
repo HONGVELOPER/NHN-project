@@ -26,4 +26,7 @@ enum class ErrorMessage(
     NOTEXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
     //재고
 
+    //옵션
+    EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products")
+
 }

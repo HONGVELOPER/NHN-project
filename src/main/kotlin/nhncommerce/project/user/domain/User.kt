@@ -4,6 +4,7 @@ import nhncommerce.project.baseentity.BaseEntity
 import nhncommerce.project.baseentity.Gender
 import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
+import java.io.Serializable
 import javax.persistence.*
 
 @Table(name = "user")
@@ -45,7 +46,7 @@ class User (
     @Column()
     val oauthId: String? = null,
 
-): BaseEntity() {
+): BaseEntity(), Serializable { //Serializable 추가
 
     fun updateProfile(profileDTO: ProfileDTO) {
         name = profileDTO.name

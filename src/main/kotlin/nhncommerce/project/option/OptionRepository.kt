@@ -12,11 +12,13 @@ interface OptionRepository : JpaRepository<Option, Long> {
 
 
     //product에 해당하는 option 찾기 (부모 option not null, optionId로 정렬)
-    fun findOptionsByProductAndParentOptionIsNullOrderByOptionId(product: Product) : MutableList<Option>
-
+    //fun findOptionsByProductAndParentOptionIsNullOrderByOptionId(product: Product) : MutableList<Option>
+    @Query(value = "select o from Option as o where o.product = :product and o.parentOption is null and o.status = 'ACTIVE' order by o.optionId")
+    fun findParentOptionsByProduct(@Param("product") product: Product) : MutableList<Option>
 
     //부모 option에 해당하는 option 조회
-    fun findOptionsByParentOption(parentOption : Option?) : MutableList<Option>
+    @Query(value = "select o from Option as o where o.parentOption = :parentOption and o.status = 'ACTIVE'")
+    fun findOptionsByParentOption(@Param("parentOption") parentOption : Option?) : MutableList<Option>
 
     //productId를 통해 부모 option 삭제
     @Modifying

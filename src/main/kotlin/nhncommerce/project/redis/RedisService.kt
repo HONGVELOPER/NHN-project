@@ -30,11 +30,13 @@ class RedisService (
         val end = 9L //대기열 마지막
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
 
-        for (people in queue!!) {
-            log.info("${people}님의 ${eventCoupon.value} 쿠폰이 발급되었습니다")
-            redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, people, System.currentTimeMillis().toDouble())
-            redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", people)
-            event.decrease()
+        queue?.let {
+            for (userId in it) {
+                log.info("${userId}님의 ${eventCoupon.value} 쿠폰이 발급되었습니다")
+                redisTemplate.opsForZSet().add( "Save" + eventCoupon.value, userId, System.currentTimeMillis().toDouble())
+                redisTemplate.opsForZSet().remove(eventCoupon.value + "Queue", userId)
+                event.decrease()
+            }
         }
     }
 
@@ -44,9 +46,11 @@ class RedisService (
         val end = -1L
         val queue = redisTemplate.opsForZSet().range(eventCoupon.value + "Queue", start, end)
 
-        for (people in queue!!) {
-            val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", people)
-            log.info("${people}님의 현재 대기열은 ${rank}명 남았습니다.")
+        queue?.let {
+            for (userId in it) {
+                val rank = redisTemplate.opsForZSet().rank(eventCoupon.value + "Queue", userId)
+                log.info("${userId}님의 현재 대기열은 ${rank}명 남았습니다.")
+            }
         }
     }
 
