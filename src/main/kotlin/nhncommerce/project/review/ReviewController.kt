@@ -1,6 +1,5 @@
 package nhncommerce.project.review
 
-import nhncommerce.project.image.ImageService
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.review.domain.Review
@@ -10,7 +9,6 @@ import nhncommerce.project.review.domain.ReviewListDTO
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
-import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -25,9 +23,6 @@ class ReviewController(
     val loginInfoService: LoginInfoService,
 ) {
 
-    /*
-    * 리뷰 작성 페이지
-    * */
     @GetMapping("/api/reviews/orders/{orderId}/createForm")
     fun reviewCreateForm(
         @PathVariable orderId: Long,
@@ -41,9 +36,6 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 수정 페이지
-    * */
     @GetMapping("/api/reviews/{reviewId}/updateForm")
     fun reviewUpdateForm(
         @PathVariable("reviewId") reviewId: Long,
@@ -57,11 +49,8 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 목록 페이지 - 상품 기준
-    * */
     @GetMapping("/reviews/products/{productId}")
-    fun reviewListByProductId(
+    fun findReviewListByProduct(
         @PathVariable("productId") productId: Long,
             pageRequestDTO: PageRequestDTO,
             mav:ModelAndView
@@ -73,11 +62,8 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 목록 페이지 - 유저 기준
-    * */
     @GetMapping("/api/reviews/users")
-    fun findReviewByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
+    fun findReviewListByUser(pageRequestDTO: PageRequestDTO, mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val result: PageResultDTO<ReviewListDTO, Review> =
             reviewService.findReviewListByUser(loginInfo.userId, pageRequestDTO)
@@ -86,9 +72,6 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 작성
-    * */
     @PostMapping("/api/reviews/orders/{orderId}")
     fun createReview(
         @PathVariable("orderId") orderId: Long,
@@ -108,10 +91,7 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 수정
-    * */
-    @PutMapping("/api/reviews/{reviewId}/update")
+    @PutMapping("/api/reviews/{reviewId}")
     fun updateReview(
         @PathVariable("reviewId") reviewId: Long,
         @Valid @ModelAttribute reviewDTO: ReviewDTO,
@@ -130,10 +110,7 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 삭제
-    * */
-    @PutMapping("/api/reviews/{reviewId}/delete")
+    @DeleteMapping("/api/reviews/{reviewId}")
     fun deleteReview(
         @PathVariable("reviewId") reviewId: Long,
         mav: ModelAndView
@@ -145,10 +122,7 @@ class ReviewController(
         return mav
     }
 
-    /*
-    * 리뷰 이미지 삭제 - 업데이트 과정에서
-    * */
-    @DeleteMapping("/api/reviews/{reviewId}")
+    @DeleteMapping("/api/reviews/{reviewId}/images")
     fun deleteReviewImage(@PathVariable("reviewId") reviewId: Long, redirect: RedirectAttributes): String {
         println("controller access")
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
