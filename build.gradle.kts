@@ -52,6 +52,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client:2.6.2")
 
+    annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor")
+
     //json
     implementation("org.json:json:20190722")
 
