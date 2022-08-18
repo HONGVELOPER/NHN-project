@@ -31,17 +31,13 @@ class OptionService (
 //        optionRepository.deleteChildOptionsByProductId(productId)
 //        optionRepository.deleteParentOptionsByProductId(productId)
         val product = productRepository.findById(productId).get()
-        val parentOptionList = optionRepository.findParentOptionsByProduct(product)
-        val optionDetails = optionDetailRepository.findOptionDetailsByProduct(product)
-        for(parent in parentOptionList)
-            parent.status = Status.IN_ACTIVE
-
-        for(detail in optionDetails) {
-            detail.status = Status.IN_ACTIVE
-            detail.option1?.status = Status.IN_ACTIVE
-            detail.option2?.status = Status.IN_ACTIVE
-            detail.option3?.status = Status.IN_ACTIVE
-        }
+        optionRepository.findParentOptionsByProduct(product).map { it.makeOptionInActive() }
+        optionDetailRepository.findOptionDetailsByProduct(product).map { it.makeDetailInActive() }
+//
+//        for(parent in parentOptionList)
+//            parent.makeOptionInActive()
+//        for(detail in optionDetails)
+//            detail.makeDetailInActive()
     }
 
     //상품 재고, 추가금액 수정
@@ -53,10 +49,7 @@ class OptionService (
             val detailCharge = optionStockDTO.detailChargeList[i]
             val optionDetail = optionDetailRepository.findById(detailId).get()
 
-            optionDetail.apply {
-                stock = detailStock
-                extraCharge = detailCharge
-            }
+            optionDetail.changeStockAndCharge(detailStock, detailCharge)
 //            optionDetail.stock = detailStock
 //            optionDetail.extraCharge = detailCharge
 //            optionDetailRepository.save(optionDetail) //todo : 변경감지

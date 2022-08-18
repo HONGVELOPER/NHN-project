@@ -42,18 +42,32 @@ class OptionDetail (
     val option3 : Option? = null
 
     ): BaseEntity() {
-        fun entityToDto() : OptionDetailDTO {
-            return OptionDetailDTO(
-                optionDetailId = optionDetailId,
-                status = status,
-                extraCharge = extraCharge,
-                stock = stock,
-                name = name,
-                product = product,
-                option1 = option1,
-                option2 = option2,
-                option3 = option3
-            )
-        }
+    fun entityToDto() : OptionDetailDTO {
+        return OptionDetailDTO(
+            optionDetailId = optionDetailId,
+            status = status,
+            extraCharge = extraCharge,
+            stock = stock,
+            name = name,
+            product = product,
+            option1 = option1,
+            option2 = option2,
+            option3 = option3
+        )
+    }
+
+    fun makeDetailInActive(){
+        status = Status.IN_ACTIVE
+        option1?.status = Status.IN_ACTIVE
+        option2?.status = Status.IN_ACTIVE
+        option3?.status = Status.IN_ACTIVE
+    }
+
+    fun changeStockAndCharge(newStock : Int, newCharge : Int){
+        stock = newStock
+        extraCharge = newCharge
+    }
+
+
 
 }

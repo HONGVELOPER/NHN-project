@@ -39,4 +39,8 @@ class Option (
             product = product
         )
     }
+
+    fun makeOptionInActive() {
+        status = Status.IN_ACTIVE
+    }
 }
