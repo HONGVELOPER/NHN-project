@@ -18,8 +18,11 @@ import java.util.*
 @Service
 class ImageService {
 
-    private var storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-    private var containerName = "kirin"
+    @Value("\${image.storageUrl}")
+    private var storageUrl = ""
+
+    @Value("\${image.containerName}")
+    private var containerName = ""
 
     var tokenId = ""
     var restTemplate = RestTemplate()
@@ -35,7 +38,6 @@ class ImageService {
     fun uploadObject(containerName: String, objectName: String, inputStream: InputStream?) : String{
         val url = getUrl(containerName, objectName)
         val requestCallback = RequestCallback { request ->
-//            request.headers.add("X-Auth-Token", tokenId)
             request.headers.addToken(tokenId)
             IOUtils.copy(inputStream, request.body)
         }
@@ -53,7 +55,6 @@ class ImageService {
     fun deleteObject(objectName: String) {
         val url = getUrl(containerName, objectName)
         val headers = HttpHeaders()
-//        headers.add("X-Auth-Token", tokenId)
         headers.addToken(tokenId)
         val requestHttpEntity: HttpEntity<String> = HttpEntity<String>(null, headers)
         restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String::class.java)

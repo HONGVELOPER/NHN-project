@@ -10,11 +10,17 @@ import org.springframework.web.client.RestTemplate
 @Service
 class AuthService {
 
+    @Value("\${image.authUrl}")
+    private var authUrl = ""
 
-    private var authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-    private var tenantId = "507cc2a432bc43de8721f24810f3daa1"
-    private var username = "soonbum-jeong@nhn-commerce.com"
-    private var password = "1234"
+    @Value("\${image.tenantId}")
+    private var tenantId = ""
+
+    @Value("\${image.username}")
+    private var username = ""
+
+    @Value("\${image.password}")
+    private var password = ""
 
     var tokenRequest = TokenRequest()
     var restTemplate = RestTemplate()
@@ -23,26 +29,22 @@ class AuthService {
         var auth = Auth()
 
         inner class Auth {
-            var tenantId: String? = null
+            var tenantId: String = ""
             var passwordCredentials: PasswordCredentials = PasswordCredentials()
         }
 
         inner class PasswordCredentials {
-            var username: String? = null
-            var password: String? = null
+            var username: String = ""
+            var password: String = ""
         }
     }
 
-    init {
-        // 요청 본문 생성
-        tokenRequest = TokenRequest()
+    fun requestToken(): String? {
+
         tokenRequest.auth.tenantId = tenantId
         tokenRequest.auth.passwordCredentials.username = username
         tokenRequest.auth.passwordCredentials.password = password
-        restTemplate = RestTemplate()
-    }
 
-    fun requestToken(): String? {
         val identityUrl = "$authUrl/tokens"
 
         // 헤더 생성
@@ -59,8 +61,7 @@ class AuthService {
     }
 
     fun generateToken(): String? {
-        val authService = AuthService()
-        return authService.requestToken()
+        return requestToken()
     }
 
 }
