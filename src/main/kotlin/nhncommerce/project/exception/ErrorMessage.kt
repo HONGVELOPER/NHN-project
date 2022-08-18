@@ -20,7 +20,7 @@ enum class ErrorMessage(
     IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
 
     //일 매출 스케줄링
-    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin")
+    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin"),
 
     // 배송지
     NOTEXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
