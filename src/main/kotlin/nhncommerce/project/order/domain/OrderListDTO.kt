@@ -9,7 +9,7 @@ import nhncommerce.project.user.domain.User
 import java.time.LocalDateTime
 
 data class OrderListDTO(
-    val orderId: Long?,
+    val orderId: Long,
     val status: Status= Status.ACTIVE,
     val price: Int,
     val phone: String,
@@ -19,5 +19,5 @@ data class OrderListDTO(
     val deliver: Deliver,
     val createdAt : LocalDateTime,
     val updatedAt : LocalDateTime,
-    var reviewStatus: Boolean = false
+    val reviewStatus: Boolean = false
 )
