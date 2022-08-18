@@ -4,6 +4,7 @@ import nhncommerce.project.exception.AlertException
 import nhncommerce.project.exception.ErrorMessage
 import org.apache.tomcat.util.http.fileupload.IOUtils
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -16,13 +17,12 @@ import java.io.InputStream
 import java.util.*
 
 @Service
+@ConfigurationProperties("image")
 class ImageService {
 
-    @Value("\${image.storageUrl}")
-    private var storageUrl = ""
+    var storageUrl = ""
 
-    @Value("\${image.containerName}")
-    private var containerName = ""
+    var containerName = ""
 
     var tokenId = ""
     var restTemplate = RestTemplate()

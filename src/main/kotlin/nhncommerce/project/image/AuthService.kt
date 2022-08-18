@@ -1,6 +1,6 @@
 package nhncommerce.project.image
 
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
@@ -8,19 +8,16 @@ import org.springframework.web.client.RestTemplate
 
 
 @Service
+@ConfigurationProperties(prefix = "image")
 class AuthService {
 
-    @Value("\${image.authUrl}")
-    private var authUrl = ""
+    var authUrl = ""
 
-    @Value("\${image.tenantId}")
-    private var tenantId = ""
+    var tenantId = ""
 
-    @Value("\${image.username}")
-    private var username = ""
+    var username = ""
 
-    @Value("\${image.password}")
-    private var password = ""
+    var password = ""
 
     var tokenRequest = TokenRequest()
     var restTemplate = RestTemplate()
