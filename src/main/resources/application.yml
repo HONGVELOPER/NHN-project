@@ -32,6 +32,9 @@ spring:
     init:
       schema-locations: classpath:sql/category-insert.sql
       mode: always
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 server:
   servlet:

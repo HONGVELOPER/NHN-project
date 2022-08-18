@@ -20,13 +20,18 @@ enum class ErrorMessage(
     IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
 
     //일 매출 스케줄링
-    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin")
+    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin"),
 
     // 배송지
     NOTEXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
     //재고
 
     //옵션
-    EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products")
+    EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products"),
+
+    // 리뷰
+    CANCEL_ORDER("취소된 주문입니다.", "/user"),
+    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/user"),
+
 
 }

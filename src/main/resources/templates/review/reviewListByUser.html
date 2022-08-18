@@ -25,7 +25,7 @@
                     <form th:method="get" th:action="@{/api/reviews/{reviewId}/updateForm(reviewId = ${review.reviewId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
-                    <form th:method="put" th:action="@{/api/reviews/{reviewId}/delete(reviewId = ${review.reviewId})}" style="display: inline">
+                    <form th:method="delete" th:action="@{/api/reviews/{reviewId}(reviewId = ${review.reviewId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
                     </form>
                 </td>
