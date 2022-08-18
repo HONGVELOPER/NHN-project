@@ -7,6 +7,7 @@ spring:
     url: jdbc:mysql://localhost:3306/kulture
     username: root
     password: zxc74100
+
   jpa:
     open-in-view: false
     hibernate:

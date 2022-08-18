@@ -97,14 +97,13 @@ class CategoryServiceTest {
 
 
                     val product = Product(
-                        null,
+                        0L,
                         Status.ACTIVE,
                         "test" + i,
                         i * 1000,
                         "simple description" + i,
                         "detail" + i,
                         imgArr[j - 1],
-                        0,
                         0F,
                         category
                     )

@@ -8,7 +8,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 
+@EnableRedisHttpSession
 @Configuration
 class RedisConfig {
 
@@ -26,8 +28,12 @@ class RedisConfig {
     @Bean
     fun redisTemplate() : RedisTemplate<*, *> {
         val redisTemplate: RedisTemplate<*, *> = RedisTemplate<Any, Any>()
+
         redisTemplate.keySerializer = StringRedisSerializer() //저장시 이름관련
         redisTemplate.valueSerializer = GenericJackson2JsonRedisSerializer()
+
+        redisTemplate.hashKeySerializer = GenericJackson2JsonRedisSerializer()
+        redisTemplate.hashValueSerializer = GenericJackson2JsonRedisSerializer() //
 
         redisTemplate.setConnectionFactory(redisConnectionFactory())
         return redisTemplate
