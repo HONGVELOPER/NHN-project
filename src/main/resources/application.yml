@@ -6,7 +6,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
     username: root
-    password: '0000'
+    password: zxc74100
+
   jpa:
     open-in-view: false
     hibernate:
@@ -31,7 +32,10 @@ spring:
   sql:
     init:
       schema-locations: classpath:sql/category-insert.sql
-      mode: never
+      mode: always
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 server:
   servlet:
@@ -42,10 +46,10 @@ logging:
   level:
     org.hibernate.SQL: debug
 
-#image:
-#  authUrl: "https://api-identity.infrastructure.cloud.toast.com/v2.0"
-#  tenantId: "507cc2a432bc43de8721f24810f3daa1"
-#  username: "soonbum-jeong@nhn-commerce.com"
-#  password: "1234"
-#  storageUrl: "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
-#  containerName: "kirin"
+image:
+  authUrl: "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+  tenantId: "507cc2a432bc43de8721f24810f3daa1"
+  username: "soonbum-jeong@nhn-commerce.com"
+  password: "1234"
+  storageUrl: "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
+  containerName: "kirin"

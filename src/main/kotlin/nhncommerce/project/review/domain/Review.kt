@@ -14,7 +14,7 @@ class Review(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    val reviewId: Long? = null,
+    val reviewId: Long = 0L,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -66,5 +66,13 @@ class Review(
         reviewDTO.reviewImage?.let {
             reviewImage = it
         }
+    }
+
+    fun updateStatus(newStatus: Status) {
+        status = newStatus
+    }
+
+    fun updateReviewImage(newReviewImage: String?) {
+        reviewImage = newReviewImage
     }
 }
