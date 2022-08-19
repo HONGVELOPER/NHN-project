@@ -5,6 +5,8 @@ import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponRepository
 import nhncommerce.project.deliver.DeliverRepository
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.option.OptionDetailRepository
 import nhncommerce.project.order.domain.*
@@ -29,34 +31,44 @@ class OrderService(
     @Transactional
     fun createOrder(orderRequestDTO: OrderRequestDTO, userId: Long) {
         val optionDetail = optionDetailRepository.findById(orderRequestDTO.optionDetailId).get()
-        if (optionDetail.stock!! < 1) {
-            throw RedirectException(alertDTO("주문하신 제품의 재고가 소진되었습니다. 죄송합니다.", "/user"))
+
+
+        if (optionDetail.stock -  orderRequestDTO.count < 0) {
+            throw AlertException(ErrorMessage.OUT_OF_STOCK)
         }
-        optionDetail.stock = optionDetail.stock.minus(1)
-        var productPrice = optionDetail.product!!.price
-        optionDetail.extraCharge?.let {
-            productPrice += it
+
+        val productArray = IntArray(orderRequestDTO.count){0}
+        for ( i in productArray.indices){
+            optionDetail.extraCharge.let {
+                var productPrice = optionDetail.product.price
+                productPrice += it
+                productArray.set(i,productPrice)
+            }
         }
+        var totalPrice = productArray.sum()
         val user = userRepository.findById(userId).get()
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
         val coupon = orderRequestDTO.couponId?.takeIf { orderRequestDTO.couponId != 0L }?.let {
             val coupon = couponRepository.findById(it).get()
-            val discountedPrice: Int = (productPrice * (coupon.discountRate * 0.01)).toInt()
-            productPrice -= discountedPrice
+            val discountedPrice: Int = (productArray.get(0) * (coupon.discountRate * 0.01)).toInt()
+            totalPrice -= discountedPrice
             coupon.status = Status.IN_ACTIVE
             couponRepository.save(coupon)
         }
+
         val order = Order(
             orderId = 0L,
             status = Status.ACTIVE,
-            price = productPrice,
+            price = totalPrice,
             phone = orderRequestDTO.phone,
             user = user,
             coupon = coupon,
             optionDetail = optionDetail,
+            count = orderRequestDTO.count,
             deliver = deliver!!,
             reviewStatus = false
         )
+        optionDetail.stock = optionDetail.stock.minus(orderRequestDTO.count)
         orderRepository.save(order)
     }
 

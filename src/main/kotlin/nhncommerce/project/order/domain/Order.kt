@@ -39,6 +39,9 @@ class Order (
     @JoinColumn(name="option_detail_id")
     val optionDetail: OptionDetail,
 
+    @Column(nullable = false)
+    val count: Int,
+
     @OneToOne
     @JoinColumn(name="deliver_id")
     val deliver: Deliver,
@@ -57,6 +60,7 @@ class Order (
             user = user,
             coupon = coupon,
             optionDetail = optionDetail,
+            count = count,
             deliver = deliver,
             createdAt = createdAt,
             updatedAt = updatedAt,
