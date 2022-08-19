@@ -109,6 +109,9 @@ class OrderService(
     fun cancelOrder(orderId: Long, userId: Long) {
         val user = userRepository.findById(userId).get()
         val order = orderRepository.findById(orderId).get()
+        val optionDetailId = order.optionDetail.optionDetailId
+        var optionDetail = optionDetailRepository.findById(optionDetailId).get()
+
         if (user.role == ROLE.ROLE_ADMIN) {
             if (order.coupon?.couponId != null) {
                 val coupon = couponRepository.findById(order.coupon.couponId).get()
@@ -123,6 +126,7 @@ class OrderService(
                 coupon.status = Status.ACTIVE
             }
         }
+        optionDetail.stock += order.count
         order.status = Status.IN_ACTIVE
     }
 
