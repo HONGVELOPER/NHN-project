@@ -14,5 +14,6 @@ data class OrderRequestDTO(
     val userId: Long,
     val couponId: Long?=null,
     val optionDetailId: Long,
+    val count: Int,
     val deliverId: Long?=null
 )

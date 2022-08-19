@@ -34,6 +34,14 @@
                                 <td th:text="${order.optionDetail.product.detailDescription}">1</td>
                             </div>
                             <div>
+                                제품 옵션 :
+                                <td th:text="${order.optionDetail.name}">1</td>
+                            </div>
+                            <div>
+                                주문 수량 :
+                                <td th:text="${order.count}">1</td>
+                            </div>
+                            <div>
                                 구매자 이름 :
                                 <td th:text="${order.user.name}">1</td>
                             </div>
