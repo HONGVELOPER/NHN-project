@@ -5,7 +5,7 @@ enum class ErrorMessage(
     val href: String,
 ) {
     // 권한
-    WRONG_ACCESS("잘못된 접근입니다.", "/user"),
+    WRONG_ACCESS("잘못된 접근입니다.", "/products"),
 
     // 유저
     DUPLICATE_EMAIL("중복된 이메일입니다.", "/users/joinForm"),
