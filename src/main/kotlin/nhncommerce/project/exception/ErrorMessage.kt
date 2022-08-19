@@ -5,7 +5,7 @@ enum class ErrorMessage(
     val href: String,
 ) {
     // 권한
-    WRONG_ACCESS("잘못된 접근입니다.", "/user"),
+    WRONG_ACCESS("잘못된 접근입니다.", "/products"),
 
     // 유저
     DUPLICATE_EMAIL("중복된 이메일입니다.", "/users/joinForm"),
@@ -19,6 +19,9 @@ enum class ErrorMessage(
     IMAGE_UPLOAD_FAILED("이미지 업로드 실패 입니다.","/admin/products"),
     IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
 
+    //일 매출 스케줄링
+    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin"),
+
     // 배송지
     NOT_EXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
 
@@ -27,5 +30,13 @@ enum class ErrorMessage(
 
     //주문목록
     MOVE_PATH("관리자 전용 주문목록 페이지로 이동합니다.","/admin/orders"),
+
+    //옵션
+    EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products"),
+
+    // 리뷰
+    CANCEL_ORDER("취소된 주문입니다.", "/user"),
+    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/user"),
+
 
 }

@@ -7,7 +7,7 @@ import javax.persistence.*
 class Sales(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val salesId: Long? = null,
+    val salesId: Long = 0L,
     val date: LocalDate,
     val quantity: Int,
     val totalAmount: Long

@@ -18,16 +18,21 @@ data class ReviewDTO (
 ) {
     fun toEntity(order: Order): Review {
         return Review(
+            reviewId = 0L,
             status = Status.ACTIVE,
             content = content,
             star = star,
             reviewImage = reviewImage,
             user = order.user,
             order = order,
-            product = order.optionDetail?.product!!,
+            product = order.optionDetail.product,
             // 옵션 디테일과 상품이 nullable 한 관계 확인 필요.
             // 오더와 옵션 디테일 nullable 한 관계 확인 필요.
         )
+    }
+
+    fun updateReviewImage(newReviewImage: String?) {
+        reviewImage = newReviewImage
     }
 
 }

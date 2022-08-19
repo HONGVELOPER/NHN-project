@@ -67,4 +67,8 @@ class Order (
             reviewStatus = reviewStatus
         )
     }
+
+    fun updateReviewStatus(newReviewStatus: Boolean) {
+        reviewStatus = newReviewStatus
+    }
 }

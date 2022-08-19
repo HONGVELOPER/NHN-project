@@ -1,5 +1,7 @@
 package nhncommerce.project.sales.domain
 
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.sales.jobconfig.SalesJobConfig
 import org.springframework.batch.core.JobExecutionException
 import org.springframework.batch.core.JobParametersBuilder
@@ -13,8 +15,8 @@ class Scheduler(
     val jobLauncher: JobLauncher,
     val salesJob: SalesJobConfig
 ) {
-//        @Scheduled(cron = "0 00 05 * * *") //매일 새벽 5시 실행
-    @Scheduled(fixedDelay = 30 * 1000L) // 30초 마다 실행
+        @Scheduled(cron = "0 0 05 * * *") //매일 새벽 5시 실행
+//    @Scheduled(fixedDelay = 30 * 1000L) // 30초 마다 실행
     fun executeJob() {
         try {
             jobLauncher.run(
@@ -23,8 +25,7 @@ class Scheduler(
                     .toJobParameters() // job parameter 설정
             )
         } catch (ex: JobExecutionException) {
-            System.out.println(ex.message)
-            ex.printStackTrace()
+            throw AlertException(ErrorMessage.SCHEDULED_FAILED)
         }
     }
 

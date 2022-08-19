@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:replace="~{/admin/layout :: setContent(~{this::content})}">
+<th:block th:replace="~{admin/layout :: setContent(~{this::content})}">
     <th:block th:fragment="content">
         <!--- -->
         <head>
@@ -91,8 +91,8 @@
                                         alert("옵션 타입을 입력해주세요")
                                         return false
                                     }
-                                    if (document.getElementById(optionArr[j]).value.length >= 30){
-                                        alert("옵션 타입과 상세는 30글자 이상 금지")
+                                    if (document.getElementById(optionArr[j]).value.length >= 20){
+                                        alert("옵션 타입과 상세는 20글자 이상 금지")
                                         return false
                                     }
 
@@ -101,8 +101,8 @@
                                         alert("빈 옵션은 삭제 바랍니다")
                                         return false
                                     }
-                                    if (list[i].value.length >= 30){
-                                        alert("옵션 타입과 상세는 30글자 이상 금지")
+                                    if (list[i].value.length >= 20){
+                                        alert("옵션 타입과 상세는 20글자 이상 금지")
                                         return false
                                     }
                                 }

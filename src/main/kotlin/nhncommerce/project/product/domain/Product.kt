@@ -61,6 +61,9 @@ class Product(
             totalStar = totalStar,
             category = category
         )
+    }
 
+    fun updateTotalStar(newTotalStar: Float) {
+        totalStar = newTotalStar
     }
  }  

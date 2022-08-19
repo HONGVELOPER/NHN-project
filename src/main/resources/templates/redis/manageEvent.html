@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org">
-<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{admin/layout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
@@ -23,14 +23,14 @@
                     <div th:if="${progress == 4}">
                         당첨자 쿠폰 발급 완료
                     </div>
-                    <form th:action="@{/admin/event/start}"  th:method="get">
+                    <form th:action="@{/admin/coupons/event/start}"  th:method="get">
                         <button class="btn btn-outline-dark mt-auto" type="submit">이벤트 시작</button>
                     </form>
-                    <form th:action="@{/admin/event/stop}"  th:method="get">
+                    <form th:action="@{/admin/coupons/event/stop}"  th:method="get">
                         <button class="btn btn-outline-dark mt-auto" type="submit">이벤트 종료</button>
                     </form>
 
-                    <form th:action="@{/admin/event/publish}"  th:method="post">
+                    <form th:action="@{/admin/coupons/event/publish}"  th:method="post">
                         <button class="btn btn-outline-dark mt-auto" type="submit">당첨자 쿠폰 발급</button>
                     </form>
                 </div>

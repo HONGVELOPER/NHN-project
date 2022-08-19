@@ -32,8 +32,10 @@ class OptionController (
     fun deleteProductOption(@PathVariable(name = "productId") productId: Long, model: Model) : String{
         optionService.deleteOptions(productId)
 
-        val optionListDTO = OptionListDTO()
-        optionListDTO.productDTO = productService.getProduct(productId).entityToDto()
+        val optionListDTO = OptionListDTO().apply {
+            productDTO = productService.getProduct(productId).entityToDto()
+        }
+        //optionListDTO.productDTO = productService.getProduct(productId).entityToDto()
 
         model.addAttribute("optionList", optionListDTO)
         return "option/recreateOption"

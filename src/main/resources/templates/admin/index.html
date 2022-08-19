@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org">
-    <th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+    <th:block th:replace="~{admin/layout:: setContent(~{this::content} )}">
         <th:block th:fragment="content">
 
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol>
+                        <h1 class="mt-4">Kulture 매출</h1>
 
                         <div class="card mb-4">
                             <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                <i class="fa-solid fa-chart-area"></i>
+                                일 매출 그래프
                             </div>
                             <div class=" input-group">
                                 <input type="date" name="sDate" id="sDate" title="시작일" maxlength="10">
@@ -44,8 +41,8 @@
 
                         <div class="card mb-4">
                             <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                <i class="fa-solid fa-list"></i>
+                                일 매출 표
                             </div>
 
                             <form th:action="@{/admin}">
