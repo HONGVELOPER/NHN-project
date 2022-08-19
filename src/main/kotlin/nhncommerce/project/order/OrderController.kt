@@ -1,5 +1,6 @@
 package nhncommerce.project.order
 
+import com.querydsl.core.types.dsl.Wildcard.count
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponService
 import nhncommerce.project.deliver.DeliverService
@@ -37,10 +38,11 @@ class OrderController(
 
 ) {
 
-    @PostMapping("/api/orderProducts")
+    @GetMapping("/api/orderProducts")
     fun orderProductPage(
         @RequestParam("optionDetailId") optionDetailId: Long,
         @RequestParam("productId") productId: String,
+        @RequestParam("count") count: Int,
         mav: ModelAndView
     ): ModelAndView {
         val optionDetailDTO = optionService.getOptionDetail(optionDetailId)
@@ -57,6 +59,7 @@ class OrderController(
             userId = loginInfo.userId,
             couponId = null,
             optionDetailId = optionDetailId,
+            count = count,
             deliverId = null
         )
 
@@ -74,13 +77,12 @@ class OrderController(
     @PostMapping("/api/orders")
     fun orderProduct(orderRequestDTO: OrderRequestDTO, mav: ModelAndView): ModelAndView {
         if (orderRequestDTO.deliverId == null) {
-            throw AlertException(ErrorMessage.NOTEXIST_ADDRESS)
+            throw AlertException(ErrorMessage.NOT_EXIST_ADDRESS)
         }
         if (orderRequestDTO.phone == "") {
-            throw AlertException(ErrorMessage.NOTEXIST_USERPHONE)
+            throw AlertException(ErrorMessage.NOT_EXIST_USER_PHONE)
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-
         orderService.createOrder(orderRequestDTO, loginInfo.userId)
         mav.addObject("data", alertDTO("주문이 완료되었습니다.", "/api/orders"))
         mav.viewName = "user/alert"
