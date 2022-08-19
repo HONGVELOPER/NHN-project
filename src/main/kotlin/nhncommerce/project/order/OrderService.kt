@@ -5,6 +5,8 @@ import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.CouponRepository
 import nhncommerce.project.deliver.DeliverRepository
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.option.OptionDetailRepository
 import nhncommerce.project.order.domain.*
@@ -12,6 +14,8 @@ import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.loginInfo.LoginInfoDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,40 +27,51 @@ class OrderService(
     val userRepository: UserRepository,
     val couponRepository: CouponRepository,
     val optionDetailRepository: OptionDetailRepository,
-    val deliverRepository: DeliverRepository
+    val deliverRepository: DeliverRepository,
+    val loginInfoService: LoginInfoService
 ) {
 
     @Transactional
     fun createOrder(orderRequestDTO: OrderRequestDTO, userId: Long) {
         val optionDetail = optionDetailRepository.findById(orderRequestDTO.optionDetailId).get()
-        if (optionDetail.stock!! < 1) {
-            throw RedirectException(alertDTO("주문하신 제품의 재고가 소진되었습니다. 죄송합니다.", "/user"))
+
+
+        if (optionDetail.stock -  orderRequestDTO.count < 0) {
+            throw AlertException(ErrorMessage.OUT_OF_STOCK)
         }
-        optionDetail.stock = optionDetail.stock.minus(1)
-        var productPrice = optionDetail.product!!.price
-        optionDetail.extraCharge?.let {
-            productPrice += it
+
+        val productArray = IntArray(orderRequestDTO.count){0}
+        for ( i in productArray.indices){
+            optionDetail.extraCharge.let {
+                var productPrice = optionDetail.product.price
+                productPrice += it
+                productArray[i] = productPrice
+            }
         }
+        var totalPrice = productArray.sum()
         val user = userRepository.findById(userId).get()
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
         val coupon = orderRequestDTO.couponId?.takeIf { orderRequestDTO.couponId != 0L }?.let {
             val coupon = couponRepository.findById(it).get()
-            val discountedPrice: Int = (productPrice * (coupon.discountRate * 0.01)).toInt()
-            productPrice -= discountedPrice
+            val discountedPrice: Int = (productArray[0] * (coupon.discountRate * 0.01)).toInt()
+            totalPrice -= discountedPrice
             coupon.status = Status.IN_ACTIVE
             couponRepository.save(coupon)
         }
+
         val order = Order(
             orderId = 0L,
             status = Status.ACTIVE,
-            price = productPrice,
+            price = totalPrice,
             phone = orderRequestDTO.phone,
             user = user,
             coupon = coupon,
             optionDetail = optionDetail,
+            count = orderRequestDTO.count,
             deliver = deliver!!,
             reviewStatus = false
         )
+        optionDetail.stock = optionDetail.stock.minus(orderRequestDTO.count)
         orderRepository.save(order)
     }
 
@@ -72,6 +87,12 @@ class OrderService(
     }
 
     fun getAdminOrderList(myOrderDTO: PageRequestDTO): PageResultDTO<OrderListDTO, Order> {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val user = userRepository.findById(loginInfo.userId).get()
+        if (user.role != ROLE.ROLE_ADMIN) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
+
         val pageable = myOrderDTO.getPageable(Sort.by("updatedAt").descending())
         val booleanBuilder = adminOrderListBuilder(myOrderDTO)
         val resultAdminOrderList = orderRepository.findAll(booleanBuilder, pageable)
@@ -83,12 +104,24 @@ class OrderService(
 
 
     fun getUserOrder(orderId: Long, userId: Long): Order {
+        val order = orderRepository.findById(orderId).get()
         val user = userRepository.findById(userId).get()
+        if (user.role == ROLE.ROLE_ADMIN && order.user.userId != userId) {
+            throw AlertException(ErrorMessage.MOVE_PATH)
+        }
+        if (userId != order.user.userId) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
         return orderRepository.findByUserAndOrderId(user, orderId)
     }
 
 
     fun getOrder(orderId: Long): Order {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val user = userRepository.findById(loginInfo.userId).get()
+        if (user.role != ROLE.ROLE_ADMIN) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
         return orderRepository.findById(orderId).get()
     }
 
@@ -97,6 +130,9 @@ class OrderService(
     fun cancelOrder(orderId: Long, userId: Long) {
         val user = userRepository.findById(userId).get()
         val order = orderRepository.findById(orderId).get()
+        val optionDetailId = order.optionDetail.optionDetailId
+        val optionDetail = optionDetailRepository.findById(optionDetailId).get()
+
         if (user.role == ROLE.ROLE_ADMIN) {
             if (order.coupon?.couponId != null) {
                 val coupon = couponRepository.findById(order.coupon.couponId).get()
@@ -104,24 +140,25 @@ class OrderService(
             }
         } else {
             if (order.user.userId != userId) {
-                throw RedirectException(alertDTO("잘못된 접근입니다.", "/api/orders"))
+                throw AlertException(ErrorMessage.WRONG_ACCESS)
             }
             if (order.coupon?.couponId != null) {
                 val coupon = couponRepository.findById(order.coupon.couponId).get()
                 coupon.status = Status.ACTIVE
             }
         }
+        optionDetail.stock += order.count
         order.status = Status.IN_ACTIVE
     }
 
     fun userOrderListBuilder(userId: Long, pageRequestDTO: PageRequestDTO): BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qOrder = QOrder.order
-        var keyword = pageRequestDTO.keyword
-        var expression = qOrder.orderId.gt(0L)
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qOrder = QOrder.order
+        val keyword = pageRequestDTO.keyword
+        val expression = qOrder.orderId.gt(0L)
         booleanBuilder.and(expression)
-        var conditionBuilder = BooleanBuilder()
+        val conditionBuilder = BooleanBuilder()
 
         if (type.contains("productName")) {
             conditionBuilder.or(qOrder.optionDetail.product.productName.contains(keyword))
@@ -146,11 +183,11 @@ class OrderService(
     }
 
     fun adminOrderListBuilder(pageRequestDTO: PageRequestDTO): BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qOrder = QOrder.order
-        var keyword = pageRequestDTO.keyword
-        var expression = qOrder.orderId.gt(0L)
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qOrder = QOrder.order
+        val keyword = pageRequestDTO.keyword
+        val expression = qOrder.orderId.gt(0L)
         booleanBuilder.and(expression)
 
         if (type == null || type.trim().isEmpty()) {

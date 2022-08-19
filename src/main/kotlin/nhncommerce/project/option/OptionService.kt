@@ -151,11 +151,6 @@ class OptionService (
     }
 
     fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{
-        println("aaaaaaaaaaaaa")
-        if (optionDetailId == null) {
-            throw RedirectException(alertDTO("주문하신 제품의 옵션이 존재하지 않아 주문이 불가능합니다.", "/user"))
-        }
-        println("bbbbbbbbbbbbb")
         val optionDetail = optionDetailRepository.findByOptionDetailId(optionDetailId)
         return optionDetail.entityToDto();
 
