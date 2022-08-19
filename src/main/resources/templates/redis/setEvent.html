@@ -6,19 +6,47 @@
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6">
                     <h1>이벤트 세팅</h1>
-                    <form th:action="@{/admin/coupons/event/setting}"  th:method="post">
-                        이벤트 쿠폰 개수<input type="number" th:name="eventCouponNum">
-                        이벤트 쿠폰 할인률<input type="number" th:name="discount">
+                    <form th:action="@{/admin/coupons/event/setting}"  th:method="post" onsubmit="return check()">
+                        이벤트 쿠폰 개수<input id="count" type="number" th:name="eventCouponNum">
+                        <br>
+                        이벤트 쿠폰 할인률<input id="rate" type="number" th:name="discount">
                         <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
                             <input class="form-control" th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date">
                         </div>
 
                         <script>
                             document.getElementById('now_date').valueAsDate=new Date();
+
+                            function check() {
+                                if (document.getElementById("count").value == ""){
+                                    alert("쿠폰 개수를 입력해주세요")
+                                    return false
+                                }
+                                if (document.getElementById("count").value < 0){
+                                    alert("쿠폰 개수는 음수가 될 수 없습니다.")
+                                    return false
+                                }
+                                if (document.getElementById("count").value > 2147483647){
+                                    alert("쿠폰 개수가 매우 큽니다.")
+                                    return false
+                                }
+
+                                if (document.getElementById("rate").value == ""){
+                                    alert("할인률을 입력해주세요")
+                                    return false
+                                }
+                                if (document.getElementById("rate").value <= 0 || document.getElementById("rate").value >= 100){
+                                    alert("할인률 범위는 1 ~ 99 입니다.")
+                                    return false
+                                }
+                            }
+
                         </script>
                         <button class="btn btn-outline-dark mt-auto" type="submit">이벤트 세팅</button>
                     </form>
+                    </div>
                 </div>
             </div>
         </section>
