@@ -112,7 +112,6 @@ class OptionService (
         for(o1 in 0 until optionList[0].size){
             for(o2 in 0 until optionList[1].size){
                 for(o3 in 0 until optionList[2].size){
-                    val num = optionList[0].size + optionList[1].size + optionList[2].size
                     val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
                         status = Status.ACTIVE, extraCharge = 0, stock = 0, name = name, product = product,

@@ -46,7 +46,7 @@ class User (
     @Column()
     val oauthId: String? = null,
 
-): BaseEntity(), Serializable { //Serializable 추가
+): BaseEntity(), Serializable {
 
     fun updateProfile(profileDTO: ProfileDTO) {
         name = profileDTO.name
