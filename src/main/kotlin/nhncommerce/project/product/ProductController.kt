@@ -26,6 +26,11 @@ class ProductController(
     val storageTokenService: StorageTokenService
 ) {
 
+    @GetMapping("/")
+    fun userHome(): String {
+        return "redirect:/products"
+    }
+
     @GetMapping("/products")
     fun getProductList(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
