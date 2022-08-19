@@ -20,9 +20,9 @@
                                 <input hidden type="text" th:field="${orderRequestDTO.userId}">
                             </div>
                             <div>
-                                <h5 class="fw-bolder">상품 가격</h5>
+                                <h5 class="fw-bolder">결제 가격</h5>
                                 <p class="form-control"
-                                   th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
+                                   th:text="(${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge})* ${orderRequestDTO.count}"></p>
                                 <input hidden type="number" class="form-control"
                                        th:value="${optionDetailDTO.product.price}" th:name="price">
 

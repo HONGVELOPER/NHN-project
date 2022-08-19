@@ -25,4 +25,7 @@ enum class ErrorMessage(
     //재고
     OUT_OF_STOCK("선택하신 재고수량보다 남은 수량이 부족합니다.","/user"),
 
+    //주문목록
+    MOVE_PATH("관리자 전용 주문목록 페이지로 이동합니다.","/admin/orders"),
+
 }

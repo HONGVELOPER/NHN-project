@@ -14,6 +14,8 @@ import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.loginInfo.LoginInfoDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +27,8 @@ class OrderService(
     val userRepository: UserRepository,
     val couponRepository: CouponRepository,
     val optionDetailRepository: OptionDetailRepository,
-    val deliverRepository: DeliverRepository
+    val deliverRepository: DeliverRepository,
+    val loginInfoService: LoginInfoService
 ) {
 
     @Transactional
@@ -42,7 +45,7 @@ class OrderService(
             optionDetail.extraCharge.let {
                 var productPrice = optionDetail.product.price
                 productPrice += it
-                productArray.set(i,productPrice)
+                productArray[i] = productPrice
             }
         }
         var totalPrice = productArray.sum()
@@ -50,7 +53,7 @@ class OrderService(
         val deliver = orderRequestDTO.deliverId?.let { deliverRepository.findById(it).get() }
         val coupon = orderRequestDTO.couponId?.takeIf { orderRequestDTO.couponId != 0L }?.let {
             val coupon = couponRepository.findById(it).get()
-            val discountedPrice: Int = (productArray.get(0) * (coupon.discountRate * 0.01)).toInt()
+            val discountedPrice: Int = (productArray[0] * (coupon.discountRate * 0.01)).toInt()
             totalPrice -= discountedPrice
             coupon.status = Status.IN_ACTIVE
             couponRepository.save(coupon)
@@ -84,6 +87,12 @@ class OrderService(
     }
 
     fun getAdminOrderList(myOrderDTO: PageRequestDTO): PageResultDTO<OrderListDTO, Order> {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val user = userRepository.findById(loginInfo.userId).get()
+        if (user.role != ROLE.ROLE_ADMIN) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
+
         val pageable = myOrderDTO.getPageable(Sort.by("updatedAt").descending())
         val booleanBuilder = adminOrderListBuilder(myOrderDTO)
         val resultAdminOrderList = orderRepository.findAll(booleanBuilder, pageable)
@@ -95,12 +104,24 @@ class OrderService(
 
 
     fun getUserOrder(orderId: Long, userId: Long): Order {
+        val order = orderRepository.findById(orderId).get()
         val user = userRepository.findById(userId).get()
+        if (user.role == ROLE.ROLE_ADMIN && order.user.userId != userId) {
+            throw AlertException(ErrorMessage.MOVE_PATH)
+        }
+        if (userId != order.user.userId) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
         return orderRepository.findByUserAndOrderId(user, orderId)
     }
 
 
     fun getOrder(orderId: Long): Order {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        val user = userRepository.findById(loginInfo.userId).get()
+        if (user.role != ROLE.ROLE_ADMIN) {
+            throw AlertException(ErrorMessage.WRONG_ACCESS)
+        }
         return orderRepository.findById(orderId).get()
     }
 
@@ -110,7 +131,7 @@ class OrderService(
         val user = userRepository.findById(userId).get()
         val order = orderRepository.findById(orderId).get()
         val optionDetailId = order.optionDetail.optionDetailId
-        var optionDetail = optionDetailRepository.findById(optionDetailId).get()
+        val optionDetail = optionDetailRepository.findById(optionDetailId).get()
 
         if (user.role == ROLE.ROLE_ADMIN) {
             if (order.coupon?.couponId != null) {
@@ -119,7 +140,7 @@ class OrderService(
             }
         } else {
             if (order.user.userId != userId) {
-                throw RedirectException(alertDTO("잘못된 접근입니다.", "/api/orders"))
+                throw AlertException(ErrorMessage.WRONG_ACCESS)
             }
             if (order.coupon?.couponId != null) {
                 val coupon = couponRepository.findById(order.coupon.couponId).get()
@@ -131,13 +152,13 @@ class OrderService(
     }
 
     fun userOrderListBuilder(userId: Long, pageRequestDTO: PageRequestDTO): BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qOrder = QOrder.order
-        var keyword = pageRequestDTO.keyword
-        var expression = qOrder.orderId.gt(0L)
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qOrder = QOrder.order
+        val keyword = pageRequestDTO.keyword
+        val expression = qOrder.orderId.gt(0L)
         booleanBuilder.and(expression)
-        var conditionBuilder = BooleanBuilder()
+        val conditionBuilder = BooleanBuilder()
 
         if (type.contains("productName")) {
             conditionBuilder.or(qOrder.optionDetail.product.productName.contains(keyword))
@@ -162,11 +183,11 @@ class OrderService(
     }
 
     fun adminOrderListBuilder(pageRequestDTO: PageRequestDTO): BooleanBuilder {
-        var type = pageRequestDTO.type
-        var booleanBuilder = BooleanBuilder()
-        var qOrder = QOrder.order
-        var keyword = pageRequestDTO.keyword
-        var expression = qOrder.orderId.gt(0L)
+        val type = pageRequestDTO.type
+        val booleanBuilder = BooleanBuilder()
+        val qOrder = QOrder.order
+        val keyword = pageRequestDTO.keyword
+        val expression = qOrder.orderId.gt(0L)
         booleanBuilder.and(expression)
 
         if (type == null || type.trim().isEmpty()) {

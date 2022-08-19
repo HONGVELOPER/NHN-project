@@ -30,6 +30,7 @@
                 <th scope="col">제품 이름</th>
                 <th scope="col">결제 가격</th>
                 <th scope="col">제품 옵션</th>
+                <th scope="col">주문 수량</th>
                 <th scope="col">주문자</th>
                 <th scope="col">배송지</th>
                 <th scope="col">주문 상태</th>
@@ -42,6 +43,7 @@
                 <td>[[${order.optionDetail.product.productName}]]</td>
                 <td>[[${order.price}]]</td>
                 <td>[[${order.optionDetail.name}]]</td>
+                <td>[[${order.count}]]</td>
                 <td>[[${order.user.name}]]</td>
                 <td>[[${order.deliver.address}]]</td>
                 <td th:if="${order.status.toString().equals('ACTIVE')}">주문 완료</td>

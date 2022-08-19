@@ -70,7 +70,7 @@
                         <h5 class="fw-bolder">상세 설명</h5>
                         <p class="lead" th:text="${productDTO.detailDescription}"></p>
                         <h5 class="fw-bolder">옵션</h5>
-                        <form th:action="@{/api/orderProducts}" th:method="post" onsubmit="return check()">
+                        <form th:action="@{/api/orderProducts}" th:method="get" onsubmit="return check()">
                             <input type="hidden" th:field="${productDTO.productId}">
                             <select id="selectOption" name="optionDetailId" class="form-select">
                                 <div th:each="optionDetail : ${optionDetailList}">

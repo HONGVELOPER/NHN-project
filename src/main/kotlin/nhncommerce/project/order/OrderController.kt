@@ -38,7 +38,7 @@ class OrderController(
 
 ) {
 
-    @PostMapping("/api/orderProducts")
+    @GetMapping("/api/orderProducts")
     fun orderProductPage(
         @RequestParam("optionDetailId") optionDetailId: Long,
         @RequestParam("productId") productId: String,
@@ -59,7 +59,7 @@ class OrderController(
             userId = loginInfo.userId,
             couponId = null,
             optionDetailId = optionDetailId,
-            count = count.toInt(),
+            count = count,
             deliverId = null
         )
 
