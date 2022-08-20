@@ -26,7 +26,7 @@ enum class ErrorMessage(
     NOT_EXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
 
     //재고
-    OUT_OF_STOCK("선택하신 재고수량보다 남은 수량이 부족합니다.","/user"),
+    OUT_OF_STOCK("선택하신 재고수량보다 남은 수량이 부족합니다.","/products"),
 
     //주문목록
     MOVE_PATH("관리자 전용 주문목록 페이지로 이동합니다.","/admin/orders"),
@@ -35,6 +35,7 @@ enum class ErrorMessage(
     EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products"),
 
     // 리뷰
+
     CANCEL_ORDER("취소된 주문입니다.", "/products"),
     DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/products"),
 
