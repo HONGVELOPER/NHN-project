@@ -34,7 +34,6 @@ class LoginInfoService(
     }
 
     fun expireUserSession(expireUserId: Long) {
-        println("session 진입")
         val allPrincipal = sessionRegistry.allPrincipals
         allPrincipal.map { principal ->
             val loginStatus = principal.javaClass.toString().split(".")[INDEX_OF_LOGIN_STATUS]

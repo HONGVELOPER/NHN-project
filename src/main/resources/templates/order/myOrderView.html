@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org">
-<th:block th:replace="~{/user/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{user/layout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
@@ -28,6 +28,14 @@
                             <div>
                                 제품 상세 설명 :
                                 <td th:text="${order.optionDetail.product.detailDescription}">1</td>
+                            </div>
+                            <div>
+                                제품 옵션 :
+                                <td th:text="${order.optionDetail.name}">1</td>
+                            </div>
+                            <div>
+                                주문 수량 :
+                                <td th:text="${order.count}">1</td>
                             </div>
                             <div th:if="${order.coupon?.couponName != null}">
                                 사용한 쿠폰 이름 :

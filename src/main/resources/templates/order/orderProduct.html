@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<th:block th:replace="~{/user/userLayout:: setContent(~{this::content} )}">
+<th:block th:replace="~{user/userLayout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
@@ -20,9 +20,9 @@
                                 <input hidden type="text" th:field="${orderRequestDTO.userId}">
                             </div>
                             <div>
-                                <h5 class="fw-bolder">총 결제 가격 </h5>
+                                <h5 class="fw-bolder">결제 가격</h5>
                                 <p class="form-control"
-                                   th:text="${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge}"></p>
+                                   th:text="(${optionDetailDTO.product.price} + ${optionDetailDTO.extraCharge})* ${orderRequestDTO.count}"></p>
                                 <input hidden type="number" class="form-control"
                                        th:value="${optionDetailDTO.product.price}" th:name="price">
 
@@ -33,6 +33,10 @@
 
                             <h5 class="fw-bolder">옵션</h5>
                             <p class="form-control" th:text="${optionDetailDTO.name}"></p>
+
+                            <h5 class="fw-bolder">주문 수량</h5>
+                            <p class="form-control" th:text="${orderRequestDTO.count}"></p>
+                            <input  hidden type="number" class="form-control" th:name="count" th:value="${orderRequestDTO.count}">
 
                             <h5 class="fw-bolder">연락처</h5>
                             <input hidden type="text" class="form-control" th:name="phone" th:value="${userDTO.phone}">

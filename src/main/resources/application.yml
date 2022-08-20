@@ -1,13 +1,14 @@
 spring:
   redis:
-    host: localhost
+    host: 192.168.0.118
     port: 6379
+    password: nhnkirin123!
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kulture
-    username: root
-    password: zxc74100
-
+    url: jdbc:mysql://192.168.0.40:3306/kulture
+    username: kirin1
+    password: 'nhnkirin123!'
+    
   jpa:
     open-in-view: false
     hibernate:
@@ -33,7 +34,7 @@ spring:
   sql:
     init:
       schema-locations: classpath:sql/category-insert.sql
-      mode: always
+      mode: never
   servlet:
     multipart:
       max-file-size: 10MB
