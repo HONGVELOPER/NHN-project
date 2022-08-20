@@ -20,9 +20,15 @@ class RedisConfig {
     @Value("\${spring.redis.port}")
     private val port = 0
 
+    @Value("\${spring.redis.password}")
+    private val password = ""
+
     @Bean
     fun redisConnectionFactory() : RedisConnectionFactory {
-        return LettuceConnectionFactory(host, port)
+        val lettuceConnectionFactory = LettuceConnectionFactory(host, port)
+        lettuceConnectionFactory.setPassword(password)
+
+        return lettuceConnectionFactory
     }
 
     @Bean
