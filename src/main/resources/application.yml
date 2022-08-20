@@ -1,13 +1,14 @@
 spring:
   redis:
-    host: localhost
+    host: 192.168.0.118
     port: 6379
+    password: nhnkirin123!
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kulture
+    url: jdbc:mysql://192.168.0.40:3306/kulture
     username: kirin1
     password: 'nhnkirin123!'
-
+    
   jpa:
     open-in-view: false
     hibernate:
@@ -25,6 +26,7 @@ spring:
             client-id: 1084691558469-sjbhsimqu8tlj3bjjtg3h2kjsaeo2mfc.apps.googleusercontent.com
             client-secret: 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
             scope: profile, email
+#            redirect-uri : https://www.nhn-kulture.shop/login/oauth2/code/google
   mvc:
     hiddenmethod:
       filter:
