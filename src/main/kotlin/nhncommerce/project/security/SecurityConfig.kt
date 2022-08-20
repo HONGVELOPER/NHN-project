@@ -64,10 +64,12 @@ class SecurityConfig(
             .and()
             .logout()
             .logoutSuccessUrl("/products")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
             .and()
             .sessionManagement()
             .maximumSessions(1)
-            .maxSessionsPreventsLogin(true) // session 중복 로그인 처리
+//            .maxSessionsPreventsLogin(true) // session 중복 로그인 처리
             .sessionRegistry(sessionRegistry())
             .expiredUrl("/api/users/sessionExpired")
 //            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // default session 생성 방식
