@@ -1,0 +1,56 @@
+spring:
+  redis:
+    host: 192.168.0.118
+    port: 6379
+    password: nhnkirin123!
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.40:3306/kulture
+    username: kirin1
+    password: 'nhnkirin123!'
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.format_sql: true
+    defer-datasource-initialization: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1084691558469-sjbhsimqu8tlj3bjjtg3h2kjsaeo2mfc.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  sql:
+    init:
+      schema-locations: classpath:sql/category-insert.sql
+      mode: never
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+server:
+  servlet:
+    session:
+      timeout: 1000
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+image:
+  authUrl: "https://api-identity.infrastructure.cloud.toast.com/v2.0"
+  tenantId: "507cc2a432bc43de8721f24810f3daa1"
+  username: "soonbum-jeong@nhn-commerce.com"
+  password: "1234"
+  storageUrl: "https://api-storage.cloud.toast.com/v1/AUTH_507cc2a432bc43de8721f24810f3daa1"
+  containerName: "kirin"
