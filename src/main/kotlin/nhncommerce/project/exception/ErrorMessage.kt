@@ -35,8 +35,8 @@ enum class ErrorMessage(
     EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products"),
 
     // 리뷰
-    CANCEL_ORDER("취소된 주문입니다.", "/user"),
-    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/user"),
+    CANCEL_ORDER("취소된 주문입니다.", "/products"),
+    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/products"),
 
 
 }
