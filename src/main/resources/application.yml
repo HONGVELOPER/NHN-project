@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/kulture
-    username: root
-    password: zxc74100
+    username: kirin1
+    password: 'nhnkirin123!'
 
   jpa:
     open-in-view: false
@@ -33,7 +33,7 @@ spring:
   sql:
     init:
       schema-locations: classpath:sql/category-insert.sql
-      mode: always
+      mode: never
   servlet:
     multipart:
       max-file-size: 10MB

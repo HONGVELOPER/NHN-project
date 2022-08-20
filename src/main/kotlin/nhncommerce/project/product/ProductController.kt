@@ -31,6 +31,11 @@ class ProductController(
     val reviewService: ReviewService
 ) {
 
+    @GetMapping("/")
+    fun userHome(): String {
+        return "redirect:/products"
+    }
+
     @GetMapping("/products")
     fun getProductList(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))

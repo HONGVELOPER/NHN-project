@@ -9,6 +9,7 @@ class Oauth2LoginUserDetails (
     val user: User,
     private val attributes: Map<String, Any>
 ) : OAuth2User, Serializable { //Serializable 추가
+//) : OAuth2User { //Serializable 추가
 
     fun getId(): Long = user.userId
 
@@ -31,14 +32,12 @@ class Oauth2LoginUserDetails (
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
+        println("oauth login 진입")
+        if (this.toString() == other.toString()) return true
         if (javaClass != other?.javaClass) return false
 
         other as Oauth2LoginUserDetails
-
-        if (user != other.user) return false
-        if (attributes != other.attributes) return false
-
-        return true
+        if (this.attributes["sub"] == other.attributes["sub"]) return true
+        return false
     }
 }

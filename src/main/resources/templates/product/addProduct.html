@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en xmlns:th=http://www.thymeleaf.org">
-<th:block th:replace="~{/admin/layout:: setContent(~{this::content} )}">
+<th:block th:replace="~{admin/layout:: setContent(~{this::content} )}">
     <th:block th:fragment="content">
 
         <section class="py-5">
@@ -44,7 +44,6 @@
                             </select>
                         </div>
                         <br>
-
                         <div id="box1" class="1">
                             <input type="hidden" value="1">
                             <input type="text" class="form-control" th:field="*{option1}" placeholder="Enter Option 1">
@@ -87,22 +86,19 @@
 
                         let listArr = ["option1List","option2List","option3List"]
                         let optionArr = ["option1", "option2", "option3"]
-                        let priceArr = ["price1", "price2"]
 
                         function check() {
-                            for(let i = 0; i < 2; i++){
-                                if (document.getElementById(priceArr[i]).value == ""){
-                                    alert("금액을 입력해주세요")
-                                    return false
-                                }
-                                if (document.getElementById(priceArr[i]).value < 0){
-                                    alert("금액은 음수가 될 수 없습니다.")
-                                    return false
-                                }
-                                if (document.getElementById(priceArr[i]).value > 2147483647){
-                                    alert("금액이 매우 큽니다.")
-                                    return false
-                                }
+                            if (document.getElementById("price").value == ""){
+                                alert("금액을 입력해주세요")
+                                return false
+                            }
+                            if (document.getElementById("price").value < 0){
+                                alert("금액은 음수가 될 수 없습니다.")
+                                return false
+                            }
+                            if (document.getElementById("price").value > 2147483647){
+                                alert("금액이 매우 큽니다.")
+                                return false
                             }
                             for(let j = 0; j < 3; j++){
                                 if (document.getElementById(optionArr[j]).value != "" && countArr[j] <= 0){

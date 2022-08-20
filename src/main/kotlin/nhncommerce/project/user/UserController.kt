@@ -18,7 +18,6 @@ import javax.validation.Valid
 @Controller
 class UserController(
     val userService: UserService,
-    val productService: ProductService,
     val loginInfoService: LoginInfoService,
 ) {
 
@@ -95,7 +94,7 @@ class UserController(
     }
 
     @PostMapping("/users")
-    fun createUserByForm(
+    fun createUser(
         @Valid @ModelAttribute userDTO: UserDTO,
         bindingResult: BindingResult,
         mav: ModelAndView
@@ -172,7 +171,7 @@ class UserController(
     }
 
     @DeleteMapping("/admin/users/{userId}")
-    fun deleteUserById(
+    fun deleteUserByAdmin(
         @PathVariable("userId") userId: Long,
         mav: ModelAndView
     ): ModelAndView {

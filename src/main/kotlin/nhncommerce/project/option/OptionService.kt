@@ -112,7 +112,6 @@ class OptionService (
         for(o1 in 0 until optionList[0].size){
             for(o2 in 0 until optionList[1].size){
                 for(o3 in 0 until optionList[2].size){
-                    val num = optionList[0].size + optionList[1].size + optionList[2].size
                     val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
                     val optionDetail = OptionDetail(
                         status = Status.ACTIVE, extraCharge = 0, stock = 0, name = name, product = product,
@@ -152,11 +151,6 @@ class OptionService (
     }
 
     fun getOptionDetail(optionDetailId: Long):OptionDetailDTO{
-        println("aaaaaaaaaaaaa")
-        if (optionDetailId == null) {
-            throw RedirectException(alertDTO("주문하신 제품의 옵션이 존재하지 않아 주문이 불가능합니다.", "/user"))
-        }
-        println("bbbbbbbbbbbbb")
         val optionDetail = optionDetailRepository.findByOptionDetailId(optionDetailId)
         return optionDetail.entityToDto();
 

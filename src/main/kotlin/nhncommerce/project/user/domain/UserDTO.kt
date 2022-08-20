@@ -39,6 +39,7 @@ data class UserDTO (
             Gender.FEMALE
         }
         return User(
+            userId = 0L,
             email = email,
             gender = genderStatus,
             name = name,

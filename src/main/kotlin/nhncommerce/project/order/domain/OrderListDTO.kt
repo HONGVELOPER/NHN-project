@@ -16,6 +16,7 @@ data class OrderListDTO(
     val user: User,
     val coupon: Coupon?=null,
     val optionDetail: OptionDetail,
+    val count: Int,
     val deliver: Deliver,
     val createdAt : LocalDateTime,
     val updatedAt : LocalDateTime,
