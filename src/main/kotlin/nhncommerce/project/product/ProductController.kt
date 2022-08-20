@@ -5,8 +5,12 @@ import nhncommerce.project.category.CategoryService
 import nhncommerce.project.option.OptionService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
+import nhncommerce.project.page.PageResultDTO
 import nhncommerce.project.product.domain.ProductDTO
 import nhncommerce.project.product.domain.ProductOptionDTO
+import nhncommerce.project.review.ReviewService
+import nhncommerce.project.review.domain.Review
+import nhncommerce.project.review.domain.ReviewListDTO
 import nhncommerce.project.util.token.StorageTokenService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -23,7 +27,8 @@ class ProductController(
     val productService: ProductService,
     val optionService: OptionService,
     val categoryService: CategoryService,
-    val storageTokenService: StorageTokenService
+    val storageTokenService: StorageTokenService,
+    val reviewService: ReviewService
 ) {
 
     @GetMapping("/products")
@@ -93,11 +98,17 @@ class ProductController(
         return "redirect:/admin/products"
     }
     @GetMapping("/products/{productId}")
-    fun getProductDetail(@PathVariable("productId") productId : Long, model : Model ) : String {
+    fun getProductDetail(
+        @PathVariable("productId") productId : Long,
+        pageRequestDTO: PageRequestDTO,
+        model : Model
+    ) : String {
         val productDTO = productService.getProductDTO(productId)
         val optionDetailDTOList = optionService.getProductOptionDetails(productId)
         val imageDTOList = productService.getProductImageDTOList(productDTO.dtoToEntity())
-
+        val result: PageResultDTO<ReviewListDTO, Review> =
+            reviewService.findReviewListByProduct(productId, pageRequestDTO)
+        model.addAttribute("reviews", result)
         model.addAttribute("productImageDTOList", imageDTOList)
         model.addAttribute("optionDetailList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
