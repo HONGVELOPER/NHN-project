@@ -57,7 +57,7 @@ class SecurityConfig(
             .and()
             .and()
             .logout()
-            .logoutSuccessUrl("/user")
+            .logoutSuccessUrl("/products")
             .and()
             .sessionManagement()
             .maximumSessions(1)

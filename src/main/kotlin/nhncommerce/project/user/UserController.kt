@@ -22,17 +22,6 @@ class UserController(
     val loginInfoService: LoginInfoService,
 ) {
 
-    @GetMapping("/")
-    fun userHome(): String {
-        return "redirect:/user"
-    }
-
-    @GetMapping("/user")
-    fun userForm(model : Model, pageRequestDTO: PageRequestDTO):String{
-        model.addAttribute("products",productService.getProductList(pageRequestDTO))
-        return "product/userProductList"
-    }
-
     @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO): String {
         return "user/join"
@@ -77,7 +66,7 @@ class UserController(
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         val userDTO: UserDTO = userService.findUserById(loginInfo.userId)
         userDTO.provider?.let {
-            mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/user"))
+            mav.addObject("data", alertDTO("소셜 로그인 유저는 비밀번호를 변경할 수 없습니다.", "/products"))
             mav.viewName = "user/alert"
             return mav
         }
@@ -116,7 +105,7 @@ class UserController(
             return mav
         }
         userService.createUserByForm(userDTO)
-        mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/user"))
+        mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
         mav.viewName = "user/alert"
         return mav
     }
@@ -177,7 +166,7 @@ class UserController(
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.deleteUserById(loginInfo.userId)
-        mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/user"))
+        mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/products"))
         mav.viewName = "user/alert"
         return mav
     }

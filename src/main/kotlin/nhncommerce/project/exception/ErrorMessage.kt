@@ -5,7 +5,7 @@ enum class ErrorMessage(
     val href: String,
 ) {
     // 권한
-    WRONG_ACCESS("잘못된 접근입니다.", "/user"),
+    WRONG_ACCESS("잘못된 접근입니다.", "/products"),
 
     // 유저
     DUPLICATE_EMAIL("중복된 이메일입니다.", "/users/joinForm"),
@@ -30,8 +30,8 @@ enum class ErrorMessage(
     EMPTY_PRODUCTDTO("상품이 존재하지않습니다.", "/products"),
 
     // 리뷰
-    CANCEL_ORDER("취소된 주문입니다.", "/user"),
-    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/user"),
+    CANCEL_ORDER("취소된 주문입니다.", "/products"),
+    DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/products"),
 
 
 }
