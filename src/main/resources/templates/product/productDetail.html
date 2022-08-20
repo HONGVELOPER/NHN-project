@@ -117,6 +117,42 @@
                         </script>
                     </div>
                 </div>
+                <h4 class="mt-4">리뷰 목록</h4>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">사진</th>
+                        <th scope="col">내용</th>
+                        <th scope="col">별점</th>
+                        <th scope="col">등록 날짜</th>
+                        <!--                <th scope="col">수정/삭제</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="review : ${reviews.dtoList}">
+                        <td>
+                            <img th:if="${review.reviewImage != null}" th:src="${review.reviewImage}" alt="review image" style="height:100px;width:100px;">
+                        </td>
+                        <td>[[${review.content}]]</td>
+                        <td>[[${review.star}]]</td>
+                        <td>[[${#temporals.format(review.createdAt,'yyyy/MM/dd')}]]</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <ul class="pagination justify-content-center align-items-center">
+                    <li class="page-item" th:if="${reviews.prev}">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li th:class="'page-item' + ${reviews.page == page? 'active':''}"th:each="page : ${reviews.pageList}">
+                        <a class="page-link" th:href="@{/delivers(page=${page})}">
+                            [[${page}]]
+                        </a>
+                    </li>
+                    <li class="page-item" th:if="${reviews.next}">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
             </div>
         </section>
     </th:block>
