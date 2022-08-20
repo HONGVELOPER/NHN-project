@@ -9,5 +9,7 @@ class ReviewListDTO(
 
     val star: Int,
 
+    val reviewImage: String?,
+
     val createdAt: LocalDateTime,
 ) {}
