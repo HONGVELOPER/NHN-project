@@ -1,12 +1,13 @@
 spring:
   redis:
-    host: localhost
-    port: 6379
+    host: 192.168.0.118
+    port: 3490
+    password: nhnkirin123!
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kulture
-    username: root
-    password: rud680625!
+    url: jdbc:mysql://192.168.0.40:3306/kulture
+    username: kirin1
+    password: 'nhnkirin123!'
 
   jpa:
     open-in-view: false

@@ -56,6 +56,7 @@ class Review(
             reviewId = reviewId,
             content = content,
             star = star,
+            reviewImage = reviewImage,
             createdAt = createdAt
         )
     }
