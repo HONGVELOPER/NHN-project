@@ -51,8 +51,9 @@ class Review(
         )
     }
 
-    fun entityToReviewListDto(): ReviewListDTO {
+    fun entityToReviewListDto(email: String): ReviewListDTO {
         return ReviewListDTO (
+            email = email.split("@").first(),
             reviewId = reviewId,
             content = content,
             star = star,

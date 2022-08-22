@@ -26,8 +26,6 @@ data class ReviewDTO (
             user = order.user,
             order = order,
             product = order.optionDetail.product,
-            // 옵션 디테일과 상품이 nullable 한 관계 확인 필요.
-            // 오더와 옵션 디테일 nullable 한 관계 확인 필요.
         )
     }
 
