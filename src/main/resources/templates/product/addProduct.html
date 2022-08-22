@@ -24,7 +24,7 @@
                         <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
 
                         제품 가격
-                        <input id="price1" type="number" class="form-control"  th:field="*{price}" /><br>
+결                        <input id="price" type="number" class="form-control"  th:field="*{price}"/><br>
                         <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
 
                         제품 간략 설명
@@ -167,6 +167,13 @@
 
                         function fileCheck(){
                             console.log(document.getElementById("fileList").innerHTML);
+                        }
+
+                        function priceCheck(){
+                            if (document.getElementById("price").value == ""){
+                                alert("금액을 입력해주세요")
+                                return
+                            }
                         }
 
                     </script>
