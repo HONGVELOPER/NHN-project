@@ -21,6 +21,12 @@
             .carousel-control-prev /*, .carousel-indicators */ {
                 filter: invert(100%);
             }
+
+            .card-img-top {
+                width: 100%;
+                height: 40vh;
+                object-fit: contain;
+            }
         </style>
 
         <section class="py-5">
@@ -38,7 +44,7 @@
                                      alt="First slide">
                             </div>
                             <div th:if="${productImageDTOList.size() > 0}" th:each="productImage : ${productImageDTOList}" class="carousel-item">
-                                <img class="d-block w-100" th:src="${productImage.imageUrl}">
+                                <img class="d-block card-img-top mb-5 mb-md-0" th:src="${productImage.imageUrl}">
                             </div>
                             <!-- / 슬라이드 쇼 끝 -->
 
