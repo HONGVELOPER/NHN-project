@@ -39,6 +39,8 @@ class ProductController(
     @GetMapping("/products")
     fun getProductList(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
+        model.addAttribute("type",pageRequestDTO.type)
+        model.addAttribute("keyword",pageRequestDTO.keyword)
         return "product/userProductList"
     }
 
@@ -55,6 +57,8 @@ class ProductController(
     @GetMapping("/admin/products")
     fun productListPage(model : Model, pageRequestDTO: PageRequestDTO):String{
         model.addAttribute("products",productService.getProductList(pageRequestDTO))
+        model.addAttribute("type",pageRequestDTO.type)
+        model.addAttribute("keyword",pageRequestDTO.keyword)
         return "product/productList"
     }
 
@@ -122,7 +126,7 @@ class ProductController(
             reviewService.findReviewListByProduct(productId, pageRequestDTO)
         model.addAttribute("reviews", result)
         model.addAttribute("productImageDTOList", imageDTOList)
-        model.addAttribute("optionDetailList", optionDetailDTOList)
+        model.addAttribute("optionDetaiㅊlList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
         return "product/productDetail"
     }
