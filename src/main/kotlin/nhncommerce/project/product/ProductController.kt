@@ -70,9 +70,10 @@ class ProductController(
 
     @PostMapping("/admin/products")
     fun createProduct(@Valid productOptionDTO: ProductOptionDTO,bindingResult: BindingResult,
-                      response: HttpServletResponse, session : HttpSession,
+                      response: HttpServletResponse, session : HttpSession, model: Model,
                         @RequestPart file : MultipartFile,  @RequestPart(value="fileList", required=false) fileList : List<MultipartFile>) : String{
         if(bindingResult.hasErrors()){
+            model.addAttribute("categoryListDTO", categoryService.getCategoryList())
             return "product/addProduct"
         }
         val separate = productService.separate(productOptionDTO)
@@ -86,9 +87,10 @@ class ProductController(
 
     @PutMapping("/admin/products/{productId}")
     fun updateProduct(@Valid productDTO: ProductDTO,bindingResult: BindingResult,
-                      categoryId : String, @PathVariable("productId")productId : String,
+                      categoryId : String, model: Model,@PathVariable("productId")productId : String,
                       @RequestPart file : MultipartFile, @RequestPart(value="fileList", required=false) fileList : List<MultipartFile>) : String{
         if(bindingResult.hasErrors()){
+            model.addAttribute("categoryListDTO", categoryService.getCategoryList())
             return "product/updateProduct"
         }
         productService.createProductImageList(fileList , productDTO.dtoToEntity()) //이미지 저장
