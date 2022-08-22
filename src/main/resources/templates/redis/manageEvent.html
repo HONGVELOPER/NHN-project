@@ -7,6 +7,9 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <h1>이벤트 관리</h1>
+
+                    이벤트 정보 <br>
+                    <p th:if="${progress != 0}" th:text="${eventInfo}"></p>
                     이벤트 상황 <br>
                     <div th:if="${progress == 0}">
                         이벤트 설정 전

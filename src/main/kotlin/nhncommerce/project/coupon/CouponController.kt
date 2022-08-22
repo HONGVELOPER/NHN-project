@@ -146,8 +146,7 @@ class CouponController(
                         eventInfo=eventInfo)
         redisService.refreshSet(event.eventName)
         redisService.setNowEventId(event.eventId)
-        model.addAttribute("progress", event.progress)
-        return "redis/manageEvent"
+        return "redirect:/admin/coupons/event"
     }
 
     //쿠폰 이벤트 시작
@@ -181,8 +180,8 @@ class CouponController(
         postProcessor.postProcessBeforeDestruction(schedulerConfiguration, "scheduledTasks")
         redisService.changeProgress(event.eventId, RedisService.EVENT_END)
         redisService.resetQueue(event.eventName)
-        mav.addObject("progress", RedisService.EVENT_END)
-        mav.viewName = "redis/manageEvent"
+
+        mav.viewName = "redirect:/admin/coupons/event"
         return mav
     }
 
@@ -200,6 +199,7 @@ class CouponController(
         if (winnerList == null || winnerList.isEmpty()){
             redisService.changeProgress(event.eventId, RedisService.INIT)
             redisService.resetQueue(event.eventName)
+            redisService.setInitCount()
             mav.addObject("data", alertDTO("이벤트 당첨자가 없습니다", "/admin/coupons/event"))
             mav.viewName = "redis/alert"
             return mav
@@ -214,7 +214,8 @@ class CouponController(
             )
         }
 
-        redisService.resetQueue(event.eventName) //삭제 예정
+        redisService.resetQueue(event.eventName)
+        redisService.setInitCount()
         redisService.changeProgress(event.eventId, RedisService.PUBLISH_COUPON)
         mav.viewName = "redirect:/admin/coupons"
         return mav
@@ -225,6 +226,7 @@ class CouponController(
     fun manageEvent(model : Model) : String {
         val eventId = redisService.getNowEventId()
         val event = redisService.getNowEvent(eventId)
+        model.addAttribute("eventInfo", event?.eventInfo ?: "이벤트 정보가 없습니다.")
         model.addAttribute("progress", event?.progress ?: RedisService.INIT)
         return "redis/manageEvent"
     }
