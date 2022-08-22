@@ -9,11 +9,14 @@
                     <div class="col-md-6">
                     <h1>이벤트 세팅</h1>
                     <form th:action="@{/admin/coupons/event/setting}"  th:method="post" onsubmit="return check()">
-                        이벤트 쿠폰 개수<input id="count" type="number" th:name="eventCouponNum">
+                        이벤트 정보 <input class="form-control" type="text" id="info" th:name="eventInfo">
                         <br>
-                        이벤트 쿠폰 할인률<input id="rate" type="number" th:name="discount">
+                        이벤트 쿠폰 개수<input class="form-control" id="count" type="number" th:name="eventCouponNum">
+                        <br>
+                        이벤트 쿠폰 할인률<input class="form-control" id="rate" type="number" th:name="discount">
+                        <br>
                         <div th:with="now = ${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">
-                            <input class="form-control" th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date">
+                            만료일 <input class="form-control" th:type="date" name="expired" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"  id="now_date">
                         </div>
 
                         <script>
@@ -40,6 +43,10 @@
                                 if (document.getElementById("rate").value <= 0 || document.getElementById("rate").value >= 100){
                                     alert("할인률 범위는 1 ~ 99 입니다.")
                                     return false
+                                }
+
+                                if (document.getElementById("eventInfo").value.length >= 30){
+                                    alert("이벤트 정보는 30자를 넘으면 안됩니다.")
                                 }
                             }
 

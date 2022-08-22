@@ -19,8 +19,6 @@ enum class ErrorMessage(
     IMAGE_UPLOAD_FAILED("이미지 업로드 실패 입니다.","/admin/products"),
     IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
 
-    //일 매출 스케줄링
-    SCHEDULED_FAILED("스케줄링 작업을 실패 입니다.","/admin"),
 
     // 배송지
     NOT_EXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
@@ -38,6 +36,10 @@ enum class ErrorMessage(
 
     CANCEL_ORDER("취소된 주문입니다.", "/products"),
     DUPLICATE_REVIEW("이미 리뷰를 작성한 주문입니다.", "/products"),
+
+    //이벤트 쿠폰
+    EMPTY_NOW_EVENT("현재 진행중인 이벤트가 없습니다.", "/products"),
+    EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event")
 
 
 }

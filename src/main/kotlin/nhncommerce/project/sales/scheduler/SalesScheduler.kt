@@ -3,6 +3,7 @@ package nhncommerce.project.sales.domain
 import nhncommerce.project.exception.AlertException
 import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.sales.jobconfig.SalesJobConfig
+import org.slf4j.LoggerFactory
 import org.springframework.batch.core.JobExecutionException
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.core.launch.JobLauncher
@@ -15,8 +16,10 @@ class Scheduler(
     val jobLauncher: JobLauncher,
     val salesJob: SalesJobConfig
 ) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
         @Scheduled(cron = "0 0 05 * * *") //매일 새벽 5시 실행
-//    @Scheduled(fixedDelay = 30 * 1000L) // 30초 마다 실행
     fun executeJob() {
         try {
             jobLauncher.run(
@@ -25,7 +28,7 @@ class Scheduler(
                     .toJobParameters() // job parameter 설정
             )
         } catch (ex: JobExecutionException) {
-            throw AlertException(ErrorMessage.SCHEDULED_FAILED)
+            log.info("일 매출 계산 스케줄 작업 실패")
         }
     }
 

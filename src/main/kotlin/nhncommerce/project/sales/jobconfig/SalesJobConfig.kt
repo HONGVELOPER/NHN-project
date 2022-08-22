@@ -27,8 +27,8 @@ class SalesJobConfig(
     val salesRepository: SalesRepository
 ) {
 
-    var quantity : Int = 0
-    var totalAmount : Long = 0
+    private var quantity : Int = 0
+    private var totalAmount : Long = 0
 
     @Bean
     fun salesJob() : Job {
@@ -80,18 +80,26 @@ class SalesJobConfig(
     @StepScope
     fun reader(): JpaPagingItemReader<Order> {
         val parameterValues: MutableMap<String, Any> = HashMap()
-        val now = LocalDate.now()
-        val start = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0).minusDays(1)
-        val end = LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0)
-        parameterValues.put("start",start)
-        parameterValues.put("end",end)
+        val yesterday = LocalDate.now().yesterday()
+        val midNight = LocalDate.now().midNight()
+        parameterValues["yesterday"] = yesterday
+        parameterValues["midNight"] = midNight
         return JpaPagingItemReaderBuilder<Order>()
             .pageSize(10)
             .parameterValues(parameterValues)
-            .queryString("SELECT o FROM Order o WHERE o.updatedAt >= :start and o.updatedAt <= :end and o.status = 'ACTIVE' ORDER BY order_id ASC")
+            .queryString("SELECT o FROM Order o WHERE o.updatedAt >= :yesterday and o.updatedAt <= :midNight and o.status = 'ACTIVE' ORDER BY order_id ASC")
             .entityManagerFactory(entityManagerFactory)
             .name("JpaPagingItemReader")
             .build()
+    }
+
+    fun LocalDate.yesterday() : LocalDateTime{
+        val now = LocalDate.now()
+        return LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0).minusDays(1)
+    }
+    fun LocalDate.midNight() : LocalDateTime{
+        val now = LocalDate.now()
+        return LocalDateTime.of(now.year,now.month,now.dayOfMonth,0,0)
     }
 
 }
