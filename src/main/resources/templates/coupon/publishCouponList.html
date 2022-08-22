@@ -33,7 +33,7 @@
                 <th scope="col">유효 기간</th>
                 <th scope="col">발행 날짜</th>
                 <th scope="col">수정 날짜</th>
-                <th scope="col">수정/삭제</th>
+                <th scope="col">수정</th>
             </tr>
             </thead>
             <tbody>
@@ -50,9 +50,6 @@
                     <form th:method="get" th:action="'/admin/couponUpdatePage/'+${coupon.couponId}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
-                    <form th:method="delete" th:action="'/admin/coupons/'+${coupon.couponId}" style="display: inline">
-                        <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
-                    </form>
                 </td>
             </tr>
             </tbody>
@@ -60,15 +57,15 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${coupons.prev}">
-                <a class="page-link" th:href="@{/admin/coupons(page=${coupons.start-1})}" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/admin/coupons(page=${coupons.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${coupons.page == page? 'active':''}"th:each="page : ${coupons.pageList}">
-                <a class="page-link" th:href="@{/admin/coupons(page=${page})}">
+                <a class="page-link" th:href="@{/admin/coupons(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${coupons.next}">
-                <a class="page-link" th:href="@{/admin/coupons(page=${coupons.end+1})}">Next</a>
+                <a class="page-link" th:href="@{/admin/coupons(page=${coupons.end+1},type=${type},keyword=${keyword})}">Next</a>
             </li>
         </ul>
 

@@ -72,19 +72,9 @@ class CouponController(
     @GetMapping("/admin/coupons")
     fun couponList(pageRequestDTO: PageRequestDTO, model : Model) : String{
         model.addAttribute("coupons",couponService.getCouponList(pageRequestDTO))
+        model.addAttribute("type", pageRequestDTO.type)
+        model.addAttribute("keyword", pageRequestDTO.keyword)
         return "coupon/publishCouponList"
-    }
-
-    @DeleteMapping("/admin/coupons/{couponId}")
-    fun removeCoupon(@PathVariable("couponId")couponId : Long) : String{
-        couponService.removeCoupon(couponId)
-        return "redirect:/admin/coupons"
-    }
-
-    @DeleteMapping("/coupons/{couponId}")
-    fun removeMyCoupon(@PathVariable("couponId")couponId : Long) : String{
-        couponService.removeCoupon(couponId)
-        return "redirect:/api/myCouponList"
     }
 
     @PutMapping("/admin/coupons/{couponId}")
