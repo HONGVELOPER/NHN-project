@@ -199,6 +199,7 @@ class CouponController(
         if (winnerList == null || winnerList.isEmpty()){
             redisService.changeProgress(event.eventId, RedisService.INIT)
             redisService.resetQueue(event.eventName)
+            redisService.setInitCount()
             mav.addObject("data", alertDTO("이벤트 당첨자가 없습니다", "/admin/coupons/event"))
             mav.viewName = "redis/alert"
             return mav
@@ -213,7 +214,8 @@ class CouponController(
             )
         }
 
-        redisService.resetQueue(event.eventName) //삭제 예정
+        redisService.resetQueue(event.eventName)
+        redisService.setInitCount()
         redisService.changeProgress(event.eventId, RedisService.PUBLISH_COUPON)
         mav.viewName = "redirect:/admin/coupons"
         return mav
