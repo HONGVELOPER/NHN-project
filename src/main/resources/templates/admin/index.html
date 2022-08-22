@@ -49,8 +49,8 @@
                                 <div class=" input-group">
                                     <select class="custom-select float-end" name="type" >
                                         <option value="date" th:selected="${pageRequestDTO.type=='date'}">날짜</option>
-                                        <option value="quantity" th:selected="${pageRequestDTO.type=='quantity'}">매출</option>
-                                        <option value="totalAmount" th:selected="${pageRequestDTO.type=='totalAmount'}">판매량</option>
+                                        <option value="quantity" th:selected="${pageRequestDTO.type=='quantity'}">판매량</option>
+                                        <option value="totalAmount" th:selected="${pageRequestDTO.type=='totalAmount'}">매출</option>
                                     </select>
                                     <input type="submit" class="float-end btn btn-outline-secondary btn-search" value="검색">
                                 </div>
@@ -61,8 +61,8 @@
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th scope="col">매출</th>
                                         <th scope="col">판매량</th>
+                                        <th scope="col">매출</th>
                                         <th scope="col">날짜</th>
                                     </tr>
                                     </thead>
