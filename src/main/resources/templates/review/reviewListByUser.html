@@ -8,6 +8,7 @@
             <thead>
             <tr>
                 <th scope="col">번호</th>
+                <th scope="col">사진</th>
                 <th scope="col">내용</th>
                 <th scope="col">별점</th>
                 <th scope="col">등록 날짜</th>
@@ -17,6 +18,9 @@
             <tbody>
             <tr th:each="review : ${reviews.dtoList}">
                 <td>[[${review.reviewId}]]</td>
+                <td>
+                    <img th:if="${review.reviewImage != null}" th:src="${review.reviewImage}" alt="review image" style="height:100px;width:100px;">
+                </td>
                 <td>[[${review.content}]]</td>
                 <td>[[${review.star}]]</td>
                 <td>[[${#temporals.format(review.createdAt,'yyyy/MM/dd')}]]</td>
