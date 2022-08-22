@@ -26,6 +26,7 @@ class ExceptionHandler(
 
     @ExceptionHandler(AlertException::class)
     fun handleAlertException(ex: AlertException): ModelAndView {
+        println("alert exception 진입")
         val mav: ModelAndView = ModelAndView()
         val error = ex.errorMessage
         mav.addObject("data", alertDTO(error.message, error.href))
@@ -34,11 +35,13 @@ class ExceptionHandler(
         return mav
     }
 
-    @ExceptionHandler(RedirectException::class)
-    fun handleRedirectException(ex: RedirectException): ModelAndView {
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNoSuchElementException(): ModelAndView {
         val mav: ModelAndView = ModelAndView()
-        mav.addObject("data", ex.alertDTO)
+        mav.addObject("data", alertDTO("해당 데이터를 찾을 수 없습니다.", "/products"))
         mav.viewName = "user/alert"
+//        logger.info("ERROR MESSAGE: ${error.message}")
         return mav
     }
+
 }

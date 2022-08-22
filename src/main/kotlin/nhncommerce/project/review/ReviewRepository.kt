@@ -2,6 +2,7 @@ package nhncommerce.project.review
 
 import nhncommerce.project.product.domain.Product
 import nhncommerce.project.review.domain.Review
+import nhncommerce.project.user.domain.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.querydsl.QuerydslPredicateExecutor
@@ -11,5 +12,7 @@ interface ReviewRepository : JpaRepository<Review, Long>, QuerydslPredicateExecu
 
     @Query("SELECT Count(r) FROM Review r WHERE r.status='ACTIVE' and r.product= :product")
     fun findActiveReviewCountByProduct(@Param("product") product: Product): Int
+
+    fun findByUser(user: User): List<Review>
 
 }
