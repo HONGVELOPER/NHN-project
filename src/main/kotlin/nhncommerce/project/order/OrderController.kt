@@ -95,6 +95,8 @@ class OrderController(
     fun orderList(pageRequestDTO: PageRequestDTO, model: Model): String {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         model.addAttribute("userOrders", orderService.getUserOrderList(pageRequestDTO, loginInfo.userId))
+        model.addAttribute("type",pageRequestDTO.type)
+        model.addAttribute("keyword",pageRequestDTO.keyword)
         return "order/orderList"
     }
 
@@ -102,6 +104,8 @@ class OrderController(
     @GetMapping("/admin/orders")
     fun orderListTest(pageRequestDTO: PageRequestDTO, model: Model): String {
         model.addAttribute("orders", orderService.getAdminOrderList(pageRequestDTO))
+        model.addAttribute("type",pageRequestDTO.type)
+        model.addAttribute("keyword",pageRequestDTO.keyword)
         return "order/adminOnlyOrderList"
     }
 

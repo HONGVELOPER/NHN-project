@@ -15,7 +15,7 @@
                     <option value="price" th:selected="${pageRequestDTO.type=='price'}">제품 가격</option>
                     <option value="address" th:selected="${pageRequestDTO.type=='address'}">배송지</option>
                     <option value="status" th:selected="${pageRequestDTO.type=='status'}">주문 상태</option>
-                    <option value="name" th:selected="${pageRequestDTO.type=='name'}">주문자 이름</option>
+                    <option value="user" th:selected="${pageRequestDTO.type=='user'}">주문자 이름</option>
                 </select>
                 <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
                 <div class="input-group-append" id="button-addon4">
@@ -67,15 +67,15 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${orders.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/admin/orders/(page=${orders.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${orders.page == page? 'active':''}" th:each="page : ${orders.pageList}">
-                <a class="page-link" th:href="@{/admin/orders(page=${page})}">
+                <a class="page-link" th:href="@{/admin/orders/(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${orders.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/admin/orders/(page=${orders.end+1},type=${type},keyword=${keyword})}">Next</a>
             </li>
         </ul>
     </th:block>

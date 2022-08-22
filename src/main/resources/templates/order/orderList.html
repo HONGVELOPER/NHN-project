@@ -57,7 +57,7 @@
                         </button>
                     </form>
 
-                    <div th:if="${order.reviewStatus == false}">
+                    <div th:if="${order.reviewStatus == false} and ${order.status.toString().equals('ACTIVE')}">
                         <form th:method="get" th:action="'/api/reviews/orders/'+${order.orderId} + '/createForm'"
                               style="display: inline">
                             <button class="btn btn-outline-dark mt-auto" type="submit">리뷰 작성</button>
@@ -70,16 +70,16 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${userOrders.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/api/orders/(page=${userOrders.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${userOrders.page == page? 'active':''}"
                 th:each="page : ${userOrders.pageList}">
-                <a class="page-link" th:href="@{/api/orders(page=${page})}">
+                <a class="page-link" th:href="@{/api/orders/(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${userOrders.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/api/orders/(page=${userOrders.end+1},type=${type},keyword=${keyword})}">Next</a>
             </li>
         </ul>
     </th:block>
