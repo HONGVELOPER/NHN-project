@@ -21,7 +21,7 @@ class ExceptionHandler(
 
     @ExceptionHandler(MaxUploadSizeExceededException::class)
     fun MaxUploadSizeExceededExceptionHandler(e: MaxUploadSizeExceededException, response : HttpServletResponse){
-        alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/admin/addProductPage",response)
+        alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/",response)
     }
 
     @ExceptionHandler(AlertException::class)
