@@ -66,7 +66,7 @@ class SalesJobConfig(
     fun processor(): ItemProcessor<Order, Order> {
         return ItemProcessor<Order, Order> { orders ->
             totalAmount+=orders.price
-            quantity+=1
+            quantity+=orders.count
             orders
         }
     }
