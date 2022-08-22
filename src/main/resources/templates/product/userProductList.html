@@ -53,7 +53,7 @@
                                     <h5 class="fw-bolder">[[${product.productName}]]</h5>
                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                         <div class="bi-star-fill"></div>
-                                        [[${product.totalStar}]]
+                                        [[${#strings.substring(product.totalStar,0,3)}]]
                                     </div>
                                     <!-- Product price-->
                                     [[${product.price}]]₩
