@@ -38,17 +38,14 @@
                                 새로운 이미지 <br>
                                 <img id = "thumbnail" src="" height="200" >
 
-
                                 제품 이름
                                 <input type="text" class="form-control"  th:field="*{productName}"><br>
                                 <p th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="jb-red"></p>
 
 
-
                                 제품 가격
                                 <input type="number" class="form-control" th:field="*{price}" /><br>
                                 <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="jb-red"></p>
-
 
                             제품 상태
                             <div th:if="${#strings.equals(productDTO.status,'ACTIVE')}"}>
@@ -68,24 +65,19 @@
                                 <input type="text" class="form-control"  th:field="*{briefDescription}" /><br>
                                 <p th:if="${#fields.hasErrors('briefDescription')}" th:errors="*{briefDescription}" class="jb-red"></p>
 
-
-
                                 제품 상세 설명
                                 <textarea type="text" class="form-control"  th:field="*{detailDescription}"/><br>
                                 <p th:if="${#fields.hasErrors('detailDescription')}" th:errors="*{detailDescription}" class="jb-red"></p>
 
-
                             <div>
-
                                 카테고리 선택 <br>
                                 <select name="categoryId" class="form-select">
-                                    <option selected th:text="${productDTO.category.parentCategory.name}+' > '+${productDTO.category.name}" th:value="${productDTO.category.categoryId}"></option>
+                                    <option selected th:text="${category.parentCategory.name}+' > '+${category.name}" th:value="${category.categoryId}"></option>
                                     <option value="none">=== 기존 ===</option>
                                     <div th:each="category : ${categoryListDTO}">
                                         <option th:text="${category.fullName}" th:value="${category.categoryId}" name="categoryId"></option>
                                     </div>
                                 </select>
-
                             </div>
                             <br>
 
