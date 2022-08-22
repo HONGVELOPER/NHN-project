@@ -9,6 +9,8 @@
                     <h1>쿠폰 발급</h1>
                     <form th:action="@{/api/coupons/event}"  th:method="post">
                         <input type="hidden" th:value="${userId}" th:name="userId">
+                        <p th:text="${eventInfo}"></p>
+                        <br>
                         <button class="btn btn-outline-dark mt-auto" type="submit">쿠폰 발급</button>
                     </form>
                 </div>
