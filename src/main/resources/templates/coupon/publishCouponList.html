@@ -58,7 +58,7 @@
             <li class="page-item" th:if="${coupons.prev}">
                 <a class="page-link" th:href="@{/admin/coupons(page=${coupons.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${coupons.page == page? 'active':''}"th:each="page : ${coupons.pageList}">
+            <li th:class="'page-item ' + ${coupons.page == page?'active':''}"th:each="page : ${coupons.pageList}">
                 <a class="page-link" th:href="@{/admin/coupons(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
