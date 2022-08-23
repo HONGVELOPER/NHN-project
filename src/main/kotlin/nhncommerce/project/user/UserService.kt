@@ -102,7 +102,7 @@ class UserService(
 
         val keyword = pageRequestDTO.keyword
 
-        val expression = qUser.userId.gt(1).and(qUser.status.eq(Status.ACTIVE))
+        val expression = qUser.userId.gt(1)
 
         booleanBuilder.and(expression)
 

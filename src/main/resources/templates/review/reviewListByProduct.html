@@ -7,28 +7,18 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th scope="col">번호</th>
+                <th scope="col">작성자</th>
                 <th scope="col">내용</th>
                 <th scope="col">별점</th>
                 <th scope="col">등록 날짜</th>
-<!--                <th scope="col">수정/삭제</th>-->
             </tr>
             </thead>
             <tbody>
             <tr th:each="review : ${reviews.dtoList}">
-                <td>[[${review.reviewId}]]</td>
+                <td>[[${review.email}]]</td>
                 <td>[[${review.content}]]</td>
                 <td>[[${review.star}]]</td>
                 <td>[[${#temporals.format(review.createdAt,'yyyy/MM/dd')}]]</td>
-<!--                <td>-->
-                    <!--                    href 로 링크 하면 delete 안먹음-->
-<!--                    <form th:method="get" th:action="@{/api/reviews/{reviewId}/updateForm(reviewId = ${review.reviewId})}" style="display: inline">-->
-<!--                        <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>-->
-<!--                    </form>-->
-<!--                    <form th:method="put" th:action="@{/api/reviews/{reviewId}/delete(reviewId = ${review.reviewId})}" style="display: inline">-->
-<!--                        <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>-->
-<!--                    </form>-->
-<!--                </td>-->
             </tr>
             </tbody>
         </table>

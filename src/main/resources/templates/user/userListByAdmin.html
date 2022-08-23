@@ -9,7 +9,6 @@
             <div class="input-group">
                 <input type="hidden" name="page" value="1">
                 <select class="custom-select" name="type">
-                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
                     <option value="name" th:selected="${pageRequestDTO.type=='name'}">이름</option>
                     <option value="email" th:selected="${pageRequestDTO.type=='email'}">이메일</option>
                 </select>
@@ -47,7 +46,7 @@
                     <form th:method="get" th:action="@{/admin/users/{userId}/updateProfileForm(userId = ${user.userId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">수정</button>
                     </form>
-                    <form th:method="delete" th:action="@{/admin/users/{userId}(userId = ${user.userId})}" style="display: inline">
+                    <form  th:if="${user.status == 'ACTIVE'}" th:method="delete" th:action="@{/admin/users/{userId}(userId = ${user.userId})}" style="display: inline">
                         <button class="btn btn-outline-dark mt-auto" type="submit">삭제</button>
                     </form>
                 </td>
@@ -57,15 +56,15 @@
 
         <ul class="pagination justify-content-center align-items-center">
             <li class="page-item" th:if="${users.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/admin/user/manage(page=${users.start-1},,type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${users.page == page? 'active':''}"th:each="page : ${users.pageList}">
-                <a class="page-link" th:href="@{/users(page=${page})}">
+            <li th:class="'page-item ' + ${users.page == page? 'active':''}"th:each="page : ${users.pageList}">
+                <a class="page-link" th:href="@{/admin/users/manage(page=${page},,type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${users.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" th:href="@{/admin/user/manage(page=${users.start+1},,type=${type},keyword=${keyword})}">Next</a>
             </li>
         </ul>
     </th:block>

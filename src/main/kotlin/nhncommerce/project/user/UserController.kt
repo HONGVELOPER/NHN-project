@@ -89,6 +89,8 @@ class UserController(
     ): ModelAndView {
         val result: PageResultDTO<UserListDTO, User> = userService.findUserList(pageRequestDTO)
         mav.addObject("users", result)
+        mav.addObject("type",pageRequestDTO.type)
+        mav.addObject("keyword",pageRequestDTO.keyword)
         mav.viewName = "user/userListByAdmin"
         return mav
     }
