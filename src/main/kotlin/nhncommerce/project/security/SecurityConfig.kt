@@ -40,8 +40,8 @@ class SecurityConfig(
     @Bean
     fun defaultSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN") // 어드민일경우
-            .antMatchers("/api/**").hasAnyRole("USER", "ADMIN") // 로그인 사람
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
             .anyRequest()
             .permitAll()
             .and()
@@ -49,9 +49,6 @@ class SecurityConfig(
             .accessDeniedPage("/login")
             .and()
             .formLogin()
-//            .loginPage("/login") -> 커스텀 login 페이지 제작시 페이지 주소 넣어야함.
-//            .defaultSuccessUrl("/") ->  로그인 성공시 라우팅 되는 default 경로 (수정 가능)
-//            .failureUrl("/login") // -> 로그인 실패시 라우팅 되는 default 경로 (수정 가능)
             .usernameParameter("username")
             .passwordParameter("password")
             .and()
@@ -69,10 +66,8 @@ class SecurityConfig(
             .and()
             .sessionManagement()
             .maximumSessions(1)
-//            .maxSessionsPreventsLogin(true) // session 중복 로그인 처리
             .sessionRegistry(sessionRegistry())
             .expiredUrl("/api/users/sessionExpired")
-//            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // default session 생성 방식
             .and()
             .and()
             .build()
