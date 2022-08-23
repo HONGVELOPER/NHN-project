@@ -17,7 +17,7 @@
         </div>
         <div>
           <label for="phone">번호</label>
-          <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
+          <input type="number" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
           <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
         </div>
         <div class="row">
