@@ -18,13 +18,13 @@ data class DeliverDTO(
     val address: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
-    @field:Size(max = 13, message = "전화번호를 13자 이내로 입력해주세요")
+    @field:Size(max = 11, message = "전화번호를 11자 이내로 입력해주세요")
     val phone: String = "",
 ) {
 
     fun dtoToEntity(user: User): Deliver {
         return Deliver(
-            deliverId = 0L,    //없으면 에러
+            deliverId = 0L,
             name = name,
             addressName = addressName,
             address = address,
