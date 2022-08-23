@@ -174,6 +174,11 @@ class OrderService(
         if (type.contains("price")) {
             if(keyword.isNotBlank()){
                 conditionBuilder.or(qOrder.price.eq(keyword.toInt())).and(qOrder.user.userId.eq(userId))
+                try{
+                    conditionBuilder.or(qOrder.price.eq(keyword.toInt())).and(qOrder.user.userId.eq(userId))
+                }catch (e : Exception){
+                    throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+                }
             }
         }
         if (type == "status" && keyword == "주문 완료") {
@@ -211,6 +216,11 @@ class OrderService(
         if (type.contains("price")) {
             if(keyword.isNotBlank()){
                 conditionBuilder.or(qOrder.price.eq(keyword.toInt()))
+                try{
+                    conditionBuilder.or(qOrder.price.eq(keyword.toInt()))
+                }catch (e : Exception){
+                    throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+                }
             }
         }
         if (type == "status" && keyword == "주문 완료") {
