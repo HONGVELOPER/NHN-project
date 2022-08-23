@@ -46,7 +46,7 @@
             <li class="page-item" th:if="${reviews.prev}">
                 <a class="page-link" th:href="@{/api/reviews/users(page=${reviews.start-1})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${reviews.page == page? 'active':''}"th:each="page : ${reviews.pageList}">
+            <li th:class="'page-item ' + ${reviews.page == page? 'active':''}"th:each="page : ${reviews.pageList}">
                 <a class="page-link" th:href="@{/api/reviews/users(page=${page})}">
                     [[${page}]]
                 </a>

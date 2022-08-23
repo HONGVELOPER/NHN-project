@@ -71,7 +71,7 @@
             <li class="page-item" th:if="${userOrders.prev}">
                 <a class="page-link" th:href="@{/api/orders/(page=${userOrders.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${userOrders.page == page? 'active':''}"
+            <li th:class="'page-item ' + ${userOrders.page == page? 'active':''}"
                 th:each="page : ${userOrders.pageList}">
                 <a class="page-link" th:href="@{/api/orders/(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]

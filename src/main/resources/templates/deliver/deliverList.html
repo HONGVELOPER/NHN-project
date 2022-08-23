@@ -38,7 +38,7 @@
             <li class="page-item" th:if="${delivers.prev}">
                 <a class="page-link" href="@{/api/delivers/users(page=${delivers.start-1})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${delivers.page == page? 'active':''}"th:each="page : ${delivers.pageList}">
+            <li th:class="'page-item ' + ${delivers.page == page? 'active':''}"th:each="page : ${delivers.pageList}">
                 <a class="page-link" th:href="@{/api/delivers/users(page=${page})}">
                     [[${page}]]
                 </a>
