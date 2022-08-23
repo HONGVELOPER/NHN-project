@@ -16,6 +16,13 @@
             <!-- Core theme CSS (includes Bootstrap)-->
             <link href="css/styles.css" rel="stylesheet" />
         </head>
+        <style>
+            .card-img-top {
+            width: 100%;
+            height: 20vh;
+            object-fit: contain;
+            }
+        </style>
 
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
@@ -52,7 +59,7 @@
                                     <h5 class="fw-bolder">[[${product.productName}]]</h5>
                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                         <div class="bi-star-fill"></div>
-                                        [[${product.totalStar}]]
+                                        [[${#strings.substring(product.totalStar,0,3)}]]
                                     </div>
                                     <!-- Product price-->
                                     [[${product.price}]]₩
