@@ -33,6 +33,7 @@ data class UserDTO (
     val phone: String? = null,
 
     val provider: String? = null,
+    
 ): Serializable {
     fun dtoToEntity(): User {
         val genderStatus: Gender = if (gender == "MALE") {
