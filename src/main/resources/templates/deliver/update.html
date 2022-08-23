@@ -22,7 +22,7 @@
                 </div>
                 <div>
                     <label for="phone">받는 사람 전화번호</label>
-                    <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="전화번호를 입력하세요.">
+                    <input type="number" id="phone" th:field="*{phone}" class="form-control" placeholder="전화번호를 입력하세요.">
                     <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
                 </div>
                 <div>

@@ -4,6 +4,8 @@ package nhncommerce.project.coupon
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.coupon.domain.*
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.exception.RedirectException
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
@@ -53,10 +55,6 @@ class CouponService(
         return PageResultDTO<CouponListDTO,Coupon>(result,fn)
     }
 
-    fun removeCoupon(couponId : Long){
-        couponRepository.deleteById(couponId)
-    }
-
     fun getCoupon(couponId: Long): Optional<Coupon> {
         return couponRepository.findById(couponId)
     }
@@ -65,7 +63,7 @@ class CouponService(
         val user = userRepository.findById(userId).get()
         val couponList = couponRepository.findByUser(user)
         return couponList.map {
-            CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status)
+            CouponListViewDTO(it.couponId, it.couponName, it.expired, it.status, it.discountRate)
         }
     }
 
@@ -100,7 +98,11 @@ class CouponService(
             conditionBuilder.or(qCoupon.couponName.contains(keyword))
         }
         if(type.contains("discountRate")){
-            conditionBuilder.or(qCoupon.discountRate.eq(keyword.toInt()))
+            try{
+                conditionBuilder.or(qCoupon.discountRate.eq(keyword.toInt()))
+            }catch (e : Exception){
+                throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+            }
         }
         if(type.contains("email")){
             conditionBuilder.or(qCoupon.user.email.contains(keyword))

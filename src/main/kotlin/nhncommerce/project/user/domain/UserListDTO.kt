@@ -13,7 +13,9 @@ class UserListDTO(
 
     val name: String,
 
-    val phone: String? = "",
+    val phone: String,
+
+    val status: String,
 
     val createdAt: LocalDateTime,
 

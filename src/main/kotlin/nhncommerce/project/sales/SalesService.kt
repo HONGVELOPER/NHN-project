@@ -16,13 +16,11 @@ class SalesService(
     val salesRepository: SalesRepository
 ) {
     fun getDailySales(startDate: LocalDate, endDate: LocalDate): List<Sales> {
-        val list = mutableListOf<Sales>()
         val dailySalesList = salesRepository.findAllByDateBetween(startDate, endDate)
-        dailySalesList.map {
-            val salesListDTO = Sales(it.salesId, it.date, it.quantity, it.totalAmount)
-            list.add(salesListDTO)
+        return dailySalesList.map {
+            Sales(it.salesId, it.date, it.quantity, it.totalAmount)
         }
-        return list.toList()
+
     }
 
     fun getSalesList(requestDTO : PageRequestDTO) : PageResultDTO<SalesDTO, Sales> {

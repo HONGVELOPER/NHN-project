@@ -1,14 +1,14 @@
 package nhncommerce.project.user
 
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
-import nhncommerce.project.product.ProductService
 import nhncommerce.project.user.domain.*
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
 import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
@@ -17,8 +17,8 @@ import javax.validation.Valid
 
 @Controller
 class UserController(
-    val userService: UserService,
-    val loginInfoService: LoginInfoService,
+    private val userService: UserService,
+    private val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/users/joinForm")
@@ -89,6 +89,8 @@ class UserController(
     ): ModelAndView {
         val result: PageResultDTO<UserListDTO, User> = userService.findUserList(pageRequestDTO)
         mav.addObject("users", result)
+        mav.addObject("type",pageRequestDTO.type)
+        mav.addObject("keyword",pageRequestDTO.keyword)
         mav.viewName = "user/userListByAdmin"
         return mav
     }
@@ -102,6 +104,8 @@ class UserController(
         if (bindingResult.hasErrors()) {
             mav.viewName = "user/join"
             return mav
+        } else if (userDTO.password != userDTO.passwordVerify) { // todo : controller 에서 validation 해라
+            throw AlertException(ErrorMessage.INCORRECT_PASSWORD)
         }
         userService.createUserByForm(userDTO)
         mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
@@ -153,6 +157,10 @@ class UserController(
         if (bindingResult.hasErrors()) {
             mav.viewName = "user/updatePassword"
             return mav
+        } else if (passwordDTO.password == passwordDTO.newPassword) {
+            throw AlertException(ErrorMessage.CHANGE_TO_ORIGIN_PASSWORD)
+        } else if (passwordDTO.newPassword != passwordDTO.newPasswordVerify) {
+            throw AlertException(ErrorMessage.INCORRECT_NEW_PASSWORD) //
         }
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.updateUserPasswordById(loginInfo.userId, passwordDTO)
@@ -165,6 +173,7 @@ class UserController(
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
         userService.deleteUserById(loginInfo.userId)
+        loginInfoService.expireUserSession(loginInfo.userId)
         mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/products"))
         mav.viewName = "user/alert"
         return mav

@@ -2,10 +2,12 @@ package nhncommerce.project.user
 
 
 import com.querydsl.core.BooleanBuilder
+import nhncommerce.project.baseentity.Status
 import nhncommerce.project.exception.AlertException
 import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
+import nhncommerce.project.review.ReviewRepository
 import nhncommerce.project.user.domain.*
 import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -15,18 +17,17 @@ import java.util.function.Function
 
 @Service
 class UserService(
-    val userRepository: UserRepository,
-    val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder(),
+    private val userRepository: UserRepository,
+    private val reviewRepository: ReviewRepository,
+    private val passwordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder(),
 ) {
 
     @Transactional
     fun createUserByForm(userDTO: UserDTO) {
-        val duplicateUser: User? = userRepository.findByEmail(userDTO.email)
-        if (duplicateUser?.email == userDTO.email) {
+        // todo : user dto email 과 duplicate email 은 중복체크이다.
+       userRepository.findByEmail(userDTO.email)?.let {
             throw AlertException(ErrorMessage.DUPLICATE_EMAIL)
-        } else if (userDTO.password != userDTO.passwordVerify) {
-            throw AlertException(ErrorMessage.INCORRECT_PASSWORD)
-        }
+       }
         val user: User = userDTO.dtoToEntity()
         val encodedPassword = passwordEncoder.encode(user.password)
         user.updatePassword(encodedPassword)
@@ -35,6 +36,7 @@ class UserService(
 
     fun findUserById(userId: Long): UserDTO {
         val user: User = userRepository.findById(userId).get()
+        println(user.toString())
         return user.entityToUserDto()
     }
 
@@ -64,12 +66,8 @@ class UserService(
     @Transactional
     fun updateUserPasswordById(userId: Long, passwordDTO: PasswordDTO) {
         val user: User = userRepository.findById(userId).get()
-        if (!passwordEncoder.matches(passwordDTO.password, user.password)) {
+        if (!passwordEncoder.matches(passwordDTO.password, user.password)) { // todo : controller에서 처리하든 fe에서 처리
             throw AlertException(ErrorMessage.INCORRECT_ORIGIN_PASSWORD)
-        } else if (passwordDTO.password == passwordDTO.newPassword) {
-            throw AlertException(ErrorMessage.CHANGE_TO_ORIGIN_PASSWORD)
-        } else if (passwordDTO.newPassword != passwordDTO.newPasswordVerify) {
-            throw AlertException(ErrorMessage.INCORRECT_NEW_PASSWORD)
         }
         val newEncodedPassword = passwordEncoder.encode(passwordDTO.newPassword)
         user.updatePassword(newEncodedPassword)
@@ -77,8 +75,12 @@ class UserService(
 
     @Transactional
     fun deleteUserById(userId: Long) {
-        val deleteUser = userRepository.findById(userId).get()
-        userRepository.deleteById(deleteUser.userId)
+        val user = userRepository.findById(userId).get() // todo: suchElementException -> controller advice 처리하자
+        user.deleteUser()
+        val reviewList = reviewRepository.findByUser(user)
+        reviewList.map {
+            it.status = Status.IN_ACTIVE
+        }
     }
 
     fun findUserList(pageRequestDTO: PageRequestDTO): PageResultDTO<UserListDTO, User> {

@@ -8,12 +8,13 @@ enum class ErrorMessage(
     WRONG_ACCESS("잘못된 접근입니다.", "/products"),
 
     // 유저
-    DUPLICATE_EMAIL("중복된 이메일입니다.", "/users/joinForm"),
+    DUPLICATE_EMAIL("이미 가입한 이메일입니다.", "/users/joinForm"),
     INCORRECT_PASSWORD("비밀번호가 일치하지 않습니다.", "/users/joinForm"),
     INCORRECT_ORIGIN_PASSWORD("기존 비밀번호가 일치하지 않습니다.", "/api/users/updatePasswordForm"),
     CHANGE_TO_ORIGIN_PASSWORD("기존 비밀번호와 일치하는 비밀번호로 수정할 수 없습니다.", "/api/users/updatePasswordForm"),
     INCORRECT_NEW_PASSWORD("새로운 비밀번호가 일치하지 않습니다.", "/api/users/updatePasswordForm"),
     NOT_EXIST_USER_PHONE("연락처가 없습니다. 연락처를 등록해주세요.", "/api/users/updateProfileForm"),
+    DELETE_USER("탈퇴한 회원입니다.", "/products"),
 
     //이미지 업로드
     IMAGE_UPLOAD_FAILED("이미지 업로드 실패 입니다.","/admin/products"),
@@ -39,7 +40,10 @@ enum class ErrorMessage(
 
     //이벤트 쿠폰
     EMPTY_NOW_EVENT("현재 진행중인 이벤트가 없습니다.", "/products"),
-    EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event")
+    EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event"),
 
+
+    //String to Int 변환
+    STRING_TO_INT_CONVERSION_ERROR("문자열을 입력할 수 없습니다.","/")
 
 }

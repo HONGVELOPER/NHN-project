@@ -21,7 +21,7 @@ class ExceptionHandler(
 
     @ExceptionHandler(MaxUploadSizeExceededException::class)
     fun MaxUploadSizeExceededExceptionHandler(e: MaxUploadSizeExceededException, response : HttpServletResponse){
-        alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/admin/addProductPage",response)
+        alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/",response)
     }
 
     @ExceptionHandler(AlertException::class)
@@ -34,11 +34,12 @@ class ExceptionHandler(
         return mav
     }
 
-    @ExceptionHandler(RedirectException::class)
-    fun handleRedirectException(ex: RedirectException): ModelAndView {
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNoSuchElementException(): ModelAndView {
         val mav: ModelAndView = ModelAndView()
-        mav.addObject("data", ex.alertDTO)
+        mav.addObject("data", alertDTO("해당 데이터를 찾을 수 없습니다.", "/products"))
         mav.viewName = "user/alert"
         return mav
     }
+
 }

@@ -36,15 +36,15 @@
 
         <ul class="pagination justify-content-center align-items-center">
             <li class="page-item" th:if="${delivers.prev}">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <a class="page-link" href="@{/api/delivers/users(page=${delivers.start-1})}" tabindex="-1">Previous</a>
             </li>
             <li th:class="'page-item' + ${delivers.page == page? 'active':''}"th:each="page : ${delivers.pageList}">
-                <a class="page-link" th:href="@{/delivers(page=${page})}">
+                <a class="page-link" th:href="@{/api/delivers/users(page=${page})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${delivers.next}">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" href="@{/api/delivers/users(page=${delivers.start+1})}">Next</a>
             </li>
         </ul>
     </th:block>

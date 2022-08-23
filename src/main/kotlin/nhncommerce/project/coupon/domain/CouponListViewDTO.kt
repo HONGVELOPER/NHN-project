@@ -8,5 +8,6 @@ data class CouponListViewDTO (
     val couponId : Long? = null,
     val couponName : String? = null,
     val expired: LocalDate,
-    val status: Status
+    val status: Status,
+    val discountRate : Int
 )

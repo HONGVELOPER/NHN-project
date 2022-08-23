@@ -20,9 +20,9 @@ class User (
     @Enumerated(EnumType.STRING)
     var status: Status,
 
-    @Column(nullable = false)
+    @Column()
     @Enumerated(EnumType.STRING)
-    val gender: Gender,
+    val gender: Gender? = null,
 
     @Column(nullable = false)
     var name: String,
@@ -67,11 +67,15 @@ class User (
         password = newPassword
     }
 
+    fun deleteUser() {
+        status = Status.IN_ACTIVE
+    }
+
     fun entityToUserDto(): UserDTO {
         return UserDTO(
             email = email,
-            gender = gender.name,
             name = name,
+            gender = gender?.name,
             password = password,
             phone = phone,
             provider = provider,
@@ -81,14 +85,14 @@ class User (
     fun entityToProfileDto(): ProfileDTO {
         return ProfileDTO(
             name = name,
-            phone = phone,
+            phone = phone?: "",
         )
     }
 
     fun entityToAdminProfileDto(): AdminProfileDTO {
         return AdminProfileDTO(
             name = name,
-            phone = phone,
+            phone = phone?: "",
             role = role.name,
         )
     }
@@ -98,9 +102,10 @@ class User (
             userId = userId,
             role = role.name.split('_')[1],
             email = email,
-            gender = gender.name,
+            gender = gender?.name ?: "",
             name = name,
-            phone = phone,
+            phone = phone ?: "",
+            status = status.name,
             createdAt = createdAt
         )
     }

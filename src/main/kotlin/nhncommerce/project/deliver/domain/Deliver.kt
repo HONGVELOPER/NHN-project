@@ -19,7 +19,7 @@ class Deliver(
     var status: Status,
 
     @Column(nullable = false)
-    var name: String, // 배송을 받는 사람
+    var name: String,
 
     @Column(nullable = false)
     var addressName: String,
@@ -28,7 +28,7 @@ class Deliver(
     var address: String,
 
     @Column(length = 13, nullable = false)
-    var phone: String, // 배송을 받는 사람의 전화번호
+    var phone: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

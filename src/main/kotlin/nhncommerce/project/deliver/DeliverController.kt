@@ -17,8 +17,8 @@ import javax.validation.Valid
 @Controller
 @RequestMapping("/api")
 class DeliverController (
-    val deliverService: DeliverService,
-    val loginInfoService: LoginInfoService,
+    private val deliverService: DeliverService,
+    private val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/delivers/createForm")

@@ -12,6 +12,7 @@ import nhncommerce.project.option.OptionDetailRepository
 import nhncommerce.project.order.domain.*
 import nhncommerce.project.page.PageRequestDTO
 import nhncommerce.project.page.PageResultDTO
+import nhncommerce.project.review.ReviewRepository
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.util.alert.alertDTO
 import nhncommerce.project.util.loginInfo.LoginInfoDTO
@@ -28,6 +29,7 @@ class OrderService(
     val couponRepository: CouponRepository,
     val optionDetailRepository: OptionDetailRepository,
     val deliverRepository: DeliverRepository,
+    val reviewRepository: ReviewRepository,
     val loginInfoService: LoginInfoService
 ) {
 
@@ -130,6 +132,10 @@ class OrderService(
     fun cancelOrder(orderId: Long, userId: Long) {
         val user = userRepository.findById(userId).get()
         val order = orderRepository.findById(orderId).get()
+        if(order.reviewStatus== true){
+            val review = reviewRepository.findByOrder(order)
+            review.status = Status.IN_ACTIVE
+        }
         val optionDetailId = order.optionDetail.optionDetailId
         val optionDetail = optionDetailRepository.findById(optionDetailId).get()
 
@@ -149,6 +155,7 @@ class OrderService(
         }
         optionDetail.stock += order.count
         order.status = Status.IN_ACTIVE
+
     }
 
     fun userOrderListBuilder(userId: Long, pageRequestDTO: PageRequestDTO): BooleanBuilder {
@@ -165,7 +172,13 @@ class OrderService(
                 .and(qOrder.user.userId.eq(userId))
         }
         if (type.contains("price")) {
-            conditionBuilder.or(qOrder.price.eq(keyword.toInt())).and(qOrder.user.userId.eq(userId))
+            if(keyword.isNotBlank()){
+                try{
+                    conditionBuilder.or(qOrder.price.eq(keyword.toInt())).and(qOrder.user.userId.eq(userId))
+                }catch (e : Exception){
+                    throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+                }
+            }
         }
         if (type == "status" && keyword == "주문 완료") {
             conditionBuilder.or(qOrder.status.eq(Status.ACTIVE)).and(qOrder.user.userId.eq(userId))
@@ -200,7 +213,13 @@ class OrderService(
             conditionBuilder.or(qOrder.optionDetail.product.productName.contains(keyword))
         }
         if (type.contains("price")) {
-            conditionBuilder.or(qOrder.price.eq(keyword.toInt()))
+            if(keyword.isNotBlank()){
+                try{
+                    conditionBuilder.or(qOrder.price.eq(keyword.toInt()))
+                }catch (e : Exception){
+                    throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+                }
+            }
         }
         if (type == "status" && keyword == "주문 완료") {
             conditionBuilder.or(qOrder.status.eq(Status.ACTIVE))
