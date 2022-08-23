@@ -42,7 +42,7 @@ class CouponService(
     }
 
     private fun notFoundUser() {
-        throw RedirectException(alertDTO("존재하지 않는 회원 입니다. 다시 입력해주세요.","/admin/publishCouponPage"))
+        throw AlertException(ErrorMessage.NOT_FOUND_USER)
     }
 
     fun getCouponList(requestDTO : PageRequestDTO) : PageResultDTO<CouponListDTO,Coupon>{

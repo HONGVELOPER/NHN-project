@@ -15,11 +15,11 @@ enum class ErrorMessage(
     INCORRECT_NEW_PASSWORD("새로운 비밀번호가 일치하지 않습니다.", "/api/users/updatePasswordForm"),
     NOT_EXIST_USER_PHONE("연락처가 없습니다. 연락처를 등록해주세요.", "/api/users/updateProfileForm"),
     DELETE_USER("탈퇴한 회원입니다.", "/products"),
+    NOT_FOUND_USER("존재하지 않는 회원 입니다. 다시 입력해주세요.","/admin/publishCouponPage"),
 
     //이미지 업로드
     IMAGE_UPLOAD_FAILED("이미지 업로드 실패 입니다.","/admin/products"),
     IMAGE_DELETE_FAILED("이미지 삭제 실패 입니다.","/admin/products"),
-
 
     // 배송지
     NOT_EXIST_ADDRESS("배송지가 없습니다. 배송지를 등록해주세요.","/api/delivers/createForm"),
