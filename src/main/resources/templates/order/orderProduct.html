@@ -65,7 +65,7 @@
                                     <option value="0" name="couponId">선택 안함</option>
                                     <div th:if="${coupons.status.toString().equals('ACTIVE')}"
                                          th:each="coupons : ${couponListViewDTO}">
-                                        <option th:text="${coupons.couponName}" th:value="${coupons.couponId}"
+                                        <option th:text="'[' + ${coupons.discountRate} +'%] '+  ${coupons.couponName} +  ' (~' + ${coupons.expired} + ')'" th:value="${coupons.couponId}"
                                                 name="couponId"></option>
                                     </div>
                                 </select>
