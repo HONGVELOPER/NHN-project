@@ -58,7 +58,7 @@
             <li class="page-item" th:if="${users.prev}">
                 <a class="page-link" th:href="@{/admin/user/manage(page=${users.start-1},,type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
-            <li th:class="'page-item' + ${users.page == page? 'active':''}"th:each="page : ${users.pageList}">
+            <li th:class="'page-item ' + ${users.page == page? 'active':''}"th:each="page : ${users.pageList}">
                 <a class="page-link" th:href="@{/admin/users/manage(page=${page},,type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
