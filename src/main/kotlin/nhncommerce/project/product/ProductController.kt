@@ -126,7 +126,7 @@ class ProductController(
             reviewService.findReviewListByProduct(productId, pageRequestDTO)
         model.addAttribute("reviews", result)
         model.addAttribute("productImageDTOList", imageDTOList)
-        model.addAttribute("optionDetaiㅊlList", optionDetailDTOList)
+        model.addAttribute("optionDetailList", optionDetailDTOList)
         model.addAttribute("productDTO", productDTO)
         return "product/productDetail"
     }
