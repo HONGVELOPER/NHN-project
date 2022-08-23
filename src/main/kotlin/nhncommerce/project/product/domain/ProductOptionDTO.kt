@@ -25,7 +25,7 @@ data class ProductOptionDTO (
     var briefDescription:String?="",
 
     @field:NotBlank(message = "상품명을 입력해주세요.")
-    @field:Size(max = 300, message = "상세 설명을 300자 이내로 입력하세요.")
+    @field:Size(max = 250, message = "상세 설명을 250자 이내로 입력하세요.")
     var detailDescription:String?="",
 
     var thumbnail:String="",
