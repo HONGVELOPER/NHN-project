@@ -23,7 +23,6 @@
                     <div class="input-group">
                         <input type="hidden" name="page" value="1">
                         <select class="custom-select" name="type">
-                            <option th:selected="${pageRequestDTO.type==null}">모두</option>
                             <option value="productName" th:selected="${pageRequestDTO.type=='productName'}">상품 이름</option>
                             <option value="price" th:selected="${pageRequestDTO.type=='price'}">상품 가격</option>
                         </select>
@@ -75,15 +74,15 @@
 
         <ul class="pagination  justify-content-center align-items-center">
             <li class="page-item" th:if="${products.prev}">
-                <a class="page-link" th:href="@{/products(page=${products.start-1})}" tabindex="-1">Previous</a>
+                <a class="page-link" th:href="@{/products(page=${products.start-1},type=${type},keyword=${keyword})}" tabindex="-1">Previous</a>
             </li>
             <li th:class=" 'page-item ' + ${products.page==page?'active':''}" th:each="page : ${products.pageList}">
-                <a class="page-link" th:href="@{/products(page=${page})}">
+                <a class="page-link" th:href="@{/products(page=${page},type=${type},keyword=${keyword})}">
                     [[${page}]]
                 </a>
             </li>
             <li class="page-item" th:if="${products.next}">
-                <a class="page-link" th:href="@{/products(page=${products.end+1})}">Next</a>
+                <a class="page-link" th:href="@{/products(page=${products.end+1},type=${type},keyword=${keyword})}">Next</a>
             </li>
         </ul>
 

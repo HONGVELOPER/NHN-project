@@ -3,6 +3,8 @@ package nhncommerce.project.product
 import com.querydsl.core.BooleanBuilder
 import nhncommerce.project.baseentity.Status
 import nhncommerce.project.category.CategoryRepository
+import nhncommerce.project.exception.AlertException
+import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.image.ImageService
 import nhncommerce.project.option.domain.OptionListDTO
 import nhncommerce.project.page.PageRequestDTO
@@ -127,7 +129,11 @@ class ProductService(
             conditionBuilder.or(qProduct.productName.contains(keyword))
         }
         if (type.contains("price")) {
-            conditionBuilder.or(qProduct.price.eq(keyword.toInt()))
+            try{
+                conditionBuilder.or(qProduct.price.eq(keyword.toInt()))
+            }catch (e : Exception){
+                throw AlertException(ErrorMessage.STRING_TO_INT_CONVERSION_ERROR)
+            }
         }
 
         booleanBuilder.and(conditionBuilder)

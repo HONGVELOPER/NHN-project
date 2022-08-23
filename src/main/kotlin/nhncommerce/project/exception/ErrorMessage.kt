@@ -40,7 +40,9 @@ enum class ErrorMessage(
 
     //이벤트 쿠폰
     EMPTY_NOW_EVENT("현재 진행중인 이벤트가 없습니다.", "/products"),
-    EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event")
+    EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event"),
 
+    //String to Int 변환
+    STRING_TO_INT_CONVERSION_ERROR("문자열을 입력할 수 없습니다.","/")
 
 }
