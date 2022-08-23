@@ -22,8 +22,8 @@ import java.util.function.Function
 
 @Service
 class DeliverService (
-    val deliverRepository: DeliverRepository,
-    val userRepository: UserRepository,
+    private val deliverRepository: DeliverRepository,
+    private val userRepository: UserRepository,
 ) {
     @Transactional
     fun createDeliver(deliverDTO: DeliverDTO, userId: Long) {
