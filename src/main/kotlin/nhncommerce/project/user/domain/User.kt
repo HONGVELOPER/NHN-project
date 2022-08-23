@@ -105,6 +105,7 @@ class User (
             gender = gender?.name ?: "",
             name = name,
             phone = phone ?: "",
+            status = status.name,
             createdAt = createdAt
         )
     }
