@@ -9,7 +9,6 @@
             <div class="input-group">
                 <input type="hidden" name="page" value="1">
                 <select class="custom-select" name="type">
-                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
                     <option value="name" th:selected="${pageRequestDTO.type=='name'}">이름</option>
                     <option value="email" th:selected="${pageRequestDTO.type=='email'}">이메일</option>
                 </select>
