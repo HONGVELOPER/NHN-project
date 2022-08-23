@@ -29,11 +29,11 @@ import java.util.function.Function
 
 @Service
 class ReviewService(
-    val reviewRepository: ReviewRepository,
-    val orderRepository: OrderRepository,
-    val productRepository: ProductRepository,
-    val imageService: ImageService,
-    val storageTokenService: StorageTokenService
+    private val reviewRepository: ReviewRepository,
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository,
+    private val imageService: ImageService,
+    private val storageTokenService: StorageTokenService
 ) {
 
     fun findReviewStatus(userId: Long, orderId: Long) {
@@ -90,7 +90,7 @@ class ReviewService(
         val pageable = pageRequestDTO.getPageable(Sort.by("reviewId").descending())
         val result = reviewRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Review, ReviewListDTO> =
-            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto() }
+            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto(entity.user.email) }
         return PageResultDTO<ReviewListDTO, Review>(result, fn)
     }
 
@@ -102,7 +102,7 @@ class ReviewService(
         val pageable = pageRequestDTO.getPageable(Sort.by("reviewId").descending())
         val result = reviewRepository.findAll(booleanBuilder, pageable)
         val fn: Function<Review, ReviewListDTO> =
-            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto() }
+            Function<Review, ReviewListDTO> { entity: Review? -> entity?.entityToReviewListDto(entity.user.email) }
         return PageResultDTO<ReviewListDTO, Review>(result, fn)
     }
 
