@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.batch.core.JobExecutionException
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.core.launch.JobLauncher
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.net.InetAddress
@@ -20,10 +21,13 @@ class Scheduler(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Value("\${server.cloudIp}")
+    private val cloudIp = ""
+
     @Scheduled(cron = "0 0 05 * * *") //매일 새벽 5시 실행
     fun executeJob() {
         val serverIp = InetAddress.getLocalHost().hostAddress
-        if(serverIp == "192.168.0.118"){
+        if(serverIp == cloudIp){
             try {
                 jobLauncher.run(
                     salesJob.salesJob(), JobParametersBuilder()
