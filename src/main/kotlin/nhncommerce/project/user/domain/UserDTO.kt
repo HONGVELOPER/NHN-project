@@ -3,6 +3,7 @@ package nhncommerce.project.user.domain
 import nhncommerce.project.baseentity.Gender
 import nhncommerce.project.baseentity.ROLE
 import nhncommerce.project.baseentity.Status
+import java.io.Serializable
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
@@ -32,7 +33,7 @@ data class UserDTO (
     val phone: String? = null,
 
     val provider: String? = null,
-) {
+): Serializable {
     fun dtoToEntity(): User {
         val genderStatus: Gender = if (gender == "MALE") {
             Gender.MALE

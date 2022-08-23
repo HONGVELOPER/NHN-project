@@ -2,13 +2,20 @@ package nhncommerce.project.util.loginInfo
 
 import nhncommerce.project.security.domain.FormLoginUserDetails
 import nhncommerce.project.security.domain.Oauth2LoginUserDetails
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.session.SessionRegistry
+import org.springframework.session.FindByIndexNameSessionRepository
+import org.springframework.session.Session
+import org.springframework.session.data.redis.RedisOperationsSessionRepository
+import org.springframework.session.security.SpringSessionBackedSessionRegistry
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 class LoginInfoService(
-    val sessionRegistry: SessionRegistry,
+    val redisTemplate: RedisTemplate<Any, Any>,
+    val findByIndexNameSessionRepository: FindByIndexNameSessionRepository<*>,
 ) {
 
     fun getUserIdFromSession(): LoginInfoDTO {
@@ -33,21 +40,14 @@ class LoginInfoService(
         }
     }
 
-    fun expireUserSession(expireUserId: Long) {
-        val allPrincipal = sessionRegistry.allPrincipals
-        allPrincipal.map { principal ->
-            val loginStatus = principal.javaClass.toString().split(".")[INDEX_OF_LOGIN_STATUS]
-            val userId = if (loginStatus == FORM_LOGIN_USER) {
-                (principal as FormLoginUserDetails).getId()
-            } else {
-                (principal as Oauth2LoginUserDetails).getId()
-            }
-            if (userId == expireUserId) {
-                val deleteSession = sessionRegistry.getAllSessions(principal, false)
-                deleteSession.map {
-                    it.expireNow()
-                }
-            }
+    fun expireUserSession(expireUserEmail: String) {
+        val mutableMap = findByIndexNameSessionRepository.findByIndexNameAndIndexValue(
+            FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+            expireUserEmail
+        )
+        mutableMap.entries.map {
+            println(it.key)
+            redisTemplate.expire("spring:session:sessions:${it.key}", 5, TimeUnit.MILLISECONDS);
         }
     }
 

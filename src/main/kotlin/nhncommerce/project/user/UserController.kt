@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
+import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 
@@ -22,7 +23,7 @@ class UserController(
 ) {
 
     @GetMapping("/users/joinForm")
-    fun joinForm(userDto: UserDTO): String {
+    fun joinForm(userDto: UserDTO, session: HttpSession): String {
         return "user/join"
     }
 
@@ -107,10 +108,16 @@ class UserController(
         } else if (userDTO.password != userDTO.passwordVerify) { // todo : controller 에서 validation 해라
             throw AlertException(ErrorMessage.INCORRECT_PASSWORD)
         }
-        userService.createUserByForm(userDTO)
-        mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
-        mav.viewName = "user/alert"
-        return mav
+        println("user 컨트롤러 진입")
+        try {
+            userService.createUserByForm(userDTO)
+            mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
+            mav.viewName = "user/alert"
+            return mav
+        } catch(e: Exception) {
+            println("에러 발생1!!!!!!!!!")
+            throw Exception("error1")
+        }
     }
 
     @PutMapping("/api/users/profile")
@@ -141,8 +148,8 @@ class UserController(
             mav.viewName = "user/updateProfileByAdmin"
             return mav
         }
-        userService.updateUserProfileByAdmin(userId, adminProfileDTO)
-        loginInfoService.expireUserSession(userId)
+        val userEmail = userService.updateUserProfileByAdmin(userId, adminProfileDTO)
+        loginInfoService.expireUserSession(userEmail)
         mav.addObject("data", alertDTO("회원 프로필이 정상적으로 수정되었습니다.", "/admin/users/manage"))
         mav.viewName = "user/alert"
         return  mav
@@ -172,8 +179,8 @@ class UserController(
     @DeleteMapping("/api/users")
     fun deleteUserById(mav: ModelAndView): ModelAndView {
         val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        userService.deleteUserById(loginInfo.userId)
-        loginInfoService.expireUserSession(loginInfo.userId)
+        val userEmail = userService.deleteUserById(loginInfo.userId)
+        loginInfoService.expireUserSession(userEmail)
         mav.addObject("data", alertDTO("회원 탈퇴가 완료되었습니다.", "/products"))
         mav.viewName = "user/alert"
         return mav
@@ -184,8 +191,8 @@ class UserController(
         @PathVariable("userId") userId: Long,
         mav: ModelAndView
     ): ModelAndView {
-        userService.deleteUserById(userId)
-        loginInfoService.expireUserSession(userId)
+        val userEmail = userService.deleteUserById(userId)
+        loginInfoService.expireUserSession(userEmail)
         mav.addObject("data", alertDTO("회원 삭제가 완료되었습니다.", "/admin/users/manage"))
         mav.viewName = "user/alert"
         return mav
