@@ -10,7 +10,6 @@
             <div class="input-group">
                 <input type="hidden" name="page" value="1">
                 <select class="custom-select" name="type">
-                    <option th:selected="${pageRequestDTO.type==null}">모두</option>
                     <option value="productName" th:selected="${pageRequestDTO.type=='productName'}">제품 이름</option>
                     <option value="price" th:selected="${pageRequestDTO.type=='price'}">제품 가격</option>
                     <option value="address" th:selected="${pageRequestDTO.type=='address'}">배송지</option>
