@@ -39,7 +39,6 @@ class ExceptionHandler(
         val mav: ModelAndView = ModelAndView()
         mav.addObject("data", alertDTO("해당 데이터를 찾을 수 없습니다.", "/products"))
         mav.viewName = "user/alert"
-        logger.info("ERROR MESSAGE: ${error.message}")
         return mav
     }
 

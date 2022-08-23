@@ -24,7 +24,7 @@ data class DeliverDTO(
 
     fun dtoToEntity(user: User): Deliver {
         return Deliver(
-            deliverId = 0L,    //없으면 에러
+            deliverId = 0L,
             name = name,
             addressName = addressName,
             address = address,

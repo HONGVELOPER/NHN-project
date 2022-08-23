@@ -15,6 +15,8 @@ class UserListDTO(
 
     val phone: String,
 
+    val status: String,
+
     val createdAt: LocalDateTime,
 
 ) {
