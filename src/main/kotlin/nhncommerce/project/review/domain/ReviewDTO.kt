@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 data class ReviewDTO (
 
     @field:NotBlank(message = "내용을 입력해주세요.")
-    @field:Size(max = 255, message = "리뷰 내용을 255자 이내로 입력하세요.")
+    @field:Size(max = 50, message = "리뷰 내용을 255자 이내로 입력하세요.")
     val content: String = "",
 
     @field:Positive(message = "별점을 입력해주세요.")
