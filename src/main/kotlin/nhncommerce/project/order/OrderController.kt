@@ -102,8 +102,9 @@ class OrderController(
 
 
     @GetMapping("/admin/orders")
-    fun orderListTest(pageRequestDTO: PageRequestDTO, model: Model): String {
-        model.addAttribute("orders", orderService.getAdminOrderList(pageRequestDTO))
+    fun orderAdminListTest(pageRequestDTO: PageRequestDTO, model: Model): String {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        model.addAttribute("orders", orderService.getAdminOrderList(pageRequestDTO,loginInfo.userId))
         model.addAttribute("type",pageRequestDTO.type)
         model.addAttribute("keyword",pageRequestDTO.keyword)
         return "order/adminOnlyOrderList"
@@ -119,8 +120,9 @@ class OrderController(
 
 
     @GetMapping("/admin/orders/{orderId}")
-    fun getOrder(@PathVariable("orderId") orderId: Long, model: Model): String {
-        model.addAttribute("orderInfo", orderService.getOrder(orderId))
+    fun getAdminOrder(@PathVariable("orderId") orderId: Long, model: Model): String {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        model.addAttribute("orderInfo", orderService.getAdminOrder(orderId,loginInfo.userId))
         return "order/adminOnlyOrderView"
     }
 

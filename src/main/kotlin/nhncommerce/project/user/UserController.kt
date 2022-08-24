@@ -24,6 +24,9 @@ class UserController(
 
     @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO, session: HttpSession): String {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        if (loginInfo.isLogin)
+            return "redirect:/products"
         return "user/join"
     }
 
@@ -109,15 +112,10 @@ class UserController(
             throw AlertException(ErrorMessage.INCORRECT_PASSWORD)
         }
         println("user 컨트롤러 진입")
-        try {
-            userService.createUserByForm(userDTO)
-            mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
-            mav.viewName = "user/alert"
-            return mav
-        } catch(e: Exception) {
-            println("에러 발생1!!!!!!!!!")
-            throw Exception("error1")
-        }
+        userService.createUserByForm(userDTO)
+        mav.addObject("data", alertDTO("회원 가입이 완료되었습니다.", "/products"))
+        mav.viewName = "user/alert"
+        return mav
     }
 
     @PutMapping("/api/users/profile")

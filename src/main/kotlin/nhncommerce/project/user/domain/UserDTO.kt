@@ -29,7 +29,7 @@ data class UserDTO (
     val passwordVerify: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
-    @field:Size(max = 11, message = "전화번호를 11자 이내로 입력해주세요")
+    @field:Size(min = 10, max = 11, message = "전화번호를 10자 에서 11자 이내로 입력해주세요")
     val phone: String? = null,
 
     val provider: String? = null,

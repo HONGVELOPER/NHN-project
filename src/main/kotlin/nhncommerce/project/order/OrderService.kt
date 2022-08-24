@@ -30,7 +30,6 @@ class OrderService(
     val optionDetailRepository: OptionDetailRepository,
     val deliverRepository: DeliverRepository,
     val reviewRepository: ReviewRepository,
-    val loginInfoService: LoginInfoService
 ) {
 
     @Transactional
@@ -38,7 +37,7 @@ class OrderService(
         val optionDetail = optionDetailRepository.findById(orderRequestDTO.optionDetailId).get()
 
 
-        if (optionDetail.stock -  orderRequestDTO.count < 0) {
+        if (optionDetail.stock < orderRequestDTO.count) {
             throw AlertException(ErrorMessage.OUT_OF_STOCK)
         }
 
@@ -62,7 +61,6 @@ class OrderService(
         }
 
         val order = Order(
-            orderId = 0L,
             status = Status.ACTIVE,
             price = totalPrice,
             phone = orderRequestDTO.phone,
@@ -88,9 +86,8 @@ class OrderService(
 
     }
 
-    fun getAdminOrderList(myOrderDTO: PageRequestDTO): PageResultDTO<OrderListDTO, Order> {
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        val user = userRepository.findById(loginInfo.userId).get()
+    fun getAdminOrderList(myOrderDTO: PageRequestDTO,userId: Long): PageResultDTO<OrderListDTO, Order> {
+        val user = userRepository.findById(userId).get()
         if (user.role != ROLE.ROLE_ADMIN) {
             throw AlertException(ErrorMessage.WRONG_ACCESS)
         }
@@ -118,9 +115,8 @@ class OrderService(
     }
 
 
-    fun getOrder(orderId: Long): Order {
-        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
-        val user = userRepository.findById(loginInfo.userId).get()
+    fun getAdminOrder(orderId: Long, userId: Long): Order {
+        val user = userRepository.findById(userId).get()
         if (user.role != ROLE.ROLE_ADMIN) {
             throw AlertException(ErrorMessage.WRONG_ACCESS)
         }
