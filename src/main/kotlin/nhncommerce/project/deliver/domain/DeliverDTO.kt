@@ -7,14 +7,16 @@ import javax.validation.constraints.Size
 
 data class DeliverDTO(
 
+    @field:NotBlank(message = "배송지 이름을 입력해주세요.")
+    @field:Size(max = 20, message = "배송지 이름을 20자 이내로 입력해주세요")
+    val addressName: String = "",
+
     @field:NotBlank(message = "이름을 입력해주세요.")
     @field:Size(max = 20, message = "이름을 20자 이내로 입력해주세요")
     val name: String = "",
 
-    @field:NotBlank(message = "배송지 이름을 입력해주세요.")
-    val addressName: String = "",
-
     @field:NotBlank(message = "주소를 입력해주세요.")
+    @field:Size(max = 40, message = "주소를 40자 이내로 입력해주세요")
     val address: String = "",
 
     @field:NotBlank(message = "전회번호를 입력해주세요.")
@@ -25,8 +27,8 @@ data class DeliverDTO(
     fun dtoToEntity(user: User): Deliver {
         return Deliver(
             deliverId = 0L,
-            name = name,
             addressName = addressName,
+            name = name,
             address = address,
             phone = phone,
             status = Status.ACTIVE,
