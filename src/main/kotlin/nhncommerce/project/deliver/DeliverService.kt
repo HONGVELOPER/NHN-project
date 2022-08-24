@@ -62,7 +62,7 @@ class DeliverService (
         val user = userRepository.findById(userId).get()
         val deliverList = deliverRepository.findByUser(user)
         return deliverList.map {
-            DeliverListViewDTO(it.deliverId, "${it.addressName} : ${it.address}")
+            DeliverListViewDTO(it.deliverId, it.status,"${it.addressName} : ${it.address}")
         }
     }
 

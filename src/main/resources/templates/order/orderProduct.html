@@ -47,7 +47,7 @@
                                 <select name="deliverId" class="form-select"
                                         th:disabled="${deliverListViewDTO == null}">
 
-                                    <div th:each="delivers : ${deliverListViewDTO}">
+                                    <div th:if="${delivers.status.toString().equals('ACTIVE')}" th:each="delivers : ${deliverListViewDTO}">
                                         <option th:if="${delivers != null}" th:text="${delivers.fullAddress}"
                                                 th:value="${delivers.deliverId}" name="deliverId"></option>
                                     </div>
