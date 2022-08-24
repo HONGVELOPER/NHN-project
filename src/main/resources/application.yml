@@ -8,6 +8,7 @@ spring:
     url: jdbc:mysql://192.168.0.40:3306/kulture
     username: kirin1
     password: 'nhnkirin123!'
+
   jpa:
     open-in-view: false
     hibernate:
@@ -38,7 +39,6 @@ spring:
       max-file-size: 10MB
 
 server:
-  cloudIp: 192.168.0.118
   servlet:
     session:
       timeout: 1000
