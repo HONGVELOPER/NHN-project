@@ -9,7 +9,7 @@
         <p>배송지 수정</p>
         <div class="container">
 
-            <form th:action="@{/api/delivers/{deliverId}(deliverId = ${deliverId})}" th:method="put" th:object="${deliverDTO}" >
+            <form th:action="@{/api/delivers/{deliverId}(deliverId = ${deliverId})}" th:method="put" th:object="${deliverDTO}" onsubmit="return check()">
                 <div>
                     <label for="addressName">배송지 이름</label>
                     <input type="text" id="addressName" th:field="*{addressName}" class="form-control" placeholder="배송지 이름을 입력하세요.">
@@ -36,6 +36,20 @@
                     </div>
                 </div>
             </form>
+            <script th:inline="javascript">
+              const pattern = /([^가-힣a-z\x20])/i;
+              function check() {
+                  if (document.getElementById("phone").value < 0){
+                      alert("핸드폰 번호에 '-' 기호를 를 넣을 수 없습니다.")
+                      return false
+                  }
+                  var target = document.getElementById('name').value
+                  if (pattern.test(target)) {
+                      alert("이름에 완성되지 않은 한글이 포함되어 있습니다.");
+                      return false
+                  }
+              }
+            </script>
         </div>
         </body>
     </th:block>
