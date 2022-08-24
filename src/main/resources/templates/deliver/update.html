@@ -37,18 +37,41 @@
                 </div>
             </form>
             <script th:inline="javascript">
-              const pattern = /([^가-힣a-z\x20])/i;
-              function check() {
-                  if (document.getElementById("phone").value < 0){
-                      alert("핸드폰 번호에 '-' 기호를 를 넣을 수 없습니다.")
-                      return false
-                  }
-                  var target = document.getElementById('name').value
-                  if (pattern.test(target)) {
-                      alert("이름에 완성되지 않은 한글이 포함되어 있습니다.");
-                      return false
-                  }
-              }
+                const pattern = /([^가-힣a-z\x20])/i;
+                function check() {
+                    var target = document.getElementById('name').value
+                    if (document.getElementById("addressName").value.length === 0) {
+                        alert("배송지 이름을 입력해주세요.");
+                        return false
+                    } else if (document.getElementById("addressName").value.length > 20){
+                        alert("배송지 이름을 20자 이하로 입력해주세요.")
+                        return false
+                    } else if (target.length === 0) {
+                        alert("받는 사람을 입력해주세요.");
+                        return false
+                    } else if (target.length > 20){
+                        alert("받는 사람을 20자 이하로 입력해주세요.")
+                        return false
+                    } else if (pattern.test(target)) {
+                        alert("받는 사람에 완성되지 않은 한글이 포함되어 있습니다.");
+                        return false
+                    } else if (document.getElementById("phone").value.length === 0){
+                        alert("받는 사람 전화 번호를 입력해주세요.")
+                        return false
+                    } else if (document.getElementById("phone").value.length < 10 || document.getElementById("phone").value.length > 11){
+                        alert("받는 사람 전화 번호를 10자 이상 11 이하로 입력해주세요.")
+                        return false
+                    } else if (document.getElementById("phone").value < 0){
+                        alert("받는 사람 전화 번호에 '-' 기호를 넣을 수 없습니다.")
+                        return false
+                    } else if (document.getElementById("address").value.length === 0){
+                        alert("주소를 입력해주세요.")
+                        return false
+                    } else if (document.getElementById("address").value.length > 40){
+                        alert("주소를 40자 이하로 입력해주세요.")
+                        return false
+                    }
+                }
             </script>
         </div>
         </body>
