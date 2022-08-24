@@ -24,6 +24,9 @@ class UserController(
 
     @GetMapping("/users/joinForm")
     fun joinForm(userDto: UserDTO, session: HttpSession): String {
+        val loginInfo: LoginInfoDTO = loginInfoService.getUserIdFromSession()
+        if (loginInfo.isLogin)
+            return "redirect:/products"
         return "user/join"
     }
 
