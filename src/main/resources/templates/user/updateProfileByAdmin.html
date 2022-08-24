@@ -17,7 +17,7 @@
         </div>
         <div>
           <label for="phone">번호</label>
-          <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
+          <input type="number" id="phone" th:field="*{phone}" class="form-control" placeholder="번호을 입력하세요.">
           <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="jb-red"></p>
         </div>
         <div>
@@ -38,13 +38,24 @@
       <script th:inline="javascript">
           const pattern = /([^가-힣a-z\x20])/i;
           function check() {
-              if (document.getElementById("phone").value < 0){
-                  alert("핸드폰 번호에 '-' 기호를 를 넣을 수 없습니다.")
-                  return false
-              }
               var target = document.getElementById('name').value
-              if (pattern.test(target)) {
+              if (target.length === 0) {
+                  alert("이름을 입력해주세요.");
+                  return false
+              } else if (target.length > 20){
+                  alert("이름을 20자 이하로 입력해주세요.")
+                  return false
+              } else if (pattern.test(target)) {
                   alert("이름에 완성되지 않은 한글이 포함되어 있습니다.");
+                  return false
+              } else if (document.getElementById("phone").value.length === 0){
+                  alert("전화번호를 입력해주세요.")
+                  return false
+              } else if (document.getElementById("phone").value.length < 10 || document.getElementById("phone").value.length > 11){
+                  alert("전화번호를 10자 이상 11 이하로 입력해주세요.")
+                  return false
+              } else if (document.getElementById("phone").value < 0){
+                  alert("전화번호에 '-' 기호를 를 넣을 수 없습니다.")
                   return false
               }
           }
