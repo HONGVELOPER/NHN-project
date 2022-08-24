@@ -2,6 +2,7 @@ package nhncommerce.project.exception
 
 import nhncommerce.project.util.alert.AlertService
 import nhncommerce.project.util.alert.alertDTO
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -14,14 +15,21 @@ import javax.servlet.http.HttpServletResponse
 
 @ControllerAdvice
 class ExceptionHandler(
-    val alertService: AlertService
+    val alertService: AlertService,
+    val loginInfoService: LoginInfoService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(MaxUploadSizeExceededException::class)
     fun MaxUploadSizeExceededExceptionHandler(e: MaxUploadSizeExceededException, response : HttpServletResponse){
-        alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/",response)
+        val userRole = loginInfoService.getUserIdFromSession()
+        if(userRole.isAdmin){
+            alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/admin/products",response)
+        }
+        else{
+            alertService.alertMessage("사진은 10MB 이상 업로드 할 수 없습니다.","/products",response)
+        }
     }
 
     @ExceptionHandler(AlertException::class)

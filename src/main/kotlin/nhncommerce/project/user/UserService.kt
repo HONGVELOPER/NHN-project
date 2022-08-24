@@ -24,7 +24,6 @@ class UserService(
 
     @Transactional
     fun createUserByForm(userDTO: UserDTO) {
-        // todo : user dto email 과 duplicate email 은 중복체크이다.
        userRepository.findByEmail(userDTO.email)?.let {
             throw AlertException(ErrorMessage.DUPLICATE_EMAIL)
        }
