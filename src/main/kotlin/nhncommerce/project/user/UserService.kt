@@ -57,9 +57,10 @@ class UserService(
     }
 
     @Transactional
-    fun updateUserProfileByAdmin(userId: Long, adminProfileDTO: AdminProfileDTO) {
+    fun updateUserProfileByAdmin(userId: Long, adminProfileDTO: AdminProfileDTO): String {
         val user: User = userRepository.findById(userId).get()
         user.updateProfileByAdmin(adminProfileDTO)
+        return user.email
     }
 
 
@@ -74,13 +75,14 @@ class UserService(
     }
 
     @Transactional
-    fun deleteUserById(userId: Long) {
+    fun deleteUserById(userId: Long): String {
         val user = userRepository.findById(userId).get() // todo: suchElementException -> controller advice 처리하자
         user.deleteUser()
         val reviewList = reviewRepository.findByUser(user)
         reviewList.map {
             it.status = Status.IN_ACTIVE
         }
+        return user.email
     }
 
     fun findUserList(pageRequestDTO: PageRequestDTO): PageResultDTO<UserListDTO, User> {

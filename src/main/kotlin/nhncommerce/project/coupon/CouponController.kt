@@ -25,12 +25,11 @@ import javax.validation.Valid
 
 @Controller
 class CouponController(
-    val couponService: CouponService,
-    val postProcessor : ScheduledAnnotationBeanPostProcessor,
-    val schedulerConfiguration : SchedulerConfiguration,
-    val redisService : RedisService,
-    val loginInfoService: LoginInfoService,
-    val eventRepository : EventRepository
+    private val couponService: CouponService,
+    private val postProcessor : ScheduledAnnotationBeanPostProcessor,
+    private val schedulerConfiguration : SchedulerConfiguration,
+    private val redisService : RedisService,
+    private val loginInfoService: LoginInfoService,
 ) {
 
     @GetMapping("/api/myCouponList")
@@ -149,6 +148,16 @@ class CouponController(
             mav.viewName = "redis/alert"
             return mav
         }
+        if (event.progress == RedisService.EVENT_END){
+            mav.addObject("data", alertDTO("이벤트가 이미 종료 되었습니다", "/admin/coupons/event"))
+            mav.viewName = "redis/alert"
+            return mav
+        }
+        if (event.progress == RedisService.EVENT_IN_PROGRESS){
+            mav.addObject("data", alertDTO("이벤트가 이미 진행중입니다.", "/admin/coupons/event"))
+            mav.viewName = "redis/alert"
+            return mav
+        }
         redisService.refreshSet("TimeCoupon")
         postProcessor.postProcessAfterInitialization(schedulerConfiguration, "scheduledTasks")
         redisService.changeProgress(event.eventId, RedisService.EVENT_IN_PROGRESS)
@@ -167,6 +176,11 @@ class CouponController(
             mav.viewName = "redis/alert"
             return mav
         }
+        if (event.progress != RedisService.EVENT_IN_PROGRESS){
+            mav.addObject("data", alertDTO("진행중인 이벤트가 없습니다.", "/admin/coupons/event"))
+            mav.viewName = "redis/alert"
+            return mav
+        }
         postProcessor.postProcessBeforeDestruction(schedulerConfiguration, "scheduledTasks")
         redisService.changeProgress(event.eventId, RedisService.EVENT_END)
         redisService.resetQueue(event.eventName)
@@ -181,6 +195,11 @@ class CouponController(
         val eventId = redisService.getNowEventId()
         val event = redisService.getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT_ADMIN)
         val winnerList = redisService.getWinnerList(event.eventName)
+        if (event.progress < RedisService.EVENT_END){
+            mav.addObject("data", alertDTO("종료된 이벤트가 없습니다.", "/admin/coupons/event"))
+            mav.viewName = "redis/alert"
+            return mav
+        }
         if (event.progress == RedisService.PUBLISH_COUPON){
             mav.addObject("data", alertDTO("이미 발급 완료하였습니다., 새로운 이벤트를 등록하세요", "/admin/coupons/event/setting"))
             mav.viewName = "redis/alert"
