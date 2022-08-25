@@ -33,16 +33,19 @@ class SchedulerConfiguration(
         else {
             if (redisService.getNowCount() == 0){
                 log.info("==== 선착순 쿠폰 끝 ====")
+
                 val eventId = redisService.getNowEventId()
                 redisService.getNowEvent(eventId)?.let {
                     it.progress = EVENT_END
                     eventRepository.save(it)
                 }
                 redisService.setInitCount()
+
                 log.info("==== 이벤트 종료 ====")
                 postProcessor.postProcessBeforeDestruction(this,"scheduledTasks")
             } else {
                 log.info("~~~ 이벤트 진행중 ~~~")
+
                 redisService.publish("TimeCoupon")
                 redisService.getOrder("TimeCoupon")
             }

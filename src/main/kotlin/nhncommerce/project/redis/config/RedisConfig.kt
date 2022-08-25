@@ -35,7 +35,7 @@ class RedisConfig {
     fun redisTemplate() : RedisTemplate<*, *> {
         val redisTemplate: RedisTemplate<*, *> = RedisTemplate<Any, Any>()
 
-        redisTemplate.keySerializer = StringRedisSerializer() //저장시 이름관련
+        redisTemplate.keySerializer = StringRedisSerializer()
         redisTemplate.valueSerializer = GenericJackson2JsonRedisSerializer()
 
         redisTemplate.hashKeySerializer = GenericJackson2JsonRedisSerializer()

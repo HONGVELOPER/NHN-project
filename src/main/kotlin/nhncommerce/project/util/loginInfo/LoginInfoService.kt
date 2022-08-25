@@ -14,8 +14,7 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class LoginInfoService(
-    val redisTemplate: RedisTemplate<Any, Any>,
-    val findByIndexNameSessionRepository: FindByIndexNameSessionRepository<*>,
+    private val findByIndexNameSessionRepository: FindByIndexNameSessionRepository<*>,
 ) {
 
     fun getUserIdFromSession(): LoginInfoDTO {
@@ -41,15 +40,12 @@ class LoginInfoService(
     }
 
     fun expireUserSession(expireUserEmail: String) {
-        println("expire 진입")
         val mutableMap = findByIndexNameSessionRepository.findByIndexNameAndIndexValue(
             FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
             expireUserEmail
         )
         mutableMap.entries.map {
-            println(it.key)
             findByIndexNameSessionRepository.deleteById(it.key);
-//            redisTemplate.expire("spring:session:sessions:${it.key}", 5, TimeUnit.MILLISECONDS);
         }
     }
 

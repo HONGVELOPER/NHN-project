@@ -26,18 +26,9 @@ class OptionService (
     //옵션 초기화
     @Transactional
     fun deleteOptions(productId: Long){
-        //외래키의 연관관계로 자식 옵션 부터 삭제
-//        optionDetailRepository.deleteOptionDetailsByProductId(productId)
-//        optionRepository.deleteChildOptionsByProductId(productId)
-//        optionRepository.deleteParentOptionsByProductId(productId)
         val product = productRepository.findById(productId).get()
         optionRepository.findParentOptionsByProduct(product).map { it.makeOptionInActive() }
         optionDetailRepository.findOptionDetailsByProduct(product).map { it.makeDetailInActive() }
-//
-//        for(parent in parentOptionList)
-//            parent.makeOptionInActive()
-//        for(detail in optionDetails)
-//            detail.makeDetailInActive()
     }
 
     //상품 재고, 추가금액 수정
@@ -50,19 +41,16 @@ class OptionService (
             val optionDetail = optionDetailRepository.findById(detailId).get()
 
             optionDetail.changeStockAndCharge(detailStock, detailCharge)
-//            optionDetail.stock = detailStock
-//            optionDetail.extraCharge = detailCharge
-//            optionDetailRepository.save(optionDetail) //todo : 변경감지
         }
     }
 
     // 상품 , 옵션 리스트 가져오기
     fun getProductOptionList(productId : Long) : UpdateOptionDTO{
         val product = productRepository.findById(productId).get()
-        //val parentOptionList = optionRepository.findOptionsByProductAndParentOptionIsNullOrderByOptionId(product)
         val parentOptionList =optionRepository.findParentOptionsByProduct(product)
         val optionTypeList = mutableListOf<Option?>(null, null, null)
         val optionNameList = ArrayList<MutableList<Option>?>()
+
         //옵션 타입
         for(i in 0 until parentOptionList.size)
             optionTypeList[i] = parentOptionList[i]
@@ -103,11 +91,6 @@ class OptionService (
                 optionList[i].add(null)
         }
 
-//        //옵션이 비어있을 경우 null 넣어주기
-//        for(i in 0..2){
-//            if (optionList[i].size == 0)
-//                optionList[i].add(null)
-//        }
         //옵션들의 경우의수에 맞게 optionDetail 생성
         for(o1 in 0 until optionList[0].size){
             for(o2 in 0 until optionList[1].size){
@@ -121,21 +104,6 @@ class OptionService (
                 }
             }
         }
-
-//        //옵션들의 경우의수에 맞게 optionDetail 생성
-//        for(o1 in 0 until optionList[0].size){
-//            for(o2 in 0 until (if (optionList[1].size > 0) optionList[1].size else 1)){
-//                for(o3 in 0 until (if (optionList[2].size > 0) optionList[2].size else 1)){
-//                    val num = optionList[0].size + optionList[1].size + optionList[2].size
-//                    val name = generateDetailName(listOf(optionList[0][o1]?.name, optionList[1][o2]?.name, optionList[2][o3]?.name))
-//                    val optionDetail = OptionDetail(
-//                         status = Status.ACTIVE, extraCharge = 0, stock = 0, name = name, product = product,
-//                        option1 = optionList[0][o1], option2 = optionList[1][o2], option3 = optionList[2][o3]
-//                    )
-//                    optionDetailRepository.save(optionDetail)
-//                }
-//            }
-//        }
     }
 
     fun generateDetailName(optionList : List<String?>) : String{

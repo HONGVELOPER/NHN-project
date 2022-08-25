@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("categories")
 class CategoryController(private val categoryService: CategoryService) {
 
-    /**
-     * 카테고리별 상품리스트 조회
-     */
     @GetMapping("{categoryId}")
     fun getProductsByCategory(
         @PathVariable("categoryId") categoryId : Long,
