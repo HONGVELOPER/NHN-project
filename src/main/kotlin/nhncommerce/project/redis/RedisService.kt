@@ -2,7 +2,6 @@ package nhncommerce.project.redis
 
 import nhncommerce.project.exception.AlertException
 import nhncommerce.project.exception.ErrorMessage
-import nhncommerce.project.redis.constant.EventCoupon
 import nhncommerce.project.redis.domain.Event
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.RedisTemplate
@@ -136,6 +135,53 @@ class RedisService (
         } catch (e: Exception){
             null
         }
+    }
+
+    //쿠폰 발급시 예외처리후 이벤트 조회
+    fun getEventAtApply(userId : Long) : Event{
+        val eventId = getNowEventId()
+        val event = getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT)
+
+        if (event.progress < EVENT_IN_PROGRESS)
+            throw AlertException(ErrorMessage.EMPTY_NOW_EVENT)
+        if (checkParticipation(event.eventName, userId))
+            throw AlertException(ErrorMessage.DUPLICATE_PARTICIPATION)
+        return event
+    }
+
+    //쿠폰 이벤트 시작시 예외처리후 이벤트 조회
+    fun getEventAtStart() : Event {
+        val eventId = getNowEventId()
+        val event = getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_EVENT_SETTING)
+
+        if (event.progress == INIT || event.progress == PUBLISH_COUPON)
+            throw AlertException(ErrorMessage.EMPTY_EVENT_SETTING)
+        if (event.progress == EVENT_END)
+            throw AlertException(ErrorMessage.ALREADY_END_EVENT)
+        if (event.progress == EVENT_IN_PROGRESS)
+            throw AlertException(ErrorMessage.EVENT_IN_PROGRESS)
+        return event
+    }
+
+    //쿠폰 이벤트 종료시 예외처리후 이벤트 조회
+    fun getEventAtEnd() : Event {
+        val eventId = getNowEventId()
+        val event = getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT_ADMIN)
+        if (event.progress == PUBLISH_COUPON)
+            throw AlertException(ErrorMessage.ALREADY_PUBLISH_COUPON)
+        if (event.progress != EVENT_IN_PROGRESS)
+            throw AlertException(ErrorMessage.EVENT_NOT_IN_PROGRESS_ADMIN)
+        return event
+    }
+
+    fun getEventAtPublish() :Event {
+        val eventId = getNowEventId()
+        val event = getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT_ADMIN)
+        if (event.progress < EVENT_END)
+            throw AlertException(ErrorMessage.NOT_END_EVENT)
+        if (event.progress == PUBLISH_COUPON)
+            throw AlertException(ErrorMessage.ALREADY_PUBLISH_COUPON)
+        return event
     }
 
     companion object {

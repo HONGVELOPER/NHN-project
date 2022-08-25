@@ -86,30 +86,17 @@ class CouponController(
         return "redirect:/admin/coupons"
     }
 
-    //쿠폰 발급 페이지
+    //쿠폰 이벤트 참여 페이지
     @GetMapping("/api/coupons/event")
-    fun reqCouponPage(mav : ModelAndView) : ModelAndView {
+    fun reqCouponPage(model : Model) : String {
         val userId = loginInfoService.getUserIdFromSession().userId
-        val eventId = redisService.getNowEventId()
-        val event = redisService.getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT)
-        // 참여 여부 확인
-        val checkParticipation = redisService.checkParticipation(event.eventName, userId)
-        if (event.progress < RedisService.EVENT_IN_PROGRESS){
-            mav.addObject("data", alertDTO("진행중인 이벤트가 없습니다..", "/products"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        if (checkParticipation){
-            mav.addObject("data", alertDTO("이미 참여하였습니다.", "/products"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        mav.addObject("userId", userId)
-        mav.addObject("eventInfo", event.eventInfo)
-        mav.viewName = "redis/redis"
-        return mav
+        val event = redisService.getEventAtApply(userId)
+
+        model.addAttribute("userId", userId)
+        model.addAttribute("eventInfo", event.eventInfo)
+        return "redis/redis"
     }
-    //쿠폰 발급 (큐에 넣기)
+    //쿠폰 이벤트 참여 (큐에 넣기)
     @PostMapping("/api/coupons/event")
     fun reqCoupon(model : Model, @RequestParam userId : Long) : String{
         redisService.addQueue(userId, "TimeCoupon")
@@ -122,7 +109,7 @@ class CouponController(
         return "redis/setEvent"
     }
 
-    //쿠폰 이벤트 설정 (ok)
+    //쿠폰 이벤트 설정
     @PostMapping("/admin/coupons/event/setting")
     fun eventCouponSet(@RequestParam eventCouponNum : Int, discount : Int, eventInfo : String , model: Model,
                        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) expired : LocalDate) : String {
@@ -132,7 +119,8 @@ class CouponController(
                         expired = expired,
                         progress = RedisService.SETTING_OK,
                         eventName = "TimeCoupon",
-                        eventInfo=eventInfo)
+                        eventInfo = eventInfo)
+
         redisService.refreshSet(event.eventName)
         redisService.setNowEventId(event.eventId)
         return "redirect:/admin/coupons/event"
@@ -140,78 +128,40 @@ class CouponController(
 
     //쿠폰 이벤트 시작
     @GetMapping("/admin/coupons/event/start")
-    fun eventStart(mav : ModelAndView) : ModelAndView {
-        val eventId = redisService.getNowEventId()
-        val event = redisService.getNowEvent(eventId)
-        if (event == null || event.progress == RedisService.INIT || event.progress == RedisService.PUBLISH_COUPON){
-            mav.addObject("data", alertDTO("이벤트를 설정해주세요", "/admin/coupons/event/setting"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        if (event.progress == RedisService.EVENT_END){
-            mav.addObject("data", alertDTO("이벤트가 이미 종료 되었습니다", "/admin/coupons/event"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        if (event.progress == RedisService.EVENT_IN_PROGRESS){
-            mav.addObject("data", alertDTO("이벤트가 이미 진행중입니다.", "/admin/coupons/event"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
+    fun eventStart(model : Model) : String {
+        val event = redisService.getEventAtStart()
+
         redisService.refreshSet("TimeCoupon")
         postProcessor.postProcessAfterInitialization(schedulerConfiguration, "scheduledTasks")
         redisService.changeProgress(event.eventId, RedisService.EVENT_IN_PROGRESS)
-        mav.addObject("progress", RedisService.EVENT_IN_PROGRESS) //다시보기
-        mav.viewName = "redirect:/admin/coupons/event"
-        return mav
+
+        model.addAttribute("progress", event.progress)
+        return "redirect:/admin/coupons/event"
     }
 
-    //쿠폰 이벤트 종료 (ok)
+    //쿠폰 이벤트 종료
     @GetMapping("/admin/coupons/event/stop")
-    fun eventStop(mav : ModelAndView) : ModelAndView {
-        val eventId = redisService.getNowEventId()
-        val event = redisService.getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT_ADMIN)
-        if (event.progress == RedisService.PUBLISH_COUPON){
-            mav.addObject("data", alertDTO("쿠폰 발급까지 완료하였습니다. 새로운 이벤트를 등록하세요", "/admin/coupons/event/setting"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        if (event.progress != RedisService.EVENT_IN_PROGRESS){
-            mav.addObject("data", alertDTO("진행중인 이벤트가 없습니다.", "/admin/coupons/event"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
+    fun eventStop(model : Model) : String {
+        val event = redisService.getEventAtEnd()
+
         postProcessor.postProcessBeforeDestruction(schedulerConfiguration, "scheduledTasks")
         redisService.changeProgress(event.eventId, RedisService.EVENT_END)
         redisService.resetQueue(event.eventName)
 
-        mav.viewName = "redirect:/admin/coupons/event"
-        return mav
+        return "redirect:/admin/coupons/event"
     }
 
     //이벤트 쿠폰 발급
     @PostMapping("/admin/coupons/event/publish")
-    fun publishCoupon(mav : ModelAndView) : ModelAndView {
-        val eventId = redisService.getNowEventId()
-        val event = redisService.getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT_ADMIN)
+    fun publishCoupon(model : Model) : String {
+        val event = redisService.getEventAtPublish()
         val winnerList = redisService.getWinnerList(event.eventName)
-        if (event.progress < RedisService.EVENT_END){
-            mav.addObject("data", alertDTO("종료된 이벤트가 없습니다.", "/admin/coupons/event"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
-        if (event.progress == RedisService.PUBLISH_COUPON){
-            mav.addObject("data", alertDTO("이미 발급 완료하였습니다., 새로운 이벤트를 등록하세요", "/admin/coupons/event/setting"))
-            mav.viewName = "redis/alert"
-            return mav
-        }
+
         if (winnerList == null || winnerList.isEmpty()){
             redisService.changeProgress(event.eventId, RedisService.INIT)
             redisService.resetQueue(event.eventName)
             redisService.setInitCount()
-            mav.addObject("data", alertDTO("이벤트 당첨자가 없습니다", "/admin/coupons/event"))
-            mav.viewName = "redis/alert"
-            return mav
+            throw AlertException(ErrorMessage.EMPTY_WINNER_LIST)
         }
 
         for(user in winnerList){
@@ -222,12 +172,11 @@ class CouponController(
                 couponName = event.eventName
             )
         }
-
         redisService.resetQueue(event.eventName)
         redisService.setInitCount()
         redisService.changeProgress(event.eventId, RedisService.PUBLISH_COUPON)
-        mav.viewName = "redirect:/admin/coupons"
-        return mav
+
+        return "redirect:/admin/coupons"
     }
 
     //이벤트 시작 종료 버튼 페이지
@@ -235,6 +184,7 @@ class CouponController(
     fun manageEvent(model : Model) : String {
         val eventId = redisService.getNowEventId()
         val event = redisService.getNowEvent(eventId)
+
         model.addAttribute("eventInfo", event?.eventInfo ?: "이벤트 정보가 없습니다.")
         model.addAttribute("progress", event?.progress ?: RedisService.INIT)
         return "redis/manageEvent"
@@ -247,8 +197,9 @@ class CouponController(
         val eventId = redisService.getNowEventId()
         val event = redisService.getNowEvent(eventId)?: throw AlertException(ErrorMessage.EMPTY_NOW_EVENT)
         val userId = loginInfoService.getUserIdFromSession().userId
-        val check = redisService.getEventWinCheck("TimeCoupon", userId)
-        val order = redisService.getUserOrder("TimeCoupon", userId)
+        val check = redisService.getEventWinCheck(event.eventName, userId)
+        val order = redisService.getUserOrder(event.eventName, userId)
+
         model.addAttribute("eventCheckDTO", EventCheckDTO(check, order))
         model.addAttribute("progress", event.progress)
 

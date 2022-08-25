@@ -14,9 +14,6 @@ class OptionController (
     private val optionService: OptionService,
     private val productService: ProductService)
 {
-    /**
-     * 옵션 수정 페이지
-     */
     @GetMapping("/products/{productId}/type")
     fun updateProductOptionPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val productOptionList = optionService.getProductOptionList(productId)
@@ -25,9 +22,6 @@ class OptionController (
         return "option/updateOptionList"
     }
 
-    /**
-     * 옵션 초기화
-     */
     @DeleteMapping("/products/{productId}")
     fun deleteProductOption(@PathVariable(name = "productId") productId: Long, model: Model) : String{
         optionService.deleteOptions(productId)
@@ -41,9 +35,6 @@ class OptionController (
         return "option/recreateOption"
     }
 
-    /**
-     * 옵션 수정
-     */
     @PostMapping("/products/{productId}")
     fun updateProductOption(@PathVariable(name = "productId") productId: Long, redirect : RedirectAttributes, @ModelAttribute optionList : OptionListDTO) : String{
         val productDTO = productService.getProductDTO(productId)
@@ -51,12 +42,8 @@ class OptionController (
         optionService.createOptionDetail(optionList)
         redirect.addAttribute("productId", productId )
         return "redirect:/admin/options/products/{productId}/type"
-
     }
 
-    /**
-     * 재고 수정 페이지
-     */
     @GetMapping("/products/{productId}/stock")
     fun updateOptionDetailPage(@PathVariable(name = "productId") productId : Long, model : Model) : String {
         val optionDetails = optionService.getProductOptionDetails(productId)
@@ -64,14 +51,9 @@ class OptionController (
         return "option/optionDetailList"
     }
 
-    /**
-     * 재고 수정
-     */
     @PutMapping("/products")
     fun updateOptionDetail(@ModelAttribute optionStockDTO: OptionStockDTO ,model : Model) : String {
         optionService.updateOptionDetail(optionStockDTO)
         return "redirect:/admin/products"
     }
-
-
 }
