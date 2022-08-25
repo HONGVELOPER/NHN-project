@@ -7,6 +7,7 @@ import nhncommerce.project.exception.ErrorMessage
 import nhncommerce.project.security.domain.Oauth2LoginUserDetails
 import nhncommerce.project.user.UserRepository
 import nhncommerce.project.user.domain.User
+import nhncommerce.project.util.loginInfo.LoginInfoService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class Oauth2LoginUserService(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val loginInfoService: LoginInfoService,
 ) : DefaultOAuth2UserService() {
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)
@@ -29,7 +31,10 @@ class Oauth2LoginUserService(
         val user: User? = userRepository.findByEmail(email)
         return if (user != null) {
             when (user.status == Status.ACTIVE) {
-                true -> Oauth2LoginUserDetails(user, oAuth2User.attributes)
+                true -> {
+                    loginInfoService.expireUserSession(user.email)
+                    Oauth2LoginUserDetails(user, oAuth2User.attributes)
+                }
                 false -> throw UsernameNotFoundException("탈퇴한 회원입니다.")
             }
         } else {

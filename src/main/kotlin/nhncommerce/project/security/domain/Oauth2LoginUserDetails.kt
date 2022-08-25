@@ -8,7 +8,7 @@ import java.io.Serializable
 class Oauth2LoginUserDetails (
     private val user: User,
     private val attributes: Map<String, Any>
-) : OAuth2User, Serializable { //Serializable 추가
+) : OAuth2User, Serializable {
 
     fun getId(): Long = user.userId
 
@@ -31,7 +31,6 @@ class Oauth2LoginUserDetails (
     }
 
     override fun equals(other: Any?): Boolean {
-        println("oauth login 진입")
         if (this.toString() == other.toString()) return true
         if (javaClass != other?.javaClass) return false
 
