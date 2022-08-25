@@ -41,8 +41,14 @@ enum class ErrorMessage(
     //이벤트 쿠폰
     EMPTY_NOW_EVENT("현재 진행중인 이벤트가 없습니다.", "/products"),
     EMPTY_NOW_EVENT_ADMIN("진행중인 이벤트 없음, 이벤트를 설정해주세요", "/admin/coupons/event"),
-
-
+    EMPTY_EVENT_SETTING("이벤트를 설정해주세요", "/admin/coupons/event/setting"),
+    DUPLICATE_PARTICIPATION("이미 참여했습니다.", "/products"),
+    ALREADY_END_EVENT("이벤트가 이미 종료되었습니다.", "/admin/coupons/event"),
+    EVENT_IN_PROGRESS("이벤트가 이미 진행중입니다.", "/admin/coupons/event"),
+    ALREADY_PUBLISH_COUPON("쿠폰 발급까지 완료하였습니다. 새로운 이벤트를 등록하세요", "/admin/coupons/event/setting"),
+    EVENT_NOT_IN_PROGRESS_ADMIN("진행중인 이벤트가 없습니다.", "/admin/coupons/event"),
+    NOT_END_EVENT("종료된 이벤트가 없습니다.", "/admin/coupons/event"),
+    EMPTY_WINNER_LIST("이벤트 당첨자가 없습니다", "/admin/coupons/event"),
     //String to Int 변환
     STRING_TO_INT_CONVERSION_ERROR("문자열을 입력할 수 없습니다.","/")
 
