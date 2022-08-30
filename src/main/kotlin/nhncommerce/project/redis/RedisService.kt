@@ -44,7 +44,10 @@ class RedisService (
     // 쿠폰 발급후 큐에서 삭제
     fun publish(eventName: String) {
         val start = 0L //대기열 첫번째
-        val end = 9L //대기열 마지막
+        var end = 9L //대기열 마지막
+        val nowCount = getNowCount().toLong()
+        if (nowCount < 10)
+            end = nowCount - 1L
         val queue = redisTemplate.opsForZSet().range("${eventName}Queue", start, end)
 
         queue?.let {
