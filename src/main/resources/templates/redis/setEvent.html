@@ -27,8 +27,8 @@
                                     alert("쿠폰 개수를 입력해주세요")
                                     return false
                                 }
-                                if (document.getElementById("count").value < 0){
-                                    alert("쿠폰 개수는 음수가 될 수 없습니다.")
+                                if (document.getElementById("count").value <= 0){
+                                    alert("쿠폰 개수는 0개 이하일 수 없습니다.")
                                     return false
                                 }
                                 if (document.getElementById("count").value > 2147483647){
