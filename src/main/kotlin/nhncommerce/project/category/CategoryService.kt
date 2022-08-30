@@ -85,7 +85,7 @@ class CategoryService (
         val qProduct = QProduct.product
 
         for (categoryId in categoryIdList)
-            booleanBuilder.or(qProduct.category.categoryId.eq(categoryId))
+            booleanBuilder.or(qProduct.category.categoryId.eq(categoryId)).and(qProduct.status.eq(Status.ACTIVE))
 
         return booleanBuilder
     }
